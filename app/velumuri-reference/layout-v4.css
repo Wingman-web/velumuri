@@ -1,0 +1,141 @@
+/* ============================================================
+   Layout — container, grid system, section scaffolding,
+   header/footer skeletons (heights reserved to avoid CLS),
+   and the alternating "mood" backgrounds that keep the page
+   from reading as one flat dark site: NAVY → IVORY → IMAGE →
+   CREAM → NAVY → IMAGE …
+   ============================================================ */
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: clamp(1rem, 2vw, 2.25rem);
+}
+
+section {
+  position: relative;
+  padding-block: var(--section-pad);
+}
+
+/* ---- Mood backgrounds ---- */
+.mood-navy {
+  background: var(--surface-navy);
+  color: var(--text-on-navy);
+}
+.mood-navy h1, .mood-navy h2, .mood-navy h3, .mood-navy h4 { color: var(--color-white); }
+.mood-navy .eyebrow { color: var(--accent); }
+.mood-navy .eyebrow::before { background: var(--accent); }
+.mood-navy p:not([class]) { color: var(--text-on-navy-dim); }
+
+.mood-ivory { background: var(--surface-ivory); color: var(--text-on-light); }
+.mood-cream { background: var(--surface-cream); color: var(--text-on-light); }
+
+/* Fallback fill for sections whose real background is a photo
+   inside them — prevents a flash of the page's white background
+   if the image is still loading or doesn't fully cover its box. */
+.mood-image { color: var(--color-white); background: transparent; }
+
+/* Reusable asymmetric section intro — the same eyebrow-in-its-own-
+   column split used throughout the site (About Intro, Chairman,
+   Mission & Vision, FAQ): eyebrow sits alone on the left, heading +
+   description together in a wider column to the right. Below 900px
+   it collapses to a plain stack. */
+.section-head {
+  margin-bottom: var(--space-8);
+  display: grid;
+  gap: var(--space-1);
+}
+.section-head-copy h2 {
+  font-size: var(--fs-h1);
+  max-width: 20ch;
+}
+.section-head-copy p {
+  margin-top: var(--space-5);
+  color: var(--text-on-light-dim);
+  max-width: 34rem;
+}
+@media (min-width: 900px) {
+  /* .section-head {
+    grid-template-columns: repeat(12, 1fr);
+    align-items: start;
+    gap: var(--space-7);
+  } */
+  .section-head-eyebrow {
+    grid-column: 1 / 4;
+    padding-top: var(--space-2);
+  }
+  .section-head-copy {
+    grid-column: 6 / 13;
+  }
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--accent-on-light);
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+}
+.eyebrow::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: var(--accent-on-light);
+}
+
+/* ---- Header skeleton: fixed height reserved so the
+   JS-injected navbar partial causes zero layout shift ---- */
+#site-header {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: var(--header-h-mobile);
+  z-index: 500;
+}
+@media (min-width: 900px) {
+  #site-header { height: var(--header-h); }
+}
+
+main { display: block; }
+
+/* #site-header is position:fixed (out of flow), so the hero already
+   starts at the true top of the page and sits under it — no
+   compensating margin needed. */
+
+/* ---- Footer skeleton: reserved min-height (background lives in
+   components.css alongside the rest of the footer's real styling) ---- */
+#site-footer {
+  min-height: 640px;
+}
+@media (min-width: 900px) {
+  #site-footer { min-height: 420px; }
+}
+
+/* ---- Asymmetric helpers ---- */
+.overlap-card {
+  position: relative;
+  z-index: 2;
+}
+
+.bleed-full {
+  width: 100vw;
+  margin-inline-start: calc(50% - 50vw);
+}
+
+@media (max-width: 899px) {
+  .desktop-only { display: none !important; }
+}
+@media (min-width: 900px) {
+  .mobile-only { display: none !important; }
+}

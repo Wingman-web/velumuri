@@ -1,0 +1,147 @@
+/* ============================================================
+   Reset + base element defaults
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  /* -webkit-text-size-adjust: 100%; */
+  /* scrollbar-width: thin; */
+  /* scrollbar-color: var(--color-cream) var(--color-ivory); */
+}
+
+/* Chrome/Edge/Safari — Firefox uses scrollbar-color above. */
+::-webkit-scrollbar { width: 0px; height: 0px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--color-cream);
+  border-radius: 999px;
+  border: 1px solid var(--color-ivory);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-cream-deep); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-light);
+  /* The one continuous background for the whole page — most sections
+     now use a transparent --color-beige specifically so this shows
+     through, rather than each section painting its own flat fill. */
+  /* background: #000; */
+   background-image: url(/velumuri-assets/backgrounds/background_two.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  /* clip, not hidden: overflow-x:hidden with no matching overflow-y
+     forces the computed overflow-y to auto too (a real CSS overflow
+     spec quirk), which turns body into an unintended scroll container
+     — invisible normally, but it breaks position:sticky for every
+     descendant, since sticky locks onto the nearest scrolling
+     ancestor. overflow-x:clip prevents the same horizontal bleed
+     without establishing a scroll container. */
+  overflow-x: clip;
+}
+
+img, picture, video, svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: currentColor;
+  line-height: var(--lh-tight);
+  margin: 0;
+  font-weight: 200;
+}
+/* Primary font (Runalto) for main headings, secondary (Nord) for
+   sub-headings — most component rules override this per-element
+   anyway (see variables.css), this is just the tag-level default. */
+h1, h2 {
+  font-family: var(--font-primary);
+}
+h3, h4, h5, h6 {
+  font-family: var(--font-secondary);
+}
+
+p { margin: 0; }
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+ul, ol { margin: 0; padding: 0; list-style: none; }
+
+input, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Focus visibility — never suppressed, only restyled */
+:focus-visible {
+  outline: 2px solid var(--color-cream-deep);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-3);
+  top: -60px;
+  background: var(--color-navy);
+  color: var(--color-cream);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-sm);
+  z-index: 1000;
+  transition: top var(--dur-fast) var(--ease-out);
+}
+.skip-link:focus {
+  top: var(--space-3);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+::selection {
+  background: var(--color-cream);
+  color: var(--color-navy);
+}
+
+/* Custom cursor: desktop, fine-pointer only — JS adds
+   `.cursor-active` to <html> once it confirms hover+fine support
+   and has mounted the follower dot. Never applied on touch. */
+@media (hover: hover) and (pointer: fine) {
+  html.cursor-active,
+  html.cursor-active a,
+  html.cursor-active button {
+    cursor: none;
+  }
+}

@@ -1,0 +1,280 @@
+/* ============================================================
+   Design tokens — Velumuri Infra
+   Single source of truth for color, type, spacing, motion.
+   ============================================================ */
+
+/* ---- Self-hosted fonts (assets/fonts/) ----
+   Runalto: "free for personal use" per its own Read Me.txt — Velumuri
+   Infra is a commercial site, so a commercial license from sensatype.com
+   is needed before this ships live. Single weight, no italic — the
+   rest of the codebase never asks for bold/italic on primary-font
+   elements, so no synthesis concerns in practice.
+   Nord: PixelBuddha license — royalty-free for commercial use, four
+   real weights, no italics provided (font-style stays normal).
+   Poppins: SIL Open Font License (OFL.txt included) — always free,
+   self-hosted here instead of Google Fonts per direct instruction. */
+@font-face {
+  font-family: "Runalto";
+  src: url("/velumuri-assets/fonts/runalto/Runalto.otf") format("opentype"),
+       url("/velumuri-assets/fonts/runalto/Runalto.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Nord";
+  src: url("/velumuri-assets/fonts/nord/Nord-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Nord";
+  src: url("/velumuri-assets/fonts/nord/Nord-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Nord";
+  src: url("/velumuri-assets/fonts/nord/Nord-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Nord";
+  src: url("/velumuri-assets/fonts/nord/Nord-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/velumuri-assets/fonts/poppins/Poppins-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/velumuri-assets/fonts/poppins/Poppins-LightItalic.ttf") format("truetype");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/velumuri-assets/fonts/poppins/Poppins-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/velumuri-assets/fonts/poppins/Poppins-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/velumuri-assets/fonts/poppins/Poppins-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/velumuri-assets/fonts/poppins/Poppins-MediumItalic.ttf") format("truetype");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/velumuri-assets/fonts/poppins/Poppins-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/velumuri-assets/fonts/poppins/Poppins-SemiBoldItalic.ttf") format("truetype");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/velumuri-assets/fonts/poppins/Poppins-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/velumuri-assets/fonts/poppins/Poppins-BoldItalic.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+   /* ---- Color: obsidian-black dark theme (internal team review, 2026) —
+     the page sits on one continuous radial gradient (--bg-gradient-main,
+     applied to body) sweeping from a lit graphite hotspot down to pure
+     black at the edges; #ecd09e is the one accent/highlight color
+     throughout. --color-beige (the site's most common section
+     background) is transparent so that gradient is what shows through
+     almost everywhere — the remaining tiers (navy-deep/navy/navy-soft/
+     surface-raised) are reserved for sections and cards that need to
+     read as deliberately solid (footer, hero, chips, form fields), and
+     are tuned to sit tonally inside the gradient's own black range.
+     Token names below (…navy…/…cream…/…ivory…/…beige…) are historical
+     from the light-theme system and now all resolve to dark/transparent
+     values — left as-is so the hundreds of component rules built on
+     them (and the .mood-navy/.mood-ivory/.mood-cream section classes)
+     flip automatically, with no per-component rewrite. ---- */
+   --bg-gradient-main: radial-gradient(circle at 70% 30%, #242424 0%, #111111 35%, #050505 75%, #000000 100%);
+   --color-navy: #111111;
+   /* base solid dark surface — Rich Black */
+   --color-navy-deep: #050505;
+   /* deepest — footer/highest-contrast areas, matches the gradient's outer edge */
+   --color-navy-soft: #242424;
+   /* secondary/raised dark surface, matches the gradient's own hotspot */
+   --color-cream: #ecd09e;
+   /* accent/highlight (unchanged) */
+   --color-cream-deep: #f5e2bc;
+   /* lighter accent tint, hover/lighten states */
+   --color-ivory: #181818;
+   /* secondary surface, between navy and navy-soft — Charcoal */
+   --color-beige: #050505;
+   /* the site's default/most common background — transparent so --bg-gradient-main on body shows through */
+   --color-off-white: transparent;
+   --color-charcoal: #050505;
+   /* still a genuine near-black — used for isolated
+                                    dark chips/buttons/placeholders that stay dark
+                                    regardless of theme, not for page text */
+   --color-charcoal-soft: #4c473e;
+   /* --color-white stays real white — it's used ~20x as literal white
+     TEXT (hero headings, page-banner h1, footer-tagline) that has to
+     stay light regardless of theme, not just as a card background.
+     The few places that used it as a *background* (form fields, small
+     icon/tag chips) now use --color-surface-raised instead. */
+   --color-white: #ffffff;
+   --color-surface-raised: #222222;
+   /* most-raised dark "card" tier — Graphite */
+   /* A gold-tinted (not literal dark-brown) translucent border — a low-
+     alpha *dark* border would sit almost invisibly against these near-
+     black backgrounds, same failure mode already fixed once this pass. */
+   --color-border: rgba(236, 208, 158, 0.16);
+   --color-border-on-navy: rgba(239, 233, 222, 0.16);
+   --color-success: #3f7a4f;
+
+   /* Three-tier text hierarchy — every surface is dark now, so these
+     are the site's only body-text colors (used to be --color-charcoal
+     and friends, back when this was text-on-*light* surfaces). */
+   --text-color: #f4f1ea;
+   /* Ivory White — main text */
+   --text-secondary: #b5b1aa;
+   /* Warm Gray — secondary text */
+   --text-muted: #77736d;
+   /* Slate Gray — muted/least-emphasis text */
+
+   /* Semantic surface/text pairs used by the .mood-* section classes */
+   --surface-navy: var(--color-navy);
+   --surface-ivory: var(--color-ivory);
+   --surface-cream: var(--color-beige);
+   --text-on-navy: var(--text-color);
+   --text-on-navy-dim: rgba(244, 241, 234, 0.72);
+   --text-on-light: var(--text-color);
+   --text-on-light-dim: var(--text-secondary);
+   --accent: var(--color-cream);
+   --accent-deep: var(--color-cream-deep);
+   /* Warm ivory→gold sweep — used wherever gold appears as a fill or as
+      clipped text, in place of the flat --color-cream. */
+   --gold-gradient: linear-gradient(91deg, rgba(250, 244, 230, 1) 0%, rgba(236, 208, 158, 1) 50%);
+   /* A slightly deeper, richer gold than the base accent — used for
+     small/decorative text (eyebrows, dividers) so it doesn't read as
+     identical to the loud CTA accent everywhere it appears. */
+   --accent-on-light: #d9b876;
+   /* Was a black→ivory blend for a light/dark section seam; every
+     section is the same dark family now, so this just blends between
+     two dark tiers — kept only for the couple of places that still
+     reference it, not a meaningful visual seam anymore. */
+   --bridge-dark-to-light: linear-gradient(180deg, var(--color-navy) 0%, var(--color-navy-soft) 45%, var(--color-navy-deep) 70%, var(--color-ivory) 100%);
+   --bridge-light-to-dark: linear-gradient(180deg, var(--color-ivory) 0%, var(--color-navy-deep) 30%, var(--color-navy-soft) 55%, var(--color-navy) 100%);
+
+   /* ---- Typography — Runalto (primary/main headings), Nord (secondary/
+      sub-headings), Poppins (paragraphs and everything else). --font-display
+      stays as an alias for --font-primary: dozens of component rules
+      already reference it by that name for what are, semantically, the
+      site's main headings — aliasing means those don't all need editing
+      individually, only the ones that are genuinely sub-heading-level
+      (h3s, card titles, tab labels, etc.) were repointed to --font-secondary. ---- */
+   --font-primary: "Runalto", serif;
+   --font-secondary: "Runalto", serif;
+   /* --font-secondary: "Nord", sans-serif; */
+   --font-display: var(--font-primary);
+   --font-body: "Poppins", sans-serif;
+
+   --fs-hero: clamp(3rem, 5vw + 1.5rem, 7.5rem);
+   --fs-h1: clamp(2.5rem, 3vw + 1.4rem, 5rem);
+   --fs-h2: clamp(2rem, 2vw + 1.2rem, 3.5rem);
+   --fs-h3: clamp(1.35rem, 0.9vw + 1rem, 1.85rem);
+   --fs-numeral: clamp(3.5rem, 6vw + 1rem, 8rem);
+   --fs-lead: clamp(1.1rem, 0.5vw + 1rem, 1.375rem);
+   --fs-body: 1rem;
+   --fs-small: 0.875rem;
+   --fs-eyebrow: 0.75rem;
+
+   --lh-tight: 0.98;
+   --lh-snug: 1.2;
+   --lh-body: 1.7;
+
+   --ls-eyebrow: 0.3em;
+   --ls-nav: 0.08em;
+
+   /* ---- Spacing scale ---- */
+   --space-1: 0.25rem;
+   --space-2: 0.5rem;
+   --space-3: 0.75rem;
+   --space-4: 1rem;
+   --space-5: 1.5rem;
+   --space-6: 2.25rem;
+   --space-7: 3.5rem;
+   --space-8: 5rem;
+   --space-9: 7rem;
+   --space-10: 9rem;
+
+   --section-pad: clamp(5rem, 8vw, 10rem);
+
+   /* ---- Layout ---- */
+   --container-max: 1440px;
+   --container-pad: clamp(1.25rem, 4vw, 4rem);
+   --radius-sm: 2px;
+   --radius-md: 6px;
+   --radius-lg: 30px;
+   --header-h: 92px;
+   --header-h-mobile: 72px;
+   --header-h-solid: 76px;
+
+   /* ---- Motion: luxury pacing — slow, no bounce ---- */
+   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+   --dur-fast: 0.5s;
+   /* hover: 0.4–0.6s */
+   --dur-med: 0.9s;
+   /* text reveal: 0.8–1.1s */
+   --dur-slow: 1.4s;
+   /* image reveal: 1.2–1.6s */
+   --dur-section: 1.2s;
+   /* section transitions: 1–1.5s */
+   --dur-transition: 750ms;
+   /* page transition layer */
+
+   /* ---- Elevation ---- */
+   --shadow-card: 0 40px 80px -30px rgba(10, 9, 8, 0.4);
+   --shadow-soft: 0 16px 40px -22px rgba(10, 9, 8, 0.32);
+}

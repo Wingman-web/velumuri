@@ -1,0 +1,133 @@
+/* ============================================================
+   Animation-related CSS.
+   Progressive enhancement: hidden/offset starting states only
+   apply once `.js` is set on <html> (see the inline script in
+   index.html's <head>), so content is fully visible if
+   JavaScript fails to load — GSAP takes over from there.
+   ============================================================ */
+
+.js .hero-line-inner,
+.js .hero-brandmark-line-inner {
+  transform: translateY(110%);
+}
+
+.js .mobile-menu a {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.js .pp-slide:not(.is-active) { display: none; }
+
+/* All slides stay absolutely stacked in the same spot under .js (not
+   just the active one) so the crossfade in initTestimonials can fade
+   the outgoing and incoming quote at the same time — genuine overlap,
+   not a swap. No-JS: normal document flow, all six readable stacked
+   vertically. */
+.js .testimonial-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.js .testimonial-slide.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.js .image-expand-heading {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+/* Mission & Vision images — start fully masked, GSAP animates the
+   clip-path's top-inset from 100% to 0%, so the visible area grows
+   upward from the bottom edge (a bottom-to-top reveal), not a fade. */
+.js .mv-media-mask {
+  clip-path: inset(100% 0 0 0);
+}
+.js .mv-media-mask img {
+  transform: scale(1.15);
+}
+
+/* Image-expand collage (both the desktop pinned stage and the mobile
+   grid) — same bottom-to-top reveal as Mission & Vision. On desktop
+   this plays out and fully finishes *before* imageExpandReveal's pin
+   timeline engages (see animations.js), so it never fights that
+   separate "hero grows to fill the screen" scrub effect. */
+.js .image-expand-stage .ie-img,
+.js .image-expand-grid .ie-img {
+  clip-path: inset(100% 0 0 0);
+}
+.js .image-expand-stage .ie-img img,
+.js .image-expand-grid .ie-img img {
+  transform: scale(1.15);
+}
+
+/* Contact page — "Our Commitment" image, same bottom-to-top reveal. */
+.js .contact-commitment {
+  clip-path: inset(100% 0 0 0);
+}
+.js .contact-commitment img {
+  transform: scale(1.15);
+}
+
+/* Blog listing — featured post image, same bottom-to-top reveal. */
+.js .blog-featured-media {
+  clip-path: inset(100% 0 0 0);
+}
+.js .blog-featured-media img {
+  transform: scale(1.15);
+}
+
+/* Ongoing project (Velumuri Vistas) — overview image, same bottom-to-top reveal. */
+.js .vistas-overview-media {
+  clip-path: inset(100% 0 0 0);
+}
+.js .vistas-overview-media img {
+  transform: scale(1.15);
+}
+
+.js .preloader { opacity: 1; }
+
+/* No-JS: never render the covering layer at all — it would
+   otherwise permanently hide the page. Under .js it starts
+   covering (0%) and navigation.js immediately reveals it. */
+.page-transition { display: none; }
+.js .page-transition { display: block; transform: translateY(0%); }
+
+/* Modal open/close */
+.modal {
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.modal.is-visible {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .hero-line-inner,
+  .js .hero-brandmark-line-inner { transform: none; }
+  .js .preloader { display: none; }
+  .js .page-transition { display: none; }
+  .js .image-expand-heading { opacity: 1; transform: none; }
+  .js .mv-media-mask { clip-path: none; }
+  .js .mv-media-mask img { transform: none; }
+  .js .image-expand-stage .ie-img,
+  .js .image-expand-grid .ie-img { clip-path: none; }
+  .js .image-expand-stage .ie-img img,
+  .js .image-expand-grid .ie-img img { transform: none; }
+  .js .contact-commitment { clip-path: none; }
+  .js .contact-commitment img { transform: none; }
+  .js .blog-featured-media { clip-path: none; }
+  .js .blog-featured-media img { transform: none; }
+  .js .vistas-overview-media { clip-path: none; }
+  .js .vistas-overview-media img { transform: none; }
+  .js .values-line { transform: rotate(var(--angle)); }
+  .js .values-spoke-inner { opacity: 1; }
+  .progress-track { animation: none; }
+  .progress-carousel {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}

@@ -1,0 +1,729 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+@font-face { font-family: 'Runalto'; src: url('/fonts/Runalto.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Poppins'; src: url('/fonts/Poppins-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Poppins'; src: url('/fonts/Poppins-SemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+
+:root {
+  --ink: #000;
+  --ink-soft: #080808;
+  --cream: #faf4e6;
+  --sand: #ecd09e;
+  --olive: #ecd09e;
+  --line: rgba(250, 244, 230, .18);
+  --gradient: linear-gradient(91deg, rgba(250, 244, 230, 1) 0%, rgba(236, 208, 158, 1) 50%);
+  --serif: 'Runalto', serif;
+  --sans: 'Poppins', sans-serif;
+  --mono: 'Poppins', sans-serif;
+}
+
+.hero h1 em, h2 em, .text-link span, .project-meta, .listing > p, .values b, .footer-label { color: var(--sand); }
+.eyebrow span { background: var(--sand); }
+.hero-art { background: #ecd09e; }
+.sun { background: #faf4e6; }
+.arch-back { background: #423928; }
+.arch-front { background: #d6b57b; }
+.art-caption, .scroll-cue { color: #000; }
+.visual-01, .listing-art { background: #ecd09e; }
+.visual-02, .art-2 { background: #faf4e6; }
+.visual-03, .art-3 { background: #705a34; }
+.visual-building { background: rgba(0, 0, 0, .72); }
+.visual-02 .visual-building { background: #a98650; }
+.visual-03 .visual-building { background: #ecd09e; }
+.cta { background: var(--gradient); color: #000; }
+.cta .eyebrow, .cta .eyebrow span { color: #000; background-color: #000; }
+.button-light { background: #000; border-color: #000; color: var(--cream); }
+.button-light:hover { background: transparent; color: #000; }
+
+/* .cookie-banner sets its own `display: flex`, which (author CSS)
+   overrides the `[hidden]` attribute's implicit `display: none` — so
+   once dismissed it stays a fully laid-out, fully clickable, just
+   invisible (opacity: 0) rectangle sitting over whatever's beneath it,
+   forever. Make it click-through except while actually shown. */
+.cookie-banner { pointer-events: none; }
+.cookie-banner.is-visible { pointer-events: auto; }
+
+/* The fixed cookie-consent banner (bottom-right, full-width on mobile)
+   sits on top of whatever's at the true bottom of the page — including
+   the footer's copyright/legal row, which is otherwise unreachable
+   behind it until dismissed. Reserve clearance only while it's shown. */
+.footer-bottom { transition: padding-bottom var(--dur-fast) var(--ease-out); }
+.footer-bottom.has-cookie-notice { padding-bottom: 220px; }
+@media (max-width: 640px) { .footer-bottom.has-cookie-notice { padding-bottom: 280px; } }
+
+/* Achyutha project experience — day-to-night architectural scene.
+   Full-bleed and immersive by design, no site chrome over the pinned
+   hero; the nav is reintroduced (via the .ac-nav-visible class, toggled
+   from achyutha-experience.tsx's own ScrollTrigger) once the second
+   section (.ac-tallest) starts coming into view, and hides again if the
+   user scrolls back up into the hero. Kept as opacity/pointer-events
+   (not display:none) so it can transition in smoothly instead of
+   popping. */
+body:has(.ac-experience) #site-header { opacity: 0; pointer-events: none; transition: opacity var(--dur-med, .4s) var(--ease-out, ease); }
+body:has(.ac-experience) #site-header.ac-nav-visible { opacity: 1; pointer-events: auto; }
+/* Achyutha wordmark, shown beside the main crest logo only on this
+   project's own page — same body:has(.ac-experience) scoping as the
+   nav-visibility rule above, since #site-header is a single global
+   component shared by every page on the site. */
+.nav-logo-achyutha { display: none; position: relative; margin-left: var(--space-4, 16px); padding-left: var(--space-4, 16px); }
+body:has(.ac-experience) .nav-logo-achyutha { display: flex; align-items: center; }
+.nav-logo-achyutha::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 1px; height: 28px; background: rgba(250,244,230,.28); }
+.nav-logo-achyutha img { height: 26px; width: auto; transition: height var(--dur-fast, .25s) var(--ease-out, ease); }
+#site-header.is-solid .nav-logo-achyutha img { height: 34px; }
+/* No overflow:hidden here — an ancestor with any overflow other than
+   visible breaks position:sticky for descendants (this is what was
+   silently defeating .ac-sticky's pin: the scene scrolled by at 1:1
+   instead of staying pinned while day faded to night). .ac-sticky
+   already clips its own oversized image layers with its own
+   overflow:hidden, so nothing here relied on this. */
+.ac-experience { background: #00000000; color: var(--cream); font-family: var(--sans); }
+/* The generic `section { padding-block: var(--section-pad) }` base rule
+   (layout-v4.css) would otherwise sit this pinned full-bleed scene
+   ~112px below the true top of the page — same fix as
+   .editorial-radial-section already needed for the same reason. */
+.ac-scene { height: 300vh; position: relative; padding-block: 0; }
+.ac-sticky { position: sticky; top: 0; height: 100vh; min-height: 560px; overflow: hidden; isolation: isolate; background: #ecd09e; }
+/* base-v4.css resets every img/picture/video/svg to max-width:100% —
+   without overriding it here, that clamps this 110%-wide layer back
+   down to 100%, leaving exactly the missing 10% as a gap (visible as
+   the .ac-sticky background peeking through on the right edge). */
+.ac-layer { position: absolute; inset: -5%; width: 110%; max-width: none; height: 110%; object-fit: cover; object-position: center; will-change: transform, opacity; pointer-events: none; }
+.ac-sky--night, .ac-building--night, .ac-cloud--night { opacity: 0; }
+/* object-position:center previously cropped evenly off the top AND
+   bottom of the elevation cutout — anchoring to the bottom instead
+   means any crop comes off the (less important) sky/roof side, and the
+   building's own base/ground line always stays fully in frame. */
+.ac-building { inset: -3%; width: 106%; height: 106%; object-position: center bottom; }
+.ac-cloud { inset: auto -5% 19%; width: min(62vw, 900px); height: auto; max-width: none; filter: drop-shadow(0 12px 18px rgba(0,0,0,.08)); }
+.ac-cloud--day { top: 3%; right: 3%; bottom: auto; left: auto; width: min(16vw, 240px); }
+.ac-cloud--night { right: -7%; width: 85%; bottom: 1%; mix-blend-mode: screen; filter: opacity(.48); }
+/* Bottom fade strengthened (was .38 max, now goes to full black) so the
+   pinned scene visually resolves into .ac-tallest's solid black instead
+   of handing off with a visible brightness seam at the section edge. */
+.ac-sticky::after { content: ''; position: absolute; z-index: 4; inset: 0; pointer-events: none; background: linear-gradient(90deg,rgba(0,0,0,.43),transparent 48%),linear-gradient(0deg,#000 0%,transparent 32%); }
+/* Centered brandmark, sitting in the open sky between the left-hand
+   copy and the tower — small "Velumuri" wordmark over a large
+   "ACHYUTHA" mark, each line masked and reveal-animated on load. */
+.ac-brandmark { position: absolute; left: clamp(22px, 5vw, 74px); top: 32%; transform: translateY(-50%); text-align: left; pointer-events: none; }
+.ac-brandmark-mask { display: block; overflow: hidden; }
+.ac-brandmark-line { display: block; }
+.ac-brandmark-small { font-family: var(--font-primary); font-size: clamp(12px, 1.5vw, 17px); font-weight: 500; letter-spacing: .4em; text-transform: uppercase; color: #fff; margin-bottom: clamp(8px, 1.2vw, 16px); text-align: left; }
+.ac-brandmark-big { font-family: var(--serif); font-size: clamp(64px, 14vw, 230px); font-weight: 400; letter-spacing: .04em; text-transform: uppercase; line-height: 1; color: rgba(255,255,255,.94); text-shadow: 0 8px 40px rgba(0,0,0,.35); text-align: left; }
+/* Hidden for now — the centered .ac-brandmark carries the hero's copy
+   instead. Left in place (not deleted) so it's easy to bring back. */
+.ac-copy { display: none; position: absolute; z-index: 6; left: clamp(22px,5vw,74px); top: 50%; max-width: 600px; transform: translateY(-48%); }.ac-eyebrow { margin: 0 0 19px; color: var(--cream); font-size: 10px; letter-spacing: .29em; text-transform: uppercase; }
+.ac-copy h1 { margin: 0; max-width: 570px; font-family: var(--serif); font-size: clamp(50px,7.2vw,116px); font-weight: 400; line-height: .9; letter-spacing: -.035em; text-wrap: balance; }.ac-copy > p:last-child { margin: 25px 0 0; max-width: 380px; color: rgba(255,255,255,.9); font-size: 14px; line-height: 1.75; }
+/* Gold-gradient heading text, applied at the FoldText leaf
+   (.fold-text-piece) rather than on the heading element itself: this
+   same gradient+background-clip:text+color:transparent, set on an
+   ancestor of FoldText's nested per-word/char structure, visibly
+   breaks in Chromium the moment that heading's text wraps onto a
+   second line. Applying it per-piece sidesteps that regardless of
+   whether a given heading happens to wrap (see the same pattern on
+   .ac-cards-eyebrow-block/.ac-cards-stage-label/.ac-highlight-label/
+   .ac-amenity-label below). */
+.ac-copy h1 .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* A flat #000 here read as a dead, featureless void under the hero's
+   fade-to-black — a soft grayscale gradient (still reads as "black")
+   gives it some depth instead. It's also load-bearing now: .ac-tallest
+   sits in front of (higher z-index than) .ac-highlights, which is
+   pulled up underneath it by a full viewport height so the next
+   section overlaps and stays pinned there while this one scrolls up
+   and off over it — an opaque background is what makes that curtain
+   effect actually cover what's beneath instead of showing through.
+   Bottom padding trimmed well below the top/side padding since the
+   overlapping section beneath now supplies its own visual weight
+   immediately after — the old symmetric padding just left a dead gap. */
+/* The flat gradient background stays as a static fallback (visible only
+   if the WebGL canvas fails to mount) — .ac-tallest-silk paints a full-
+   bleed animated backdrop over it. No z-index needed: it's the first
+   child with no explicit z-index, so it paints behind .ac-tallest-outline
+   and .ac-tallest-copy (the latter has z-index:2) by DOM order alone. */
+/* min-height raised from 100vh so this section takes noticeably more
+   scroll distance to pass through (it was flying by too fast) — same
+   parallax/reveal tweens, just more room for them to play out in.
+   display was flex with inert grid-column props on both children left
+   over from an earlier grid layout (silently ignored, so image/text
+   ended up sized independently rather than as a true 50/50 split) —
+   restoring display:grid here reactivates those and gives both sides
+   equal width. */
+.ac-tallest { position: relative; z-index: 2; min-height: 145vh; padding: clamp(70px,12vw,150px) 8vw clamp(24px,6vw,60px); background: linear-gradient(180deg, #000 0%, #1c1c1c 45%, #000 100%); display: flex; align-items: center; gap: clamp(32px,5vw,72px); overflow: hidden; }
+.ac-tallest-silk { position: absolute; inset: 0; }
+/* order:2 keeps the image on the right despite being first in the DOM
+   (the copy block below is order:1) — equal-width columns via
+   flex:1 1 0 (a zero basis so both sides grow to share the row
+   equally) rather than grid-column, now that the parent is flex. */
+.ac-tallest-outline { position: relative; display: flex; order: 2; flex: 1 1 0; max-width: 520px; aspect-ratio: 3/4; max-height: 620px; margin-inline: auto; overflow: hidden; border-radius: 16px; }
+.ac-tallest-sky, .ac-tallest-building, .ac-tallest-cloud { position: absolute; }
+.ac-tallest-sky, .ac-tallest-cloud { filter: grayscale(1) contrast(1.3) brightness(.6); }
+.ac-tallest-sky, .ac-tallest-building { inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* Same wide-establishing-shot framing as the hero — the tower sits in
+   the right half of day_elevation.png, so bias the crop that way
+   instead of centering on the empty sky to its left. */
+.ac-tallest-building { z-index: 1; object-position: 80% 50%; }
+.ac-tallest-cloud { top: 4%; right: -12%; width: 42%; height: auto; opacity: .5; z-index: 1; }
+.ac-tallest-copy { position: relative; z-index: 2; display: flex; flex-direction: column; order: 1; flex: 1 1 0; max-width: 520px; margin-inline: auto; }
+.ac-tallest-copy .ac-eyebrow { margin: 0 0 19px; color: var(--cream); font-size: 10px; letter-spacing: .29em; text-transform: uppercase; }
+.ac-tallest-copy h2 { margin: 0 0 22px; font-family: var(--serif); font-size: clamp(40px,4.8vw,84px); font-weight: 400; line-height: .96; letter-spacing: -.03em; color: var(--cream); }
+.ac-tallest-copy p { margin: 0; max-width: 420px; color: rgba(250,244,230,.72); font-size: 15px; line-height: 1.8; }
+/* Headline + body copy are split into per-word spans and start dim gray;
+   a scroll-scrubbed GSAP tween lights each one up to white/cream in
+   sequence as the section scrolls through view (see
+   achyutha-experience.tsx). The direct color declaration here wins over
+   the inherited h2/p colors above regardless of specificity. */
+.ac-tallest-copy .ac-word { color: rgba(250,244,230,.3); }
+/* Headline is a FoldText (see achyutha-experience.tsx), split into its
+   two source lines ("Rajahmundry's" / "Tallest Building.") via
+   splitBy="line" — each is meant to run past its own narrow copy column
+   as a single line (nothing sits to the heading's right at that
+   height), so nowrap keeps it from wrapping onto a second line inside
+   its own line-box, same reasoning the old masked-line version needed. */
+.ac-tallest-copy h2 .fold-text-line { white-space: nowrap; }
+.ac-tallest-copy h2 .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* Project stats — 2x2 grid, reference: a gold diagonal accent line
+   crossing a stat-number/label grid. Approximated here with a rotated
+   gradient line + a small glowing dot rather than a full SVG replica. */
+.ac-tallest-stats { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 30px 44px; max-width: 420px; margin-top: 40px; padding-top: 34px; border-top: 1px solid rgba(250,244,230,.14); }
+/* .ac-tallest-stats::before { content: ''; position: absolute; top: -16%; left: 48%; width: 1px; height: 132%; background: linear-gradient(180deg, transparent, rgba(236,208,158,.45), transparent); transform: rotate(18deg); pointer-events: none; } */
+/* .ac-tallest-stats::after { content: ''; position: absolute; top: 40%; left: 47%; width: 6px; height: 6px; border-radius: 50%; background: var(--sand); box-shadow: 0 0 0 5px rgba(236,208,158,.14), 0 0 14px rgba(236,208,158,.5); pointer-events: none; } */
+.ac-tallest-stat { display: flex; flex-direction: column; gap: 6px; }
+.ac-tallest-stat-value { font-family: var(--serif); font-size: clamp(24px,2vw,36px); font-weight: 400; line-height: 1.05; color: var(--cream); }
+.ac-tallest-stat-label { font-family: var(--sans); font-size: 11px; letter-spacing: .06em; color: rgba(250,244,230,.6); }
+/* Two-point highlight reel — a scroll-scrubbed crossfade between two
+   full-bleed images stands in for the reference video's flat
+   background-color swap, pinned for the length of the transition;
+   the list on top switches its active label at the halfway mark.
+   Pulled up a full viewport height underneath .ac-tallest (negative
+   margin) with a lower z-index, so its own sticky inner div locks into
+   place *before* .ac-tallest has finished scrolling past — .ac-tallest
+   scrolls up and off over it like a curtain lifting, rather than the
+   two sections simply handing off edge-to-edge. A sticky child stays
+   pinned for (container height − its own height) of scroll, so the
+   container needs THREE viewports for a TWO-viewport pin duration: one
+   hidden under .ac-tallest during the curtain overlap, one for the
+   crossfade itself (achyutha-experience.tsx sizes that scroll range to
+   match, in real px via window.innerHeight) — no third, held/static
+   beat any more once "Godavari View Point" finishes revealing (that
+   extra full viewport of nothing-happening scroll read as "too much
+   scrolling," so the section now releases right as the crossfade
+   completes instead) — the third viewport here is just what the
+   sticky child's own height "costs" against the pin budget, not a
+   phase of its own. padding-block:0
+   overrides the generic `section { padding-block: var(--section-pad) }`
+   base rule (layout-v4.css) — left in place, that 128px top+bottom ate
+   into the content box (border-box sizing) that the sticky child's pin
+   duration is calculated against (same fix .ac-scene already needed
+   for the same reason). */
+.ac-highlights { position: relative; z-index: 1; margin-top: -100vh; height: 300vh; padding-block: 0; background: #000; }
+.ac-highlights-sticky { position: sticky; top: 0; height: 100vh; min-height: 560px; overflow: hidden; }
+/* .ac-highlight-bg--0 is the permanent base layer (no clip, always
+   fully shown); --1 wipes in over it right-to-left on scroll down via
+   clip-path (set every frame in achyutha-experience.tsx from the
+   section's raw scroll progress — not opacity, so scrolling back up
+   naturally retreats the same wipe left-to-right, the same technique
+   already used for the vertical wipes elsewhere on this page, just
+   rotated to the horizontal axis). No CSS opacity/clip default for
+   --1 beyond the inline style GSAP sets on mount, for the same reason
+   as every other layered reveal on this page: a static default would
+   fight the per-frame clip-path. */
+.ac-highlight-bg { position: absolute; inset: -5%; width: 110%; max-width: none; height: 110%; object-fit: cover; will-change: clip-path; }
+.ac-highlights-sticky::after { content: ''; position: absolute; z-index: 1; inset: 0; pointer-events: none; background: linear-gradient(90deg,rgba(0,0,0,.8) 0%,rgba(0,0,0,.4) 42%,rgba(0,0,0,.08) 68%); }
+.ac-highlights-list { position: relative; z-index: 2; height: 100%; }
+/* Both items occupy the exact same box (position:absolute, inset:0,
+   each centering its own content within it via its own flex column) —
+   only the active one is ever visible or interactive. Previously the
+   inactive item just dimmed to .35 opacity in its own separate slot in
+   a flex column, so both were readable at once; stacking them instead
+   means the inactive item's text is fully gone (opacity 0 *and*
+   pointer-events:none) whenever the other one is active, with no
+   layout gap left behind since there's no second slot to leave empty.
+   The label text itself still gets its own fold-in on top of this (a
+   FoldText in achyutha-experience.tsx, played imperatively the moment
+   .is-active flips), so this transition only has to handle the
+   block-level cross-dissolve between the two stacked items.
+   The list's own padding/max-width used to position this content
+   inset from the edge — but an absolutely-positioned child's inset:0
+   fills its containing block's *padding* box, ignoring that padding
+   entirely (padding only offsets static/relative-flow children), which
+   is why the text ended up flush against the screen edge once the
+   items became absolute. Each item now carries that padding/max-width
+   itself instead. */
+.ac-highlight-item { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 8vw; max-width: 640px; box-sizing: border-box; opacity: 0; pointer-events: none; transform: translateX(-28px); transition: opacity .6s var(--ease-out,ease), transform .6s var(--ease-out,ease); }
+.ac-highlight-item.is-active { opacity: 1; pointer-events: auto; transform: translateX(0); }
+.ac-highlight-head { display: flex; align-items: baseline; gap: 18px; overflow: hidden; }
+.ac-highlight-index { font-family: var(--sans); font-size: 12px; letter-spacing: .22em; color: var(--sand); }
+.ac-highlight-label { margin: 0; font-family: var(--serif); font-size: clamp(30px,4.2vw,58px); font-weight: 400; line-height: 1.05; letter-spacing: -.02em; color: var(--cream); }
+.ac-highlight-label .fold-text-line { white-space: nowrap; }
+.ac-highlight-label .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ac-highlight-copy { margin: 10px 0 0 0; max-width: 380px; color: rgba(250,244,230,.72); font-size: 14px; line-height: 1.75; }
+@media (max-width:700px) {
+  .ac-highlights-sticky { min-height: 520px; }
+  .ac-highlight-item { padding: 0 7vw; max-width: none; transform: translateX(-16px); }
+  .ac-highlight-copy { margin-left: 0; max-width: none; }
+}
+
+/* Open-space intro — a plain centered statement (no background photo:
+   removed at the client's request — a full-bleed image behind image
+   after image read as too busy against its neighbors). A single
+   scroll-past beat, not pinned, ahead of the pinned three-stage
+   sequence below. */
+.ac-podium-intro { padding:0px; position: relative; min-height: 100vh; min-height: 100dvh; overflow: hidden; background: #00000000; }
+.ac-podium-intro-copy { position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; min-height: 100vh; min-height: 100dvh; padding: clamp(90px,10vw,140px) 8vw; }
+.ac-podium-intro-copy p { margin: 0 auto; max-width: 720px; text-align: center; font-family: var(--serif); font-size: clamp(20px,2.4vw,34px); font-weight: 400; line-height: 1.45; color: var(--cream); }
+/* Words start dim and light up to full cream in sequence as the
+   section scrolls through view — the same scroll-scrubbed reveal used
+   for .ac-tallest-copy, layered on top of the block-level fade/lift-in
+   below for a proper two-stage reveal rather than a single flat fade. */
+.ac-podium-intro-copy .ac-word { color: rgba(250,244,230,.32); }
+@media (max-width:700px) { .ac-podium-intro-copy p { max-width: none; font-size: clamp(18px,4.4vw,24px); } }
+
+/* Podium / Clubhouse / Terrace — reference: parallex_effect.mp4. Pinned
+   for three viewport heights (one per stage): a slow-drifting, blurred
+   backdrop layer behind a small sharp-focus card that's pinned beside
+   it and drifts/zooms at its own faster rate — the contrast in depth
+   between those two layers, not any single CSS trick, is what the
+   reference's effect actually is. The card's index/label/copy (a third,
+   near-static layer) swap at each stage's midpoint. Sizing uses the
+   same "container = pin-duration + sticky-height" formula as
+   .ac-highlights (see achyutha-experience.tsx for how the JS scroll
+   range lines up with it). padding-block:0 overrides the generic
+   `section { padding-block: var(--section-pad) }` base rule
+   (layout-v4.css) — left in place, that padding both left a gap above
+   the pinned sticky content and threw off the section's own pin-length
+   math (same fix .ac-scene/.ac-highlights already needed). */
+/* Hidden per explicit request (2026-09) — "for now," not deleted: the
+   section, its GSAP driver, and CSS below are all left fully intact so
+   it's a one-line revert to bring back. Removing it from flow (not
+   just visually) is deliberate too — .ac-cards' own "rise up over the
+   still-fixed .ac-points backdrop" reveal (achyutha-experience.tsx)
+   reads correctly either way, since it's driven by .ac-cards' live
+   position, not a fixed distance from .ac-points. If this section
+   looks hidden again in a future session and nobody remembers doing
+   this on purpose, this comment is that memory — don't "fix" it by
+   deleting the rule without checking first. */
+.ac-amenities { display: none; position: relative; z-index: 2; height: 400vh; padding-block: 0; background: #000; }
+/* Rounded top corners + the yPercent slide-in set from
+   achyutha-experience.tsx (scrubbed as this section's top edge crosses
+   from viewport bottom to viewport top) is what makes this section
+   visibly rise up and over .ac-points' still-fixed backdrop instead of
+   just cutting to its own pinned imagery — z-index:2 on the parent
+   .ac-amenities section already paints this above .ac-points-sticky's
+   z-index:1, so the reveal is really just "this box slides up and its
+   own opaque content covers what was showing through below it." */
+.ac-amenities-sticky { position: sticky; top: 0; height: 100vh; height: 100dvh; min-height: 600px; overflow: hidden; border-radius: clamp(20px,3vw,40px) clamp(20px,3vw,40px) 0 0; }
+/* Visibility is driven entirely by clip-path now (set in
+   achyutha-experience.tsx, scrubbed straight off scroll position each
+   frame) — no CSS opacity default here, since that would just hide
+   layers 1+ underneath whatever clip-path reveals. */
+.ac-amenity-bg { position: absolute; inset: -8% -4%; overflow: hidden; }
+.ac-amenity-bg img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; transform: scale(1.06); }
+.ac-amenities-sticky::after { content: ''; position: absolute; z-index: 1; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.15) 35%, rgba(0,0,0,.5) 100%); }
+/* "+" pointer hover-jump overlay (achyutha-experience.tsx:
+   AMENITY_POINTS/applyAmenitiesProgress) — reuses .ac-point/-label/
+   -line/-dot verbatim from the hotspot explorer section below (that
+   styling was never scoped to .ac-points specifically, just its own
+   :has() hover-swap rules are). Top inset clears the fixed site header,
+   same reasoning as .ac-points-markers. z-index:2 matches .ac-amenity-
+   card so pointers stay visible over the scrim regardless of where
+   they fall relative to the card. */
+.ac-amenity-points { position: absolute; z-index: 2; inset: clamp(90px,12vh,140px) 0 0 0; }
+.ac-amenity-card { position: absolute; z-index: 2; right: 8vw; bottom: 12%; width: min(30vw, 380px); clip-path: inset(0% 0 0 0); }
+.ac-amenity-card-media { position: relative; aspect-ratio: 4/3; border-radius: 14px 14px 0 0; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,.5); }
+/* Each photo reveals with the same bottom-to-top clip-path wipe as
+   .ac-amenity-bg (set in achyutha-experience.tsx, same idx/frac each
+   frame so the two stay in sync) while also scaling/drifting in
+   (scale ~1.1→1, yPercent 6→0, gentler on mobile via matchMedia) as its
+   turn comes up — will-change hints the compositor since this runs
+   every scroll frame while pinned. No CSS opacity default here for the
+   same reason as .ac-amenity-bg: it would just fight the clip-path. */
+.ac-amenity-card-img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; will-change: transform, clip-path; }
+.ac-amenity-card-info { position: relative; padding: 22px 24px 26px; border-radius: 0 0 14px 14px; background: rgba(12,14,10,.82); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border: 1px solid rgba(250,244,230,.1); border-top: 0; }
+.ac-amenity-stage { display: none; }
+.ac-amenity-stage.is-active { display: block; }
+.ac-amenity-index { display: block; margin: 0 0 6px; font-family: var(--serif); font-size: 42px; font-weight: 400; color: var(--cream); line-height: 1; }
+/* Gold gradient (var(--gradient), the same one every other stage/section
+   label on this page uses — .ac-cards-stage-label, .ac-location-heading,
+   etc.) was already wired up here via .fold-text-piece; it likely
+   wasn't visible before because .ac-amenities itself had a stray
+   `display:none` (removed above) hiding the whole section. Size bumped
+   up from clamp(22px,2.4vw,30px) — proportionate to this card's own
+   min(30vw,380px) width, not the much larger full-bleed stage labels
+   elsewhere, which would overflow it. */
+.ac-amenity-label { margin: 0 0 6px; font-family: var(--serif); font-size: clamp(28px,3.2vw,42px); font-weight: 400; color: var(--cream); }
+.ac-amenity-label .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ac-amenity-copy { margin: 0; color: rgba(250,244,230,.75); font-size: 13px; line-height: 1.6; }
+/* Hover doesn't really exist on touch — same call .ac-points-markers
+   makes — and this card layout is already tight below 900px, so the
+   pointers are dropped there rather than cluttering it further. */
+@media (max-width:900px) { .ac-amenities { height: 340vh; } .ac-amenity-points { display: none; } .ac-amenity-card { position: absolute; right: 6vw; left: 6vw; bottom: 8%; width: auto; max-width: 340px; margin-inline: auto; } }
+/* Reduced motion: the pinned three-stage crossfade collapses to a
+   plain static block (no pin, no scroll-driven parallax) with every
+   stage's text stacked and readable — content stays fully reachable
+   instead of two of the three stages being permanently hidden behind
+   a scrub interaction that no longer runs. The pointers make no sense
+   here either — there'd be no scroll-driven state left for them to
+   preview-over-and-restore-back-to. */
+@media (prefers-reduced-motion:reduce) {
+  .ac-amenities { height: auto; }
+  .ac-amenities-sticky { position: static; height: auto; min-height: 0; padding: clamp(60px,10vw,100px) 8vw; }
+  .ac-amenity-points { display: none; }
+  .ac-amenity-card { position: static; margin-left: auto; margin-right: 0; }
+  .ac-amenity-stage { display: block; }
+  .ac-amenity-stage:not(:last-child) { margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid rgba(250,244,230,.12); }
+}
+
+/* The site-wide fixed "scroll down" badge (bottom-left, every page)
+   would otherwise sit right on top of this section's own title/tagline
+   — toggled from achyutha-experience.tsx's own ScrollTrigger for
+   .ac-cards, same body-class-on-a-fixed-global-element pattern as
+   #site-header's own ac-nav-visible toggle above. */
+body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac-location-active #scroll-badge { opacity: 0; pointer-events: none; }
+/* #scroll-badge's own id-selector transition here beats .scroll-badge's
+   class-selector one in components-v4.css regardless of load order (id
+   > class specificity) — repeating that rule's left/bottom/transform/
+   filter list alongside the new opacity is required, not optional: the
+   `transition` shorthand isn't additive, so omitting any of those would
+   silently kill the "glides to the footer's centre" effect that rule
+   already provides via .is-footer. */
+#scroll-badge { transition: opacity var(--dur-med, .4s) var(--ease-out, ease), left var(--dur-med, .4s) var(--ease-out, ease), bottom var(--dur-med, .4s) var(--ease-out, ease), transform var(--dur-med, .4s) var(--ease-out, ease), filter var(--dur-med, .4s) var(--ease-out, ease); }
+
+/* Amenities showcase — reference: amenities.mp4 (full-bleed photo + big
+   serif title/tagline per category, then a text panel with a short
+   divided list slides in as you keep scrolling, crossfading into the
+   next category). Structurally mirrors .ac-amenities above (pinned,
+   scroll-scrubbed clip-path crossfade) but with one image layer instead
+   of a synced backdrop+card pair, and both the title and the panel
+   living in a single .ac-cards-stage per category so reduced-motion can
+   just stack each stage whole. */
+.ac-cards { position: relative; z-index: 2; height: 400vh; padding-block: 0; background: #000; }
+/* Same rise-up-and-over treatment as .ac-amenities-sticky above, over
+   the same still-fixed .ac-points backdrop (visible right through
+   .ac-amenities' own dwell too, since it's toggled for the combined
+   .ac-points→.ac-cards range — see .ac-points-sticky). */
+.ac-cards-sticky { position: sticky; top: 0; height: 100vh; height: 100dvh; min-height: 600px; overflow: hidden; border-radius: clamp(20px,3vw,40px) clamp(20px,3vw,40px) 0 0; }
+
+.ac-cards-eyebrow-block { position: absolute; z-index: 3; left: clamp(22px,5vw,74px); top: clamp(90px,12vh,140px); max-width: 420px; }
+.ac-cards-eyebrow-block h2 { margin: 0; font-family: var(--serif); font-size: clamp(26px,3vw,40px); font-weight: 400; line-height: 1.15; letter-spacing: -.02em; color: var(--cream); }
+.ac-cards-eyebrow-block h2 .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* Each category is one self-contained, stacked unit — photo, scrim,
+   title and panel together — rather than a shared backdrop layer plus
+   separate text overlays. That's what lets the NEXT category's own
+   clip-path wipe (achyutha-experience.tsx) cover everything about the
+   previous one, panel included, in a single motion instead of needing
+   the panel to close/retract first: later stages sit later in the DOM,
+   so at equal z-index the incoming one simply paints over the outgoing
+   one as it wipes up. Visibility/motion is driven entirely by GSAP
+   (opacity/transform/clip-path set every scroll frame) — no CSS
+   transition here, since one firing on top of a value GSAP already
+   interpolates every frame just fights it and reads as lag. .is-active
+   only toggles pointer-events (interaction, not visibility). */
+.ac-cards-stage { position: absolute; z-index: 2; inset: 0; overflow: hidden; pointer-events: none; }
+.ac-cards-stage.is-active { pointer-events: auto; }
+.ac-cards-stage-bg { position: absolute; z-index: 0; inset: -5%; width: 110%; max-width: none; height: 110%; }
+.ac-cards-stage-bg img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; }
+.ac-cards-stage-scrim { position: absolute; z-index: 1; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgba(0,0,0,.75) 0%, rgba(0,0,0,.15) 45%, rgba(0,0,0,.45) 100%); }
+
+.ac-cards-stage-title { position: absolute; z-index: 2; left: clamp(22px,5vw,74px); bottom: clamp(60px,10vh,120px); max-width: 480px; }
+.ac-cards-stage-label { margin: 0 0 8px; font-family: var(--serif); font-size: clamp(48px,7vw,110px); font-weight: 400; line-height: 1; letter-spacing: -.02em; color: var(--cream); }
+.ac-cards-stage-label .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ac-cards-stage-tagline { margin: 0; font-family: var(--sans); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--sand); }
+
+/* Half the screen, not a floating card — the panel's own clip-path is
+   what performs the "photo gives up half the frame" reveal (see the
+   achyutha-experience.tsx comment above): its left edge sweeps from
+   100% (fully collapsed against the right edge) to 0% (full 50% width
+   reached), so the boundary between photo and panel visibly slides
+   right→left rather than the panel just fading in on top of a
+   full-bleed photo. */
+/* Real amenity counts run from 13 (Clubhouse) to 25 (Terrace) — too
+   many for the single-column card-style rows the panel first shipped
+   with, so this is a compact two-column grid with a small dot marker
+   per item instead of a bespoke icon per amenity (workable for 3 items,
+   not for 25), and top-aligned with its own scrollbar as a safety net
+   for shorter viewports rather than assuming everything fits. */
+.ac-cards-stage-panel { position: absolute; z-index: 2; right: 0; top: 0; bottom: 0; width: 50%; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; justify-content: flex-start; gap: 16px; padding: clamp(80px,10vh,120px) clamp(28px,4vw,56px) clamp(40px,6vh,64px); box-sizing: border-box; background: #08090785; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-left: 1px solid rgba(250,244,230,.1); }
+.ac-cards-stage-copy { margin: 0; color: rgba(250,244,230,.8); font-size: 14px; line-height: 1.6; }
+.ac-cards-stage-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; row-gap: 0; align-content: start; }
+/* Each item's own clip-path wipes bottom→top as it reveals (set every
+   scroll frame, staggered across the panel-open window) — not a CSS
+   transition, same reasoning as -title/-panel above. */
+.ac-cards-stage-list li { position: relative; padding: 9px 0 9px 16px; font-family: var(--sans); font-size: 12px; font-weight:100; line-height: 1.4; letter-spacing: .02em; color: rgba(250,244,230,.78); border-top: 1px solid rgba(250,244,230,.12); }
+.ac-cards-stage-list li::before { content: ''; position: absolute; left: 0; top: 16px; width: 5px; height: 5px; border-radius: 50%; background: var(--sand); }
+
+@media (max-width:900px) {
+  .ac-cards { height: 350vh; }
+  .ac-cards-stage-panel { width: 58%; padding-left: clamp(20px,3vw,32px); padding-right: clamp(20px,3vw,32px); }
+  .ac-cards-stage-label { font-size: clamp(38px,10vw,64px); }
+  .ac-cards-stage-list { grid-template-columns: 1fr; }
+}
+@media (max-width:700px) {
+  .ac-cards-eyebrow-block { max-width: calc(100% - 44px); }
+  .ac-cards-stage-title { right: 6vw; max-width: none; }
+  .ac-cards-stage-panel { position: static; width: auto; margin-top: 46vh; height: auto; min-height: 40vh; border-left: 0; border-top: 1px solid rgba(250,244,230,.1); }
+}
+
+/* Reduced motion: the pinned three-stage crossfade collapses to a plain
+   static block (no pin, no scroll-driven parallax) with every stage
+   stacked and readable — same treatment as .ac-amenities above. */
+@media (prefers-reduced-motion:reduce) {
+  .ac-cards { height: auto; }
+  .ac-cards-sticky { position: static; height: auto; min-height: 0; padding: clamp(60px,10vw,100px) 8vw; }
+  .ac-cards-eyebrow-block { position: static; margin: 0 0 clamp(40px,6vw,64px); max-width: 720px; }
+  .ac-cards-stage { position: static; overflow: visible; pointer-events: auto; display: flex; flex-wrap: wrap; gap: 24px; }
+  .ac-cards-stage:not(:last-child) { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid rgba(250,244,230,.12); }
+  /* The full-bleed photo/scrim only make sense as a pinned backdrop —
+     dropped entirely here in favor of plain readable text, same call
+     .ac-amenities' own reduced-motion fallback makes above. */
+  .ac-cards-stage-bg, .ac-cards-stage-scrim { display: none; }
+  .ac-cards-stage-title, .ac-cards-stage-panel { position: static; width: auto; flex: 1 1 260px; background: none; backdrop-filter: none; border: 0; padding: 0; }
+  .ac-cards-stage-label { font-size: clamp(30px,4vw,48px);}
+}
+
+/* Hotspot explorer — reference: a labelled-pointer photo (dot + leader
+   line rising to a name) where hovering a marker swaps the background
+   photo and copy to that category. Same three categories/photos/copy
+   as .ac-amenities/.ac-cards above (CARDS_STAGES) — the hover swap
+   itself is pure CSS (:has(), same technique as body:has(.ac-experience)
+   near the top of this file), since it's just a three-way toggle; only
+   the markers' one-shot scroll-in entrance is GSAP
+   (achyutha-experience.tsx). */
+.ac-points { position: relative; z-index: 2; height: 220vh; padding-block: 0; background: #000; }
+/* Plain position:sticky by default — same as .ac-amenities-sticky/
+   .ac-cards-sticky — so it reveals gradually and exactly in sync with
+   scroll as .ac-points enters (the natural sticky behavior: in normal
+   flow, sitting at this container's own top, until "stuck"), with zero
+   black gap and without ever popping over whatever section precedes it
+   early. A position:fixed backdrop can't do that — being always either
+   fully covering the viewport or not, it has no "partially scrolled
+   in" state, which is exactly what produced both those bugs when this
+   was fixed from the start (visible black before the fade-in fired, OR
+   — if the fade-in trigger was moved earlier to hide the black — an
+   abrupt full-screen pop over the still-visible previous section).
+   .is-frozen (added right as this container's own natural un-stick
+   point is reached — achyutha-experience.tsx, trigger:'.ac-points',
+   start:'bottom bottom') switches it to position:fixed at exactly the
+   moment sticky would already have it sitting at top:0 full-screen —
+   an invisible hand-off, not a jump — so it keeps showing that same
+   frame instead of actually scrolling away, for .ac-amenities/.ac-cards
+   to then rise up and over per their own -sticky rules below. z-index:1
+   stays below their z-index:2 throughout. */
+.ac-points-sticky { position: sticky; top: 0; height: 100vh; height: 100dvh; min-height: 600px; overflow: hidden; z-index: 1; }
+.ac-points-sticky.is-frozen { position: fixed; left: 0; right: 0; }
+
+/* Always opacity:1 — this is the permanent base layer every
+   .ac-points-bg below reveals over on hover, not something toggled
+   itself, so it never needs to react to :has() the way they do. */
+.ac-points-default-bg { position: absolute; inset: -5%; }
+.ac-points-default-bg img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; }
+.ac-points-stage { position: absolute; inset: 0; }
+.ac-points-bg { position: absolute; inset: -5%; opacity: 0; transition: opacity .7s ease; }
+.ac-points-bg img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; }
+.ac-points-scrim { position: absolute; z-index: 1; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(0,0,0,.6) 0%, rgba(0,0,0,.05) 30%, rgba(0,0,0,.55) 100%); }
+
+.ac-points-copy { position: absolute; z-index: 3; left: clamp(22px,5vw,74px); bottom: clamp(40px,8vh,90px); max-width: 420px; opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+.ac-points-copy-label { margin: 0 0 8px; font-family: var(--serif); font-size: clamp(24px,2.6vw,34px); font-weight: 400; color: var(--cream); }
+.ac-points-copy-text { margin: 0; color: rgba(250,244,230,.78); font-size: 13px; line-height: 1.6; }
+
+/* No default-active category any more — at rest, .ac-points-default-bg
+   (achyutha-experience.tsx) shows the plain elevation shot with no
+   category copy over it (attaching Podium's own label/copy to a
+   generic full-building photo by default would misrepresent it as
+   Podium specifically). Hovering any marker reveals that stage's own
+   photo (over the default backdrop, painted below) and copy together;
+   .ac-points-copy's own base rule already defaults every stage to
+   opacity:0, so nothing extra is needed for the resting state here —
+   only the per-category :has() rules below, one pair per pointer. */
+.ac-points-sticky:has(.ac-point--podium:hover, .ac-point--podium:focus-visible) .ac-points-stage--podium .ac-points-bg,
+.ac-points-sticky:has(.ac-point--podium:hover, .ac-point--podium:focus-visible) .ac-points-stage--podium .ac-points-copy { opacity: 1; }
+.ac-points-sticky:has(.ac-point--podium:hover, .ac-point--podium:focus-visible) .ac-points-stage--podium .ac-points-copy { transform: translateY(0); }
+
+.ac-points-sticky:has(.ac-point--clubhouse:hover, .ac-point--clubhouse:focus-visible) .ac-points-stage--clubhouse .ac-points-bg,
+.ac-points-sticky:has(.ac-point--clubhouse:hover, .ac-point--clubhouse:focus-visible) .ac-points-stage--clubhouse .ac-points-copy { opacity: 1; }
+.ac-points-sticky:has(.ac-point--clubhouse:hover, .ac-point--clubhouse:focus-visible) .ac-points-stage--clubhouse .ac-points-copy { transform: translateY(0); }
+
+.ac-points-sticky:has(.ac-point--terrace:hover, .ac-point--terrace:focus-visible) .ac-points-stage--terrace .ac-points-bg,
+.ac-points-sticky:has(.ac-point--terrace:hover, .ac-point--terrace:focus-visible) .ac-points-stage--terrace .ac-points-copy { opacity: 1; }
+.ac-points-sticky:has(.ac-point--terrace:hover, .ac-point--terrace:focus-visible) .ac-points-stage--terrace .ac-points-copy { transform: translateY(0); }
+
+.ac-points-sticky:has(.ac-point--commercial:hover, .ac-point--commercial:focus-visible) .ac-points-stage--commercial .ac-points-bg,
+.ac-points-sticky:has(.ac-point--commercial:hover, .ac-point--commercial:focus-visible) .ac-points-stage--commercial .ac-points-copy { opacity: 1; }
+.ac-points-sticky:has(.ac-point--commercial:hover, .ac-point--commercial:focus-visible) .ac-points-stage--commercial .ac-points-copy { transform: translateY(0); }
+
+.ac-points-sticky:has(.ac-point--residential:hover, .ac-point--residential:focus-visible) .ac-points-stage--residential .ac-points-bg,
+.ac-points-sticky:has(.ac-point--residential:hover, .ac-point--residential:focus-visible) .ac-points-stage--residential .ac-points-copy { opacity: 1; }
+.ac-points-sticky:has(.ac-point--residential:hover, .ac-point--residential:focus-visible) .ac-points-stage--residential .ac-points-copy { transform: translateY(0); }
+
+.ac-points-eyebrow { position: absolute; z-index: 3; left: clamp(22px,5vw,74px); top: clamp(28px,5vh,48px); margin: 0; font-family: var(--sans); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--sand); }
+
+/* Each marker's own height (set inline per-marker in
+   achyutha-experience.tsx, from POINT_POSITIONS) is what makes the
+   leader line run from the label down to that marker's actual dot
+   position on the photo — label at the button's top, line filling the
+   space between, dot pinned to the button's bottom edge. */
+/* Top-inset clears the fixed site header — same clamp() the header
+   itself is cleared by everywhere else on this page
+   (.ac-cards-eyebrow-block, .ac-tallest-stat, etc.) — without it the
+   marker labels (anchored to this container's own top edge) render
+   right underneath the header and are unreadable against it. */
+.ac-points-markers { position: absolute; z-index: 2; inset: clamp(90px,12vh,140px) 0 0 0; }
+.ac-point { position: absolute; top: 0; display: flex; flex-direction: column; align-items: center; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ac-point-label { white-space: nowrap; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--cream); text-shadow: 0 1px 8px rgba(0,0,0,.65); transition: color .3s ease; }
+.ac-point-line { flex: 1 1 auto; width: 1px; margin: 8px 0; background: rgba(250,244,230,.5); }
+.ac-point-dot { position: relative; flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(250,244,230,.7); background-color: rgba(10,10,8,.5); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); transform: translateY(50%); transition: transform .3s ease, background-color .3s ease, border-color .3s ease; }
+.ac-point-dot::before, .ac-point-dot::after { content: ''; position: absolute; top: 50%; left: 50%; background: var(--cream); transition: background-color .3s ease; }
+.ac-point-dot::before { width: 10px; height: 1px; transform: translate(-50%,-50%); }
+.ac-point-dot::after { width: 1px; height: 10px; transform: translate(-50%,-50%); }
+.ac-point:hover .ac-point-label, .ac-point:focus-visible .ac-point-label { color: var(--sand); }
+.ac-point:hover .ac-point-dot, .ac-point:focus-visible .ac-point-dot { transform: translateY(50%) scale(1.15); background-color: rgba(191,164,111,.85); border-color: var(--sand); }
+
+/* Below 900px the hover mechanic (and the markers that drive it) is
+   dropped in favor of every stage's photo + copy simply always
+   visible, stacked — same "hover doesn't really exist on touch" call
+   .ac-cards-track's/-stage's own mobile fallbacks make elsewhere. */
+@media (max-width:900px) {
+  .ac-points { height: auto; }
+  .ac-points-sticky { position: static; height: auto; min-height: 0; overflow: visible; padding: clamp(60px,10vw,100px) 8vw; display: flex; flex-direction: column; gap: 32px; }
+  .ac-points-default-bg, .ac-points-eyebrow, .ac-points-scrim, .ac-points-markers { display: none; }
+  .ac-points-stage { position: static; display: flex; flex-direction: column; gap: 14px; }
+  .ac-points-bg { position: relative; inset: auto; opacity: 1; aspect-ratio: 4/3; border-radius: 12px; overflow: hidden; }
+  .ac-points-copy { position: static; opacity: 1; transform: none; max-width: none; }
+}
+
+/* Reduced motion: same call as .ac-amenities/.ac-cards above — no pin,
+   no scroll-driven entrance, every stage's photo and copy simply
+   visible and stacked so nothing here depends on hover or scroll. */
+@media (prefers-reduced-motion:reduce) {
+  .ac-points { height: auto; }
+  .ac-points-sticky { position: static; height: auto; min-height: 0; overflow: visible; padding: clamp(60px,10vw,100px) 8vw; display: flex; flex-direction: column; gap: 32px; }
+  .ac-points-default-bg, .ac-points-eyebrow, .ac-points-scrim, .ac-points-markers { display: none; }
+  .ac-points-stage { position: static; display: flex; flex-direction: column; gap: 14px; }
+  .ac-points-bg { position: relative; inset: auto; opacity: 1; aspect-ratio: 4/3; border-radius: 12px; overflow: hidden; }
+  .ac-points-copy { position: static; opacity: 1; transform: none; max-width: none; }
+}
+
+/* Location — full-bleed photo (not the 3D map at components/location-3d,
+   a separate, heavier experience — this is a lighter, always-available
+   alternative): heading vertically centered left, pill filter
+   bottom-left, location list in a glass card vertically centered
+   right. Not pinned/scrubbed like the sections above: the pill filter
+   is a live click interaction, not a scroll choreography, so this is
+   just a normal flowing full-bleed section with a one-shot entrance
+   (achyutha-experience.tsx). */
+.ac-location { position: relative; z-index: 2; min-height: 100vh; min-height: 100dvh; overflow: hidden; background: #000; padding: 0; }
+.ac-location-bg { position: absolute; z-index: 0; inset: 0; }
+.ac-location-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ac-location-scrim { position: absolute; z-index: 1; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(0,0,0,.6) 0%, rgba(0,0,0,.1) 30%, rgba(0,0,0,.15) 60%, rgba(0,0,0,.75) 100%); }
+
+/* Plain relative box, full section height — heading/pills/card below
+   are positioned absolutely within it instead of flexed, since each
+   sits at its own independent edge/center rather than in one flow
+   (same "positioned overlays on a full-bleed backdrop" approach as
+   .ac-cards-eyebrow-block/.ac-cards-stage-panel above). */
+.ac-location-inner { position: relative; z-index: 2; min-height: 100vh; min-height: 100dvh; box-sizing: border-box; }
+
+.ac-location-heading-block { position: absolute; z-index: 2; left: clamp(22px,5vw,74px); top: 50%; transform: translateY(-50%); max-width: 480px; }
+.ac-location-heading { margin: 12px 0 0; font-family: var(--serif); font-size: clamp(32px,4vw,56px); font-weight: 400; line-height: 1.1; letter-spacing: -.02em; color: var(--cream); }
+.ac-location-heading .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.ac-location-pills { position: absolute; z-index: 2; left: clamp(22px,5vw,74px); bottom: clamp(40px,6vh,64px); display: flex; flex-wrap: wrap; gap: 10px; max-width: 420px; }
+.ac-location-pill { padding: 10px 20px; border-radius: 999px; border: 1px solid rgba(250,244,230,.28); background: rgba(10,10,8,.35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: rgba(250,244,230,.75); font-family: var(--sans); font-size: 12px; letter-spacing: .04em; cursor: pointer; transition: background-color .3s ease, border-color .3s ease, color .3s ease; }
+.ac-location-pill:hover { border-color: rgba(250,244,230,.5); color: var(--cream); }
+.ac-location-pill.is-active { background: var(--gradient); border-color: transparent; color: #1a1408; }
+
+/* Same light glass as .ac-location-pill above (not the heavier,
+   near-opaque .ac-cards-stage-panel/.ac-amenity-card-info glass used
+   elsewhere) — this sits over open sky/greenery in the photo, not
+   another photo layer, so a lighter blur keeps the backdrop legible
+   through it. */
+.ac-location-card { position: absolute; z-index: 2; right: clamp(22px,5vw,74px); top: 50%; transform: translateY(-50%); width: min(400px, 100%); max-height: min(56vh, 460px); overflow-y: auto; padding: clamp(20px,2.6vw,28px); border-radius: 18px; background: rgba(10,10,8,.35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border: 1px solid rgba(250,244,230,.28); box-shadow: 0 24px 60px rgba(0,0,0,.4); box-sizing: border-box; }
+
+.ac-location-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.ac-location-list-item { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 14px 0; border-top: 1px solid rgba(250,244,230,.16); }
+.ac-location-list-item:first-child { border-top: 0; padding-top: 0; }
+.ac-location-list-name { font-family: var(--serif); font-size: clamp(15px,1.4vw,18px); color: var(--cream); }
+.ac-location-list-meta { flex-shrink: 0; font-family: var(--sans); font-size: 11px; letter-spacing: .04em; color: var(--sand); white-space: nowrap; }
+
+/* Below 900px there isn't room for three independently-positioned
+   overlays without collision — same call as everywhere else on this
+   page: drop the positioned-overlay treatment for a plain stacked
+   flow, in DOM order (heading, pills, card). */
+@media (max-width:900px) {
+  .ac-location-inner { display: flex; flex-direction: column; gap: 24px; padding: clamp(70px,14vw,100px) clamp(22px,5vw,54px) clamp(40px,8vw,64px); }
+  .ac-location-heading-block, .ac-location-pills, .ac-location-card { position: static; transform: none; max-width: none; width: 100%; }
+}
+
+/* Floor plans — placeholder-level (achyutha-experience.tsx:
+   FLOOR_PLAN_TYPES has the full reasoning): a plain centered section,
+   not pinned/full-bleed like the sections above, since there's no
+   photo here to be full-bleed — .ac-floorplans-mask is a purely
+   abstract CSS blueprint-style grid, not a real (or borrowed) floor
+   plan, with a plain glass "ask us" card over it per plan type. */
+.ac-floorplans { position: relative; z-index: 2; background: #00000000; padding: clamp(90px,12vw,140px) 0; }
+.ac-floorplans-inner { max-width: 900px; margin: 0 auto; padding: 0 clamp(22px,5vw,74px); text-align: center; }
+.ac-floorplans-heading { margin: 12px 0 clamp(32px,5vw,56px); font-family: var(--serif); font-size: clamp(32px,4vw,56px); font-weight: 400; line-height: 1.1; letter-spacing: -.02em; color: var(--cream); }
+.ac-floorplans-heading .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.ac-floorplans-tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: clamp(28px,4vw,40px); }
+.ac-floorplans-tab { padding: 10px 24px; border-radius: 999px; border: 1px solid rgba(250,244,230,.22); background: transparent; color: rgba(250,244,230,.65); font-family: var(--sans); font-size: 12px; letter-spacing: .04em; cursor: pointer; transition: background-color .3s ease, border-color .3s ease, color .3s ease; }
+.ac-floorplans-tab:hover { border-color: rgba(250,244,230,.45); color: var(--cream); }
+.ac-floorplans-tab.is-active { background: var(--gradient); border-color: transparent; color: #1a1408; }
+
+/* The "mask" — a plain graph-paper-style grid plus a soft gold-to-black
+   wash, blurred just enough to read as an abstract sketch rather than
+   a flat pattern. Never anything to unblur into (no real image behind
+   it), which is the point: this is a placeholder standing in for
+   content that doesn't exist yet, not real content hidden from view. */
+.ac-floorplans-card { position: relative; aspect-ratio: 4/3; max-width: 720px; margin: 0 auto; border-radius: 20px; overflow: hidden; border: 1px solid rgba(250,244,230,.14); background: #0a0a08; }
+.ac-floorplans-mask { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(250,244,230,.07) 0 1px, transparent 1px 42px), repeating-linear-gradient(90deg, rgba(250,244,230,.07) 0 1px, transparent 1px 42px), linear-gradient(135deg, rgba(191,164,111,.14), rgba(0,0,0,.45)); filter: blur(3px); }
+.ac-floorplans-overlay { position: relative; z-index: 1; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: clamp(24px,4vw,40px); text-align: center; background: rgba(8,9,7,.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.ac-floorplans-tag { margin: 0; font-family: var(--sans); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--sand); }
+.ac-floorplans-plan-label { margin: 0; font-family: var(--serif); font-size: clamp(28px,3.4vw,40px); font-weight: 400; color: var(--cream); }
+.ac-floorplans-text { margin: 0; max-width: 380px; color: rgba(250,244,230,.72); font-size: 13px; line-height: 1.6; }
+.ac-floorplans-cta { margin-top: 8px; padding: 12px 28px; border-radius: 999px; background: var(--gradient); color: #1a1408; font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-decoration: none; transition: opacity .3s ease; }
+.ac-floorplans-cta:hover { opacity: .85; }
+
+@media (max-width:700px) {
+  .ac-floorplans-card { aspect-ratio: 3/4; }
+}
+
+/* Closing gallery strip — a plain static grid (the previous marquee +
+   hover/tap "wave" expand interaction has been removed at the client's
+   request, pending a new design: no auto-scroll, no per-card JS-driven
+   expand, captions always visible). COMMUNITY_CARDS (achyutha-experience.tsx)
+   is kept as-is for whenever this slots back in elsewhere. */
+.ac-cards-track-wrap { padding: 0 8vw; }
+.ac-cards-track { display: flex; flex-wrap: wrap; align-items: stretch; justify-content: center; gap: clamp(14px,1.6vw,22px); width: auto; margin: 0; padding: 0; list-style: none; }
+.ac-card { position: relative; flex: 0 1 220px; height: clamp(320px,32vw,440px); overflow: hidden; border-radius: 16px; }
+.ac-card-img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; }
+.ac-card-scrim { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,.88) 0%, rgba(0,0,0,.35) 45%, transparent 75%); }
+.ac-card-body { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 16px; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.ac-card-title { margin: 0; max-width: 220px; font-family: var(--serif); font-size: clamp(17px,1.7vw,23px); font-weight: 400; line-height: 1.1; color: var(--cream); white-space: normal; }
+.ac-card-cta { padding: 9px 18px; border: 1px solid rgba(250,244,230,.5); border-radius: 999px; color: var(--cream); font-family: var(--sans); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; text-decoration: none; white-space: nowrap; transition: background .3s ease, color .3s ease; }
+.ac-card-cta:hover, .ac-card-cta:focus-visible { background: var(--cream); color: #000; }
+@media (max-width:700px) {
+  .ac-cards-track-wrap { padding: 0 7vw; }
+  .ac-cards-track { gap: 10px; }
+  .ac-card { flex-basis: 100%; height: 300px; }
+}
+
+.ac-after { position: relative; z-index: 2; padding: clamp(70px,12vw,150px) 8vw; background: #000; display: grid; grid-template-columns: 1fr minmax(230px,460px); gap: 8vw; }.ac-after p { margin: 0; color: var(--sand); letter-spacing: .2em; font-size: 11px; text-transform: uppercase; }.ac-after h2 { margin: -8px 0 0; font-family: var(--serif); font-size: clamp(38px,5vw,76px); font-weight: 400; line-height: .98; }.ac-after__body { align-self: end; color: rgba(250,244,230,.72); line-height: 1.85; font-size: 15px; }.ac-after__body a { display: inline-block; margin-top: 27px; padding-bottom: 6px; color: var(--cream); border-bottom: 1px solid var(--sand); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; }
+@media (max-width:700px) { .ac-scene { height: 240vh; }.ac-sticky { min-height: 520px; }.ac-brandmark { top: 36%; }.ac-copy { top: auto; bottom: 18%; transform: none; max-width: 90%; }.ac-copy > p:last-child { font-size: 12px; margin-top: 17px; }.ac-cloud { width: 120vw; bottom: 31%; right: -33%; }.ac-cloud--day { top: 3%; right: 2%; bottom: auto; width: 34vw; }.ac-cloud--night { width: 155%; bottom: 9%; }.ac-tallest { flex-direction: column; text-align: center; gap: 40px; min-height: 0; }.ac-tallest-outline { order: -1; }.ac-tallest-copy { margin: 0 auto; }.ac-after { grid-template-columns: 1fr; gap: 30px; } }
+@media (prefers-reduced-motion:reduce) { .ac-sky--night,.ac-building--night { opacity:0; } }
+
+/* Shared React layouts for the converted company, project and journal pages. */
+.legacy-hero { min-height: 55vh; display: grid; align-items: end; padding: 130px max(6vw,32px) 88px; background: radial-gradient(circle at 78% 20%,rgba(236,208,158,.23),transparent 25%),#000; border-bottom: 1px solid var(--line); }.legacy-hero>div { max-width: 850px; }.legacy-kicker { margin: 0 0 20px; color: var(--sand); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }.legacy-hero h1 { margin: 0; font: 400 clamp(50px,6.8vw,105px)/.96 var(--serif); letter-spacing: -.045em; }.legacy-hero h1+p { max-width: 590px; margin: 27px 0 0; color: rgba(250,244,230,.75); font-size: 15px; line-height: 1.8; }.legacy-section,.legacy-prose { padding: 110px max(6vw,32px); background: #000; }.legacy-section>h2,.legacy-prose h2,.legacy-split h2,.legacy-enquiry h2 { margin: 0 0 45px; max-width: 720px; font: 400 clamp(38px,4.2vw,68px)/1 var(--serif); letter-spacing: -.04em; }.legacy-split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(45px,8vw,120px); align-items: center; padding: 110px max(6vw,32px); background: #080808; }.legacy-split img { width: 100%; min-height: 410px; object-fit: cover; }.legacy-split p:not(.legacy-kicker),.legacy-prose p { color: rgba(250,244,230,.72); line-height: 1.9; font-size: 14px; }.legacy-link { display: inline-block; margin-top: 20px; padding-bottom: 6px; border-bottom: 1px solid var(--sand); color: var(--cream); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }.legacy-values { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }.legacy-values>div { min-height: 180px; padding: 25px; border: 1px solid var(--line); }.legacy-values b { color: var(--sand); font: 500 11px var(--sans); letter-spacing: .12em; text-transform: uppercase; }.legacy-values p { color: rgba(250,244,230,.66); font-size: 13px; line-height: 1.75; }.legacy-card-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }.legacy-card { display: flex; flex-direction: column; min-height: 480px; padding-bottom: 25px; border: 1px solid var(--line); background: #080808; }.legacy-card img { width: 100%; height: 240px; object-fit: cover; filter: saturate(.8); }.legacy-card p,.legacy-card h3,.legacy-card>div,.legacy-card>a { margin-left: 23px; margin-right: 23px; }.legacy-card p { margin-top: 23px; margin-bottom: 12px; color: var(--sand); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }.legacy-card h3 { margin-bottom: 12px; font: 400 30px/1 var(--serif); letter-spacing: -.03em; }.legacy-card>div { color: rgba(250,244,230,.64); font-size: 13px; line-height: 1.65; }.legacy-card>a { margin-top: auto; padding-top: 25px; color: var(--cream); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }.legacy-card>a span { color: var(--sand); margin-left: 7px; }.legacy-completed { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; }.legacy-completed article { overflow: hidden; border: 1px solid var(--line); }.legacy-completed img { width: 100%; height: 180px; object-fit: cover; }.legacy-completed p { margin: 14px 15px 7px; color: var(--sand); font-size: 9px; letter-spacing: .15em; text-transform: uppercase; }.legacy-completed h3 { margin: 0 15px 18px; font: 400 23px var(--serif); }.legacy-enquiry { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; padding: 85px max(6vw,32px); background: var(--gradient); color: #000; }.legacy-enquiry .legacy-kicker { color: #000; }.legacy-enquiry h2 { margin-bottom: 0; }.legacy-enquiry form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-content: start; }.legacy-enquiry input { width: 100%; padding: 15px 0; border: 0; border-bottom: 1px solid rgba(0,0,0,.4); background: transparent; color: #000; font: 13px var(--sans); outline: 0; }.legacy-enquiry button { grid-column: 1/-1; width: max-content; margin-top: 14px; padding: 14px 18px; border: 0; background: #000; color: var(--cream); font: 500 11px var(--sans); letter-spacing: .1em; text-transform: uppercase; cursor: pointer; }.legacy-enquiry button span { color: var(--sand); margin-left: 14px; }.legacy-prose { max-width: none; padding-right: max(15vw,32px); }.legacy-prose>* { max-width: 780px; }.legacy-prose h3 { margin: 36px 0 9px; font: 400 30px var(--serif); }.legacy-prose h2 { margin-bottom: 25px; }
+@media(max-width:800px) { .legacy-hero { min-height: 48vh; padding-top: 120px; padding-bottom: 65px; }.legacy-split,.legacy-enquiry { grid-template-columns: 1fr; gap: 38px; padding-top: 70px; padding-bottom: 70px; }.legacy-split img { min-height: 290px; }.legacy-values,.legacy-card-grid { grid-template-columns: 1fr; }.legacy-completed { grid-template-columns: repeat(2,1fr); }.legacy-enquiry form { grid-template-columns: 1fr; }.legacy-enquiry button { grid-column: auto; }.legacy-section,.legacy-prose { padding-top: 75px; padding-bottom: 75px; } }
+
+/* Video-led homepage, recreated from the supplied Velumuri landing page. */
+.reference-home .hero-media video{width:100%;height:100%;object-fit:cover;display:block}
+
+/* Footer background — a looping bridge video in place of the previous
+   static hero_banner.jpeg (#site-footer in components-v4.css keeps
+   position:relative/overflow:hidden/margin/border-radius; the video
+   and its scrim are the two full-bleed layers behind .footer-inner,
+   which already carries z-index:1 there). The dark gradient here is
+   the same one that used to be baked into that background-image, kept
+   as its own layer so it still reads over any frame of the video. */
+.footer-video { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; }
+.footer-video-scrim { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.35) 20%, #000000fc 75%); }
