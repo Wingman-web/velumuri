@@ -51,6 +51,14 @@
 .footer-bottom.has-cookie-notice { padding-bottom: 220px; }
 @media (max-width: 640px) { .footer-bottom.has-cookie-notice { padding-bottom: 280px; } }
 
+/* Groups "All rights reserved" with "Privacy Policy" as one unit so
+   .footer-bottom's space-between puts this pair on one side and the
+   "Designed & Developed by" credit on the other, instead of spacing
+   all three apart evenly. */
+.footer-legal { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-2); }
+
+.footer-credit-highlight { color: var(--sand); }
+
 /* Achyutha project experience — day-to-night architectural scene.
    Full-bleed and immersive by design, no site chrome over the pinned
    hero; the nav is reintroduced (via the .ac-nav-visible class, toggled
@@ -61,12 +69,10 @@
    popping. */
 body:has(.ac-experience) #site-header { opacity: 0; pointer-events: none; transition: opacity var(--dur-med, .4s) var(--ease-out, ease); }
 body:has(.ac-experience) #site-header.ac-nav-visible { opacity: 1; pointer-events: auto; }
-/* Achyutha wordmark, shown beside the main crest logo only on this
-   project's own page — same body:has(.ac-experience) scoping as the
-   nav-visibility rule above, since #site-header is a single global
-   component shared by every page on the site. */
-.nav-logo-achyutha { display: none; position: relative; margin-left: var(--space-4, 16px); padding-left: var(--space-4, 16px); }
-body:has(.ac-experience) .nav-logo-achyutha { display: flex; align-items: center; }
+/* Achyutha wordmark, shown beside the main crest logo on every page —
+   #site-header is a single global component shared by every page on
+   the site. */
+.nav-logo-achyutha { display: flex; align-items: center; position: relative; margin-left: var(--space-4, 16px); padding-left: var(--space-4, 16px); }
 .nav-logo-achyutha::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 1px; height: 28px; background: rgba(250,244,230,.28); }
 .nav-logo-achyutha img { height: 26px; width: auto; transition: height var(--dur-fast, .25s) var(--ease-out, ease); }
 #site-header.is-solid .nav-logo-achyutha img { height: 34px; }
@@ -107,7 +113,7 @@ body:has(.ac-experience) .nav-logo-achyutha { display: flex; align-items: center
 .ac-brandmark { position: absolute; left: clamp(22px, 5vw, 74px); top: 32%; transform: translateY(-50%); text-align: left; pointer-events: none; }
 .ac-brandmark-mask { display: block; overflow: hidden; }
 .ac-brandmark-line { display: block; }
-.ac-brandmark-small { font-family: var(--font-primary); font-size: clamp(12px, 1.5vw, 17px); font-weight: 500; letter-spacing: .4em; text-transform: uppercase; color: #fff; margin-bottom: clamp(8px, 1.2vw, 16px); text-align: left; }
+.ac-brandmark-small { font-family: var(--font-primary); font-size: clamp(14px, 1.8vw, 30px); font-weight: 500; letter-spacing: .4em; text-transform: uppercase; color: #fff; margin-bottom: clamp(8px, 1.2vw, 16px); text-align: left; }
 .ac-brandmark-big { font-family: var(--serif); font-size: clamp(64px, 14vw, 230px); font-weight: 400; letter-spacing: .04em; text-transform: uppercase; line-height: 1; color: rgba(255,255,255,.94); text-shadow: 0 8px 40px rgba(0,0,0,.35); text-align: left; }
 /* Hidden for now — the centered .ac-brandmark carries the hero's copy
    instead. Left in place (not deleted) so it's easy to bring back. */
@@ -139,6 +145,36 @@ body:has(.ac-experience) .nav-logo-achyutha { display: flex; align-items: center
    bleed animated backdrop over it. No z-index needed: it's the first
    child with no explicit z-index, so it paints behind .ac-tallest-outline
    and .ac-tallest-copy (the latter has z-index:2) by DOM order alone. */
+/* Company intro — sits directly under the pinned hero, before the
+   project story begins with .ac-tallest. A single centred column of
+   copy (no photo): eyebrow, FoldText headline, body, facts row and the
+   About Us CTA. Same explicit padding-block override as every other
+   .ac-* section (the generic `section` rule in layout-v4.css would
+   otherwise add its own). The faint sand glow at top is the same
+   treatment .legacy-hero uses, so it reads as one family. */
+.ac-velumuri { position: relative; z-index: 2; display: flex; justify-content: center; padding: clamp(90px,12vw,160px) 8vw clamp(80px,10vw,130px); background: radial-gradient(ellipse at 50% 0%, rgba(236,208,158,.13), transparent 45%), #000; overflow: hidden; }
+.ac-velumuri-copy { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 760px; text-align: center; }
+.ac-velumuri-copy .ac-eyebrow { margin: 0 0 22px; color: var(--sand); font-size: 10px; letter-spacing: .29em; text-transform: uppercase; }
+.ac-velumuri-copy h2 { margin: 0 0 26px; font-family: var(--serif); font-size: clamp(40px,5vw,84px); font-weight: 400; line-height: .98; letter-spacing: -.03em; color: var(--cream); }
+.ac-velumuri-copy h2 .fold-text-line { white-space: nowrap; }
+.ac-velumuri-copy h2 .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ac-velumuri-body { margin: 0; max-width: 560px; color: rgba(250,244,230,.72); font-size: 15px; line-height: 1.8; }
+.ac-velumuri-facts { list-style: none; display: flex; justify-content: center; gap: clamp(28px,5vw,72px); width: 100%; max-width: 560px; margin: 40px 0 0; padding: 32px 0 0; border-top: 1px solid rgba(250,244,230,.14); }
+.ac-velumuri-fact { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.ac-velumuri-fact-value { font-family: var(--serif); font-size: clamp(24px,2vw,34px); line-height: 1.05; color: var(--cream); white-space: nowrap; }
+.ac-velumuri-fact-label { font-family: var(--sans); font-size: 11px; letter-spacing: .06em; color: rgba(250,244,230,.6); }
+/* "About Us" — the same pill as .ac-card-cta, sized up for a primary
+   section CTA, with the arrow nudging right on hover. */
+.ac-velumuri-cta { display: inline-flex; align-items: center; gap: 12px; margin-top: 44px; padding: 14px 28px; border: 1px solid rgba(250,244,230,.5); border-radius: 999px; background: var(--gradient); color: #000; font-family: var(--sans); font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; white-space: nowrap; transition: background .3s ease, color .3s ease, border-color .3s ease; }
+.ac-velumuri-cta-arrow { display: inline-block; transition: transform .3s var(--ease-out, ease); }
+.ac-velumuri-cta:hover, .ac-velumuri-cta:focus-visible { background: var(--cream); border-color: var(--cream); color: #000; }
+.ac-velumuri-cta:hover .ac-velumuri-cta-arrow, .ac-velumuri-cta:focus-visible .ac-velumuri-cta-arrow { transform: translateX(4px); }
+@media (max-width:700px) {
+  .ac-velumuri { padding-inline: 7vw; }
+  .ac-velumuri-copy h2 { font-size: clamp(30px,7.8vw,46px); }
+  .ac-velumuri-copy h2 .fold-text-line { white-space: normal; }
+  .ac-velumuri-facts { flex-wrap: wrap; gap: 24px 36px; }
+}
 /* min-height raised from 100vh so this section takes noticeably more
    scroll distance to pass through (it was flying by too fast) — same
    parallax/reveal tweens, just more room for them to play out in.
@@ -147,8 +183,18 @@ body:has(.ac-experience) .nav-logo-achyutha { display: flex; align-items: center
    ended up sized independently rather than as a true 50/50 split) —
    restoring display:grid here reactivates those and gives both sides
    equal width. */
-.ac-tallest { position: relative; z-index: 2; min-height: 145vh; padding: clamp(70px,12vw,150px) 8vw clamp(24px,6vw,60px); background: linear-gradient(180deg, #000 0%, #1c1c1c 45%, #000 100%); display: flex; align-items: center; gap: clamp(32px,5vw,72px); overflow: hidden; }
+.ac-tallest { position: relative; z-index: 2; min-height: 145vh; padding: clamp(70px,12vw,150px) 8vw clamp(24px,6vw,60px); background: linear-gradient(180deg, #000 0%, #1c1c1c 45%, #000 100%); display: flex; gap: clamp(32px,5vw,72px); overflow: hidden; }
 .ac-tallest-silk { position: absolute; inset: 0; }
+/* .ac-tallest's min-height is deliberately 145vh (see the comment
+   above it) so it takes more scroll distance to pass — but that same
+   145vh was stretching the Silk WebGL canvas behind it just as tall.
+   Capping the canvas at 100vh keeps the animated backdrop to one
+   viewport; the extra scroll distance below it falls through to
+   .ac-tallest's own dark gradient background instead. Selector scoped
+   here (rather than editing Silk.css) both keeps Silk itself generic
+   and outweighs Silk.css's same-specificity rule regardless of which
+   stylesheet's import happens to land later in the bundle. */
+.ac-tallest-silk .silk-container, .ac-tallest-silk .silk-container canvas { height: 100vh; max-height: 100vh; }
 /* order:2 keeps the image on the right despite being first in the DOM
    (the copy block below is order:1) — equal-width columns via
    flex:1 1 0 (a zero basis so both sides grow to share the row
@@ -395,7 +441,20 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
    of a synced backdrop+card pair, and both the title and the panel
    living in a single .ac-cards-stage per category so reduced-motion can
    just stack each stage whole. */
-.ac-cards { position: relative; z-index: 2; height: 400vh; padding-block: 0; background: #000; }
+/* 700vh (was 400vh): the sticky child pins for (height − 100vh), so
+   this is 200vh of scroll per category instead of 100vh — one trackpad
+   fling was carrying clear across a whole category (or two), landing on
+   the third list from the first. Paired with the settle-snap in
+   achyutha-experience.tsx, which eases any rest inside a transition on
+   to that category's fully-open list. */
+.ac-cards { position: relative; z-index: 2; height: 700vh; padding-block: 0; background: #000; }
+/* Cursor-following amenity preview — a square photo card, driven from
+   achyutha-experience.tsx (position via GSAP x/y, shown/hidden on list
+   item hover). z-index above the stage panel (2) so it rides over the
+   list; pointer-events:none so it never steals the hover it's showing. */
+.ac-cards-preview { position: absolute; z-index: 4; left: 0; top: 0; width: clamp(180px,16vw,240px); aspect-ratio: 1; border-radius: 14px; overflow: hidden; opacity: 0; pointer-events: none; box-shadow: 0 24px 60px rgba(0,0,0,.55); border: 1px solid rgba(250,244,230,.14); will-change: transform, opacity; }
+.ac-cards-preview img { display: block; width: 100%; height: 100%; max-width: none; object-fit: cover; will-change: transform; }
+@media (max-width:900px), (hover:none) { .ac-cards-preview { display: none; } }
 /* Same rise-up-and-over treatment as .ac-amenities-sticky above, over
    the same still-fixed .ac-points backdrop (visible right through
    .ac-amenities' own dwell too, since it's toggled for the combined
@@ -425,7 +484,15 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
 .ac-cards-stage-scrim { position: absolute; z-index: 1; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgba(0,0,0,.75) 0%, rgba(0,0,0,.15) 45%, rgba(0,0,0,.45) 100%); }
 
 .ac-cards-stage-title { position: absolute; z-index: 2; left: clamp(22px,5vw,74px); bottom: clamp(60px,10vh,120px); max-width: 480px; }
-.ac-cards-stage-label { margin: 0 0 8px; font-family: var(--serif); font-size: clamp(48px,7vw,110px); font-weight: 400; line-height: 1; letter-spacing: -.02em; color: var(--cream); }
+/* nowrap: max-width above was clipping "Clubhouse" (the longest of the
+   three labels) onto a second line at some viewport widths — the
+   label is meant to read as one word, not wrap like body text.
+   FoldText's own wrapper (.fold-text, FoldText.css) sets white-space:
+   pre-wrap directly on itself — that's a descendant of this h3, so it
+   still overrides the h3's white-space by inheritance rules, and needs
+   its own override rather than relying on the one above. */
+.ac-cards-stage-label { margin: 0 0 8px; font-family: var(--serif); font-size: clamp(48px,7vw,110px); font-weight: 400; line-height: 1; letter-spacing: -.02em; color: var(--cream); white-space: nowrap; }
+.ac-cards-stage-label .fold-text { white-space: nowrap; }
 .ac-cards-stage-label .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .ac-cards-stage-tagline { margin: 0; font-family: var(--sans); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--sand); }
 
@@ -452,7 +519,7 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
 .ac-cards-stage-list li::before { content: ''; position: absolute; left: 0; top: 16px; width: 5px; height: 5px; border-radius: 50%; background: var(--sand); }
 
 @media (max-width:900px) {
-  .ac-cards { height: 350vh; }
+  .ac-cards { height: 550vh; }
   .ac-cards-stage-panel { width: 58%; padding-left: clamp(20px,3vw,32px); padding-right: clamp(20px,3vw,32px); }
   .ac-cards-stage-label { font-size: clamp(38px,10vw,64px); }
   .ac-cards-stage-list { grid-template-columns: 1fr; }
@@ -556,18 +623,22 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
 
 .ac-points-eyebrow { position: absolute; z-index: 3; left: clamp(22px,5vw,74px); top: clamp(28px,5vh,48px); margin: 0; font-family: var(--sans); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--sand); }
 
-/* Each marker's own height (set inline per-marker in
-   achyutha-experience.tsx, from POINT_POSITIONS) is what makes the
-   leader line run from the label down to that marker's actual dot
-   position on the photo — label at the button's top, line filling the
-   space between, dot pinned to the button's bottom edge. */
+/* Each marker is anchored by its dot: `left`/`top` (inline, from
+   POINT_POSITIONS in achyutha-experience.tsx) are the dot's position on
+   the photo, and the inline `height` (= top) is the straight vertical
+   leader from the dot up to its label on the container's top edge. The
+   shift that puts the dot — the last flex child — exactly on that anchor
+   (centred horizontally, bottom edge on it) is applied as
+   xPercent/yPercent from achyutha-experience.tsx alongside the rise-in
+   entrance, since GSAP owns these buttons' transforms (see the note
+   there). */
 /* Top-inset clears the fixed site header — same clamp() the header
    itself is cleared by everywhere else on this page
-   (.ac-cards-eyebrow-block, .ac-tallest-stat, etc.) — without it the
-   marker labels (anchored to this container's own top edge) render
-   right underneath the header and are unreadable against it. */
+   (.ac-cards-eyebrow-block, .ac-tallest-stat, etc.) — without it a
+   marker label near the top would render right underneath the header
+   and be unreadable against it. */
 .ac-points-markers { position: absolute; z-index: 2; inset: clamp(90px,12vh,140px) 0 0 0; }
-.ac-point { position: absolute; top: 0; display: flex; flex-direction: column; align-items: center; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ac-point { position: absolute; display: flex; flex-direction: column; align-items: center; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .ac-point-label { white-space: nowrap; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--cream); text-shadow: 0 1px 8px rgba(0,0,0,.65); transition: color .3s ease; }
 .ac-point-line { flex: 1 1 auto; width: 1px; margin: 8px 0; background: rgba(250,244,230,.5); }
 .ac-point-dot { position: relative; flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(250,244,230,.7); background-color: rgba(10,10,8,.5); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); transform: translateY(50%); transition: transform .3s ease, background-color .3s ease, border-color .3s ease; }
@@ -602,9 +673,7 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
   .ac-points-copy { position: static; opacity: 1; transform: none; max-width: none; }
 }
 
-/* Location — full-bleed photo (not the 3D map at components/location-3d,
-   a separate, heavier experience — this is a lighter, always-available
-   alternative): heading vertically centered left, pill filter
+/* Location — full-bleed photo: heading vertically centered left, pill filter
    bottom-left, location list in a glass card vertically centered
    right. Not pinned/scrubbed like the sections above: the pill filter
    is a live click interaction, not a scroll choreography, so this is
@@ -708,12 +777,86 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
 }
 
 .ac-after { position: relative; z-index: 2; padding: clamp(70px,12vw,150px) 8vw; background: #000; display: grid; grid-template-columns: 1fr minmax(230px,460px); gap: 8vw; }.ac-after p { margin: 0; color: var(--sand); letter-spacing: .2em; font-size: 11px; text-transform: uppercase; }.ac-after h2 { margin: -8px 0 0; font-family: var(--serif); font-size: clamp(38px,5vw,76px); font-weight: 400; line-height: .98; }.ac-after__body { align-self: end; color: rgba(250,244,230,.72); line-height: 1.85; font-size: 15px; }.ac-after__body a { display: inline-block; margin-top: 27px; padding-bottom: 6px; color: var(--cream); border-bottom: 1px solid var(--sand); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; }
-@media (max-width:700px) { .ac-scene { height: 240vh; }.ac-sticky { min-height: 520px; }.ac-brandmark { top: 36%; }.ac-copy { top: auto; bottom: 18%; transform: none; max-width: 90%; }.ac-copy > p:last-child { font-size: 12px; margin-top: 17px; }.ac-cloud { width: 120vw; bottom: 31%; right: -33%; }.ac-cloud--day { top: 3%; right: 2%; bottom: auto; width: 34vw; }.ac-cloud--night { width: 155%; bottom: 9%; }.ac-tallest { flex-direction: column; text-align: center; gap: 40px; min-height: 0; }.ac-tallest-outline { order: -1; }.ac-tallest-copy { margin: 0 auto; }.ac-after { grid-template-columns: 1fr; gap: 30px; } }
+@media (max-width:700px) { .ac-scene { height: 240vh; }.ac-sticky { min-height: 520px; }.ac-brandmark { top: 36%; }.ac-copy { top: auto; bottom: 18%; transform: none; max-width: 90%; }.ac-copy > p:last-child { font-size: 12px; margin-top: 17px; }.ac-cloud { width: 120vw; bottom: 31%; right: -33%; }.ac-cloud--day { top: 3%; right: 2%; bottom: auto; width: 34vw; }.ac-cloud--night { width: 155%; bottom: 9%; }.ac-tallest { flex-direction: column; gap: 40px; min-height: 0; }.ac-tallest-outline { order: -1; }.ac-tallest-copy { margin: 0 auto; }.ac-after { grid-template-columns: 1fr; gap: 30px; } }
 @media (prefers-reduced-motion:reduce) { .ac-sky--night,.ac-building--night { opacity:0; } }
 
 /* Shared React layouts for the converted company, project and journal pages. */
-.legacy-hero { min-height: 55vh; display: grid; align-items: end; padding: 130px max(6vw,32px) 88px; background: radial-gradient(circle at 78% 20%,rgba(236,208,158,.23),transparent 25%),#000; border-bottom: 1px solid var(--line); }.legacy-hero>div { max-width: 850px; }.legacy-kicker { margin: 0 0 20px; color: var(--sand); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }.legacy-hero h1 { margin: 0; font: 400 clamp(50px,6.8vw,105px)/.96 var(--serif); letter-spacing: -.045em; }.legacy-hero h1+p { max-width: 590px; margin: 27px 0 0; color: rgba(250,244,230,.75); font-size: 15px; line-height: 1.8; }.legacy-section,.legacy-prose { padding: 110px max(6vw,32px); background: #000; }.legacy-section>h2,.legacy-prose h2,.legacy-split h2,.legacy-enquiry h2 { margin: 0 0 45px; max-width: 720px; font: 400 clamp(38px,4.2vw,68px)/1 var(--serif); letter-spacing: -.04em; }.legacy-split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(45px,8vw,120px); align-items: center; padding: 110px max(6vw,32px); background: #080808; }.legacy-split img { width: 100%; min-height: 410px; object-fit: cover; }.legacy-split p:not(.legacy-kicker),.legacy-prose p { color: rgba(250,244,230,.72); line-height: 1.9; font-size: 14px; }.legacy-link { display: inline-block; margin-top: 20px; padding-bottom: 6px; border-bottom: 1px solid var(--sand); color: var(--cream); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }.legacy-values { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }.legacy-values>div { min-height: 180px; padding: 25px; border: 1px solid var(--line); }.legacy-values b { color: var(--sand); font: 500 11px var(--sans); letter-spacing: .12em; text-transform: uppercase; }.legacy-values p { color: rgba(250,244,230,.66); font-size: 13px; line-height: 1.75; }.legacy-card-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }.legacy-card { display: flex; flex-direction: column; min-height: 480px; padding-bottom: 25px; border: 1px solid var(--line); background: #080808; }.legacy-card img { width: 100%; height: 240px; object-fit: cover; filter: saturate(.8); }.legacy-card p,.legacy-card h3,.legacy-card>div,.legacy-card>a { margin-left: 23px; margin-right: 23px; }.legacy-card p { margin-top: 23px; margin-bottom: 12px; color: var(--sand); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }.legacy-card h3 { margin-bottom: 12px; font: 400 30px/1 var(--serif); letter-spacing: -.03em; }.legacy-card>div { color: rgba(250,244,230,.64); font-size: 13px; line-height: 1.65; }.legacy-card>a { margin-top: auto; padding-top: 25px; color: var(--cream); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }.legacy-card>a span { color: var(--sand); margin-left: 7px; }.legacy-completed { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; }.legacy-completed article { overflow: hidden; border: 1px solid var(--line); }.legacy-completed img { width: 100%; height: 180px; object-fit: cover; }.legacy-completed p { margin: 14px 15px 7px; color: var(--sand); font-size: 9px; letter-spacing: .15em; text-transform: uppercase; }.legacy-completed h3 { margin: 0 15px 18px; font: 400 23px var(--serif); }.legacy-enquiry { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; padding: 85px max(6vw,32px); background: var(--gradient); color: #000; }.legacy-enquiry .legacy-kicker { color: #000; }.legacy-enquiry h2 { margin-bottom: 0; }.legacy-enquiry form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-content: start; }.legacy-enquiry input { width: 100%; padding: 15px 0; border: 0; border-bottom: 1px solid rgba(0,0,0,.4); background: transparent; color: #000; font: 13px var(--sans); outline: 0; }.legacy-enquiry button { grid-column: 1/-1; width: max-content; margin-top: 14px; padding: 14px 18px; border: 0; background: #000; color: var(--cream); font: 500 11px var(--sans); letter-spacing: .1em; text-transform: uppercase; cursor: pointer; }.legacy-enquiry button span { color: var(--sand); margin-left: 14px; }.legacy-prose { max-width: none; padding-right: max(15vw,32px); }.legacy-prose>* { max-width: 780px; }.legacy-prose h3 { margin: 36px 0 9px; font: 400 30px var(--serif); }.legacy-prose h2 { margin-bottom: 25px; }
+.legacy-hero { min-height: 55vh; display: grid; align-items: end; padding: 130px max(6vw,32px) 88px; background: radial-gradient(circle at 78% 20%,rgba(236,208,158,.23),transparent 25%),#000; border-bottom: 1px solid var(--line); }.legacy-hero>div { max-width: 850px; }.legacy-kicker { margin: 0 0 20px; color: var(--sand); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }.legacy-hero h1 { margin: 0; font: 400 clamp(50px,6.8vw,105px)/.96 var(--serif); letter-spacing: -.045em; }.legacy-hero h1+p { max-width: 590px; margin: 27px 0 0; color: rgba(250,244,230,.75); font-size: 15px; line-height: 1.8; }
+.legacy-section,.legacy-prose { padding: 110px max(6vw,32px); background: #00000000; }.legacy-section>h2,.legacy-prose h2,.legacy-split h2,.legacy-enquiry h2 { margin: 0 0 45px; max-width: 720px; font: 400 clamp(38px,4.2vw,68px)/1 var(--serif); letter-spacing: -.04em; }.legacy-split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(45px,8vw,120px); align-items: center; padding: 110px max(6vw,32px); background: #080808; }.legacy-split img { width: 100%; min-height: 410px; object-fit: cover; }.legacy-split p:not(.legacy-kicker),.legacy-prose p { color: rgba(250,244,230,.72); line-height: 1.9; font-size: 14px; }.legacy-link { display: inline-block; margin-top: 20px; padding-bottom: 6px; border-bottom: 1px solid var(--sand); color: var(--cream); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }.legacy-values { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }.legacy-values>div { min-height: 180px; padding: 25px; border: 1px solid var(--line); }.legacy-values b { color: var(--sand); font: 500 11px var(--sans); letter-spacing: .12em; text-transform: uppercase; }.legacy-values p { color: rgba(250,244,230,.66); font-size: 13px; line-height: 1.75; }.legacy-card-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }.legacy-card { display: flex; flex-direction: column; min-height: 480px; padding-bottom: 25px; border: 1px solid var(--line); background: #080808; }.legacy-card img { width: 100%; height: 240px; object-fit: cover; filter: saturate(.8); }.legacy-card p,.legacy-card h3,.legacy-card>div,.legacy-card>a { margin-left: 23px; margin-right: 23px; }.legacy-card p { margin-top: 23px; margin-bottom: 12px; color: var(--sand); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }.legacy-card h3 { margin-bottom: 12px; font: 400 30px/1 var(--serif); letter-spacing: -.03em; }.legacy-card>div { color: rgba(250,244,230,.64); font-size: 13px; line-height: 1.65; }.legacy-card>a { margin-top: auto; padding-top: 25px; color: var(--cream); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }.legacy-card>a span { color: var(--sand); margin-left: 7px; }.legacy-completed { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; }.legacy-completed article { overflow: hidden; border: 1px solid var(--line); }.legacy-completed img { width: 100%; height: 180px; object-fit: cover; }.legacy-completed p { margin: 14px 15px 7px; color: var(--sand); font-size: 9px; letter-spacing: .15em; text-transform: uppercase; }.legacy-completed h3 { margin: 0 15px 18px; font: 400 23px var(--serif); }.legacy-enquiry { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; padding: 85px max(6vw,32px); background: var(--gradient); color: #000; }.legacy-enquiry .legacy-kicker { color: #000; }.legacy-enquiry h2 { margin-bottom: 0; }.legacy-enquiry form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-content: start; }.legacy-enquiry input { width: 100%; padding: 15px 0; border: 0; border-bottom: 1px solid rgba(0,0,0,.4); background: transparent; color: #000; font: 13px var(--sans); outline: 0; }.legacy-enquiry button { grid-column: 1/-1; width: max-content; margin-top: 14px; padding: 14px 18px; border: 0; background: #000; color: var(--cream); font: 500 11px var(--sans); letter-spacing: .1em; text-transform: uppercase; cursor: pointer; }.legacy-enquiry button span { color: var(--sand); margin-left: 14px; }.legacy-prose { max-width: none; padding-right: max(15vw,32px); }.legacy-prose>* { max-width: 780px; }.legacy-prose h3 { margin: 36px 0 9px; font: 400 30px var(--serif); }.legacy-prose h2 { margin-bottom: 25px; }
 @media(max-width:800px) { .legacy-hero { min-height: 48vh; padding-top: 120px; padding-bottom: 65px; }.legacy-split,.legacy-enquiry { grid-template-columns: 1fr; gap: 38px; padding-top: 70px; padding-bottom: 70px; }.legacy-split img { min-height: 290px; }.legacy-values,.legacy-card-grid { grid-template-columns: 1fr; }.legacy-completed { grid-template-columns: repeat(2,1fr); }.legacy-enquiry form { grid-template-columns: 1fr; }.legacy-enquiry button { grid-column: auto; }.legacy-section,.legacy-prose { padding-top: 75px; padding-bottom: 75px; } }
+
+/* Journal index (/blogs) — alternating editorial rows, see
+   components/journal-list.tsx. Odd rows: copy LEFT, photo RIGHT; even
+   rows: photo LEFT, copy RIGHT. The photo sits first in the DOM in
+   every row (so it always lands on top when the grid collapses to one
+   column on mobile) and is simply pushed to the second column on odd
+   rows with `order`. A hairline rule between rows keeps the zig-zag
+   reading as one continuous list rather than six detached blocks. */
+.journal-section { padding-top: clamp(70px,8vw,110px); }
+.journal-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: clamp(44px,6vw,80px); padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+.journal-head .legacy-kicker { margin: 0; }
+.journal-count { font-family: var(--sans); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: rgba(250,244,230,.5); }
+.journal-list { display: flex; flex-direction: column; }
+.journal-item { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); align-items: center; gap: clamp(32px,6vw,96px); padding-block: clamp(40px,5vw,72px); border-bottom: 1px solid var(--line); }
+.journal-item:first-child { padding-top: 0; }
+.journal-item:last-child { border-bottom: 0; padding-bottom: 0; }
+.journal-item:nth-child(odd) .journal-media { order: 2; }
+/* Copy hugs the gutter on both sides of the zig-zag: right-aligned in
+   its column when the photo is to its right, left-aligned otherwise. */
+.journal-item:nth-child(odd) .journal-copy { justify-self: end; }
+.journal-item:nth-child(even) .journal-copy { justify-self: start; }
+/* The wipe (mask clip-path) and settle-from-zoom (img scale) are GSAP
+   scroll-scrubbed; the hover zoom lives on the mask's own CSS transform
+   so it never fights the inline transform GSAP leaves on the img. */
+.journal-media { display: block; position: relative; width: 100%; aspect-ratio: 4/3; overflow: hidden; border-radius: 16px; background: #0c0c0a; }
+.journal-media-mask { position: absolute; inset: 0; display: block; overflow: hidden; will-change: clip-path; transition: transform .9s var(--ease-out, ease); }
+.journal-media-mask img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; will-change: transform; }
+.journal-media-mask::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgba(0,0,0,.35) 0%, transparent 40%); opacity: .8; transition: opacity .5s ease; }
+.journal-item:hover .journal-media-mask { transform: scale(1.035); }
+.journal-item:hover .journal-media-mask::after { opacity: .4; }
+.journal-copy { display: flex; flex-direction: column; align-items: flex-start; width: 100%; max-width: 520px; }
+.journal-title { margin: 0 0 18px; font: 400 clamp(30px,3.4vw,52px)/1.02 var(--serif); letter-spacing: -.035em; text-wrap: balance; }
+.journal-title a { color: var(--cream); text-decoration: none; background: var(--gradient); -webkit-background-clip: text; background-clip: text; transition: color .4s ease; }
+.journal-item:hover .journal-title a, .journal-title a:focus-visible { color: transparent; }
+.journal-excerpt { margin: 0; max-width: 440px; color: rgba(250,244,230,.7); font-size: 14px; line-height: 1.8; }
+/* Same pill as the homepage's About Us CTA (.ac-velumuri-cta), at
+   card scale — the arrow nudges right on hover of the whole row. */
+.journal-link { display: inline-flex; align-items: center; gap: 10px; margin-top: 30px; padding: 11px 20px; border: 1px solid rgba(250,244,230,.45); border-radius: 999px; color: var(--cream); font-family: var(--sans); font-size: 11px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; white-space: nowrap; transition: background .3s ease, color .3s ease, border-color .3s ease; }
+.journal-link-arrow { display: inline-block; transition: transform .3s var(--ease-out, ease); }
+.journal-item:hover .journal-link-arrow { transform: translateX(4px); }
+.journal-link:hover, .journal-link:focus-visible { background: var(--cream); border-color: var(--cream); color: #000; }
+@media (max-width:800px) {
+  .journal-head { margin-bottom: 40px; }
+  .journal-item { grid-template-columns: 1fr; gap: 26px; padding-block: 44px; }
+  .journal-item:nth-child(odd) .journal-media { order: 0; }
+  .journal-item:nth-child(odd) .journal-copy, .journal-item:nth-child(even) .journal-copy { justify-self: start; max-width: none; }
+  .journal-media { aspect-ratio: 16/10; }
+  .journal-title { font-size: clamp(28px,7vw,38px); }
+}
+
+/* Journal pagination — arrow + numbered pill row, six articles per
+   page. Mirrors the pill styling of .journal-link so it reads as part
+   of the same family rather than a bolted-on control. */
+.journal-pagination { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: clamp(48px,6vw,80px); }
+.journal-page-numbers { display: flex; align-items: center; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.journal-page-arrow, .journal-page-number { font-family: var(--sans); border: 1px solid rgba(250,244,230,.28); background: transparent; color: var(--cream); cursor: pointer; transition: background .3s ease, color .3s ease, border-color .3s ease; }
+.journal-page-arrow { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 999px; font-size: 16px; }
+.journal-page-number { min-width: 40px; height: 40px; padding-inline: 6px; border-radius: 999px; font-size: 13px; font-weight: 500; letter-spacing: .03em; }
+.journal-page-arrow:hover:not(:disabled), .journal-page-number:hover { background: rgba(250,244,230,.1); border-color: rgba(250,244,230,.45); }
+.journal-page-arrow:disabled { opacity: .3; cursor: default; }
+.journal-page-number[aria-current="page"] { background: var(--gradient); border-color: transparent; color: #000; }
+
+/* Gallery (/gallery) — plain photo grid, see components/gallery-page.tsx. */
+.gallery-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(14px,1.6vw,22px); }
+.gallery-grid figure { position: relative; margin: 0; aspect-ratio: 4/3; overflow: hidden; border-radius: 14px; background: #0c0c0a; }
+.gallery-grid img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s var(--ease-out, ease); }
+.gallery-grid figure:hover img { transform: scale(1.06); }
+@media (max-width:800px) {
+  .gallery-grid { grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width:480px) {
+  .gallery-grid { grid-template-columns: 1fr; }
+}
 
 /* Video-led homepage, recreated from the supplied Velumuri landing page. */
 .reference-home .hero-media video{width:100%;height:100%;object-fit:cover;display:block}
@@ -727,3 +870,72 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
    as its own layer so it still reads over any frame of the video. */
 .footer-video { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; }
 .footer-video-scrim { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.35) 20%, #000000fc 75%); }
+
+/* PageBanner's optional description paragraph (see components/page-banner.tsx) */
+.page-banner-desc { position: relative; z-index: 2; max-width: 34rem; margin: 14px auto 0; color: rgba(255,255,255,.78); font-size: 15px; line-height: 1.7; text-align: center; text-shadow: 0 2px 12px rgba(14,12,10,.5); }
+
+/* Subtle hover lift for the shared project/legacy card grid — the
+   only feedback these cards had before was the underlined "Explore"
+   link; this makes the whole card feel interactive. */
+.legacy-card { transition: transform .35s var(--ease-out, ease), box-shadow .35s var(--ease-out, ease); }
+.legacy-card:hover { transform: translateY(-6px); box-shadow: 0 24px 50px rgba(0,0,0,.4); }
+.legacy-card img { transition: transform .5s var(--ease-out, ease); }
+.legacy-card:hover img { transform: scale(1.05); }
+
+/* .nav-book switched from an <a> to a <button> (it now opens the
+   enquiry modal instead of navigating to /contact#visit) — reset the
+   browser's default button chrome so it's visually identical; the
+   actual pill look still lives entirely on .nav-book-label. */
+button.nav-book { border: none; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer; }
+
+/* Fixed vertical "Enquire Now" tab, right-middle of the viewport —
+   opens the same sitewide enquiry modal as the navbar's Schedule a
+   Visit button (see components/enquiry-tab.tsx). Text reads bottom-to-
+   top: vertical-rl sets the vertical flow, the 180° rotation flips
+   its reading direction. */
+.enquiry-tab { position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 400; border: none; border-radius: 10px 0 0 10px; padding: 22px 9px; background: var(--gradient); box-shadow: -6px 0 24px rgba(0,0,0,.35); cursor: pointer; transition: padding-right .3s var(--ease-out, ease); }
+.enquiry-tab:hover { padding-right: 15px; }
+.enquiry-tab span { display: block; writing-mode: vertical-rl; transform: rotate(180deg); color: #000; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; white-space: nowrap; }
+@media (max-width:700px) {
+  .enquiry-tab { padding: 16px 6px; }
+}
+
+/* Sitewide "Schedule A Visit" popup (components/enquiry-modal.tsx) —
+   reuses .modal-form/.field/.contact-submit from components-v4.css for
+   the panel structure and button, so it matches ContactForm's look;
+   this adds the overlay/backdrop, the open/close transition, the glass
+   panel finish, and reduces .field's inputs to a bare underline (no
+   box, no fill — labels removed, the required marker lives in the
+   placeholder text itself instead). */
+.enquiry-modal { position: fixed; inset: 0; z-index: 1600; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity .3s var(--ease-out, ease); }
+.enquiry-modal.is-open { opacity: 1; pointer-events: auto; }
+.enquiry-modal-backdrop { position: absolute; inset: 0; background: rgba(5,5,4,.55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.enquiry-modal-panel { position: relative; z-index: 1; width: min(92vw, 460px); max-height: 88vh; overflow-y: auto; border-radius: 18px; background: rgba(30,28,24,.42); border: 1px solid rgba(250,244,230,.16); -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); box-shadow: 0 30px 80px rgba(0,0,0,.5); transform: translateY(16px) scale(.98); transition: transform .35s var(--ease-out, ease); }
+.enquiry-modal.is-open .enquiry-modal-panel { transform: translateY(0) scale(1); }
+.enquiry-modal-panel > p.legacy-kicker { margin-bottom: 2px; }
+.enquiry-modal-panel h3 { margin: 0 0 6px; font-family: var(--serif); font-weight: 400; }
+.enquiry-modal-panel form { display: flex; flex-direction: column; gap: 20px; }
+.enquiry-modal-panel .field { gap: 0; }
+.enquiry-modal-panel .field input { border: none; border-bottom: 1px solid rgba(250,244,230,.32); border-radius: 0; padding: 8px 2px; background: transparent; font-size: 13px; outline: none; }
+.enquiry-modal-panel .field input:focus { border-bottom-color: var(--sand); }
+.enquiry-modal-panel .contact-submit { width: 100%; margin-top: 0; background: var(--gradient); color: #000; }
+.enquiry-modal-panel .contact-submit:hover { filter: brightness(1.06); }
+.enquiry-modal-panel .field input::placeholder { color: rgba(244,241,234,.55); }
+/* Empty until a submission sets it — collapse instead of leaving a
+   blank line's worth of dead space below the button. */
+.enquiry-modal-panel .form-status:empty { display: none; }
+.enquiry-modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--color-border); background: transparent; color: inherit; cursor: pointer; transition: background .25s ease; }
+.enquiry-modal-close:hover { background: var(--color-border); }
+
+/* Slower, smoother slide-out menu open/close (components-v4.css had
+   this at --dur-fast/0.5s with a snappy ease-out — reads as an abrupt
+   pop rather than a slide). Longer duration + a gentler deceleration
+   curve on both the panel's transform and the backdrop fade, timed so
+   the fade slightly outlasts the slide instead of finishing early. */
+.mobile-menu { transition: opacity .6s var(--ease-out), visibility 0s linear .6s; }
+.mobile-menu.is-open { transition: opacity .5s var(--ease-out); }
+.mobile-menu-panel { transition: transform .7s cubic-bezier(.22,1,.36,1); }
+
+/* The icon-only close chip next to the "Close" pill has been removed
+   (site-header.tsx) — the text pill alone is the close control now. */
+.mobile-menu-close { gap: 0; }

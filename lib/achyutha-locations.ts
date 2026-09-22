@@ -1,5 +1,4 @@
-// Nearby-location data for the Achyutha Aura 3D LOCATION experience
-// (components/location-3d/*).
+// Nearby-location data for the Achyutha Aura LOCATION section.
 //
 // GEOGRAPHIC GROUNDING — read this before changing any position below.
 //

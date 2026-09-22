@@ -260,7 +260,7 @@ html.cursor-active .cursor-dot {
 }
 
 #site-header.is-solid {
-  background: linear-gradient(180deg, rgba(20, 20, 20, 0.72) 0%, rgba(20, 20, 20, 0.46) 100%);
+  background: linear-gradient(#14141400 0%, #14141400 100%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
   backdrop-filter: blur(20px) saturate(160%);
   /* border-bottom: 1px solid rgba(236, 208, 158, 0.14); */
@@ -321,8 +321,8 @@ html.cursor-active .cursor-dot {
   gap: var(--space-3);
 }
 
-/* Book pill — dark capsule + detached round arrow, matching the
-   reference. Reused verbatim inside the slide-out panel's top row. */
+/* Book pill — dark capsule (the detached round arrow chip was dropped).
+   Reused verbatim inside the slide-out panel's top row. */
 .nav-book {
   display: inline-flex;
   align-items: center;
@@ -346,27 +346,10 @@ html.cursor-active .cursor-dot {
   transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
 }
 
-.nav-book-icon {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  background: var(--color-navy);
-  border: 1px solid var(--color-border);
-  color: var(--color-cream);
-  transition: transform var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
-}
-
-.nav-book:hover .nav-book-label,
-.nav-book:hover .nav-book-icon {
+.nav-book:hover .nav-book-label {
   background: var(--gold-gradient);
   border-color: transparent;
   color: var(--color-navy);
-}
-
-.nav-book:hover .nav-book-icon {
-  transform: translateX(3px);
 }
 
 /* Hamburger — pill label + round icon chip, mirrors the book pill.
@@ -420,8 +403,8 @@ html.cursor-active .cursor-dot {
 .nav-toggle .bar::after { top: 5px; }
 
 @media (max-width: 599px) {
-  .nav-toggle-label,
-  .nav-book-label { display: none; }
+  .nav-toggle-label { display: none; }
+  .nav-book-label { height: 36px; padding: 0 var(--space-3); font-size: 11px; }
 }
 
 /* ---------- Slide-out menu — glass panel, right side ---------- */
@@ -1833,7 +1816,8 @@ html.cursor-active .cursor-dot {
 }
 
 .footer-bottom p {
-  font-size: 12px;
+  font-size: 10px;
+  font-weight: 100;
 }
 
 .footer-bottom a:hover {
@@ -1874,12 +1858,18 @@ html.cursor-active .cursor-dot {
   position: relative;
   min-height: 46svh;
   margin: 20px;
+  margin-top: calc(var(--header-h-mobile) + 20px);
   border-radius: 20px;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
+}
+@media (min-width: 900px) {
+  .page-banner {
+    margin-top: calc(var(--header-h) + 20px);
+  }
 }
 .page-banner-content {
   position: relative;
@@ -2027,12 +2017,12 @@ html.cursor-active .cursor-dot {
     grid-column: 1 / 13;
   }
   .chairman-photo {
-    grid-column: 1 / 5;
+    grid-column: 1 / 6;
     position: sticky;
     top: calc(var(--header-h) + var(--space-6));
   }
   .chairman-copy {
-    grid-column: 6 / 13;
+    grid-column: 7 / 13;
   }
 }
 

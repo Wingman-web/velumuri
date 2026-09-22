@@ -80,20 +80,23 @@ const CARDS_STAGES = [
   },
 ];
 
-// Marker positions for the hotspot explorer below — `top` is also each
-// marker's leader-line length (see .ac-point in brand.css), so it
-// doubles as "how far down from the frame top the dot sits." Kept
-// within the frame's upper half (15%-55%) rather than running down to
-// the bottom: below that, dots would sit low enough to collide with
-// the copy panel (.ac-points-copy is bottom-anchored) and read as
-// cluttered against the header-clearance band markers already start
-// from (see .ac-points-markers's own top inset).
+// Marker positions for the hotspot explorer below. Each marker is
+// anchored by its DOT — `left`/`top` are where the dot sits on the
+// photo (percentages of .ac-points-markers, whose top inset clears the
+// site header). Every label sits up at that container's top edge, in a
+// row above the elevation, with a straight vertical leader running down
+// to its dot — so the leader length is simply `top`. Columns are spaced
+// so no two leaders cross and no two labels touch. Dot placement as per
+// the client's annotated screenshot: Commercial on the glass tower;
+// Terrace at the crown of the tall residential tower; Residence on the
+// second tower's floors; Clubhouse and Podium down on the low buildings
+// at bottom-right.
 const POINT_POSITIONS: Record<string, { left: string; top: string }> = {
-  terrace: { left: '82%', top: '15%' },
-  residential: { left: '68%', top: '25%' },
-  clubhouse: { left: '50%', top: '35%' },
-  commercial: { left: '30%', top: '45%' },
-  podium: { left: '16%', top: '55%' },
+  commercial: { left: '32%', top: '45%' },
+  terrace: { left: '71%', top: '25%' },
+  residential: { left: '80%', top: '44%' },
+  clubhouse: { left: '88%', top: '82%' },
+  podium: { left: '95%', top: '93%' },
 };
 
 // .ac-points' own copy + photo for the two stages above that aren't
@@ -109,7 +112,7 @@ const POINT_POSITIONS: Record<string, { left: string; top: string }> = {
 // yet for these two.
 const POINTS_EXTRA_STAGES: { key: string; label: string; copy: string; img: string }[] = [
   { key: 'commercial', label: 'Commercial', copy: 'Ground-level retail and everyday convenience, right at the address.', img: `${gallery}entrance.jpeg` },
-  { key: 'residential', label: 'Residential', copy: 'Home to Achyutha’s residences, rising floor after floor above it.', img: `${hero}night_elevation.jpeg` },
+  { key: 'residential', label: 'Residence', copy: 'Home to Achyutha’s residences, rising floor after floor above it.', img: `${hero}night_elevation.jpeg` },
 ];
 
 // .ac-points' own full stage list — the three real, client-supplied
@@ -125,10 +128,59 @@ const POINTS_STAGES: { key: string; label: string; copy: string; img: string }[]
   ...POINTS_EXTRA_STAGES,
 ];
 
+// Hover-preview photo per amenity in .ac-cards' lists — the square card
+// that follows the cursor over an item (see the .ac-cards-preview driver
+// in the effect below). Drawn from photography already on the site,
+// matched by subject where one exists; anything without a specific
+// match falls back to its own zone's photo (CARDS_STAGES[].img), so
+// every item shows *something* true to its zone rather than a wrong
+// picture. Keyed by the exact item text used in CARDS_STAGES.
+const AMENITY_IMAGES: Record<string, string> = {
+  // Podium
+  'Project Signage': `${hero}podium.jpeg`,
+  'Water Feature': `${gallery}podium.jpg`,
+  'Gate': `${gallery}entrance.jpeg`,
+  'Walking Track': `${gallery}pathway.jpeg`,
+  'Tree House': `${gallery}podium-tree-court.jpg`,
+  'Half Basketball Court': `${gallery}half-basketball.jpeg`,
+  'Pickleball Court': `/velumuri-assets/images/hero/hero-courts.jpg`,
+  'Cricket Pitch': `${gallery}cricket-practice-net.jpg`,
+  'Multipurpose Plaza': `${gallery}podium.jpg`,
+  'Outdoor Fitness Station': `/velumuri-assets/images/hero/hero-courts.jpg`,
+  'Rejuvenating Path': `${gallery}pathway.jpeg`,
+  'Children’s Playground': `${gallery}kids-play-area.jpeg`,
+  'Pets’ Zone': `${gallery}podium-tree-court.jpg`,
+  'Tennis Court': `/velumuri-assets/images/hero/hero-courts.jpg`,
+  'Temperature-Controlled Pool': `${hero}terrace.jpeg`,
+  'Skating Rink': `${gallery}skating-rink.jpeg`,
+  'Jogging Track': `${gallery}pathway.jpeg`,
+  // Clubhouse
+  'Coffee Bar': `${hero}clubhouse.jpeg`,
+  'Waiting Lounge': `${gallery}waiting-hall.png`,
+  'Banquet Hall': `${hero}bridge_view.jpeg`,
+  'Board Room': `${gallery}guest-waiting-lounge.png`,
+  'Sports Lounge': `${hero}clubhouse.jpeg`,
+  'Seniors’ Room': `${gallery}waiting-hall.png`,
+  'Co-Working Space': `${gallery}guest-waiting-lounge.png`,
+  '4 Guest Rooms with Waiting Lounge': `${gallery}waiting-hall.png`,
+  // Terrace
+  'F&B Terrace': `${hero}bridge_view.jpeg`,
+  'Kids’ Playground': `${gallery}kids-play-area.jpeg`,
+  'Elderly Garden': `${gallery}podium-tree-court.jpg`,
+  'Sky Viewing Terrace': `${hero}bridge_view.jpeg`,
+  'Bar': `${hero}bridge_view.jpeg`,
+  'BBQ Station': `${hero}bridge_view.jpeg`,
+  'Sky Bar': `${hero}bridge_view.jpeg`,
+  'F&B Plaza': `${hero}bridge_view.jpeg`,
+  'Sky Bar & Pantry': `${hero}bridge_view.jpeg`,
+  'Sky Theater & Star Gazing': `${hero}night_sky.jpeg`,
+};
+const amenityImage = (stageImg: string, item: string) => AMENITY_IMAGES[item] ?? stageImg;
+
 const LOCATION_IMG = `${hero}location.jpeg`;
 
-// Floor plans — placeholder-level per instruction ("make A,B,C with
-// some masked one"): real per-block floor plans do exist for the
+// Floor plans — one tab per tower (A, B, C), placeholder-level per
+// instruction ("make A,B,C with some masked one"): real per-block floor plans do exist for the
 // sibling Velumuri Vistas project (public/velumuri-assets/images/
 // vistas/floor-plan-block-*.jpg) but are deliberately NOT used here,
 // even blurred — they're labelled, specific-unit-number layouts for a
@@ -139,9 +191,9 @@ const LOCATION_IMG = `${hero}location.jpeg`;
 // content, and no fabricated specs (BHK count, sqft) attached to any
 // one type, just a plain "ask us" placeholder per type.
 const FLOOR_PLAN_TYPES: { id: string; label: string }[] = [
-  { id: 'a', label: 'Plan A' },
-  { id: 'b', label: 'Plan B' },
-  { id: 'c', label: 'Plan C' },
+  { id: 'a', label: 'Tower A' },
+  { id: 'b', label: 'Tower B' },
+  { id: 'c', label: 'Tower C' },
 ];
 
 function Words({ text }: { text: string }) {
@@ -166,6 +218,7 @@ export function AchyuthaExperience() {
   // of the page, rather than letting FoldText's own built-in triggers
   // fire independently — see the note at the top of FoldText.tsx for why.
   const heroFoldRef = useRef<FoldTextHandle>(null);
+  const velumuriFoldRef = useRef<FoldTextHandle>(null);
   const tallestFoldRef = useRef<FoldTextHandle>(null);
   const highlightFoldRefs = useRef<(FoldTextHandle | null)[]>([]);
   const amenityFoldRefs = useRef<(FoldTextHandle | null)[]>([]);
@@ -198,6 +251,14 @@ export function AchyuthaExperience() {
     // post-transition instead of at the intended day/top state.
     if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
+    // Lenis is shared across pages (root layout) and may still be easing
+    // toward the previous page's scroll position when this one mounts —
+    // in that state it ignores the native scrollTo above and would drag
+    // the window back down, opening the hero mid-transition. Pin its
+    // own target to the top as well (MotionProvider also re-syncs it on
+    // every route change; this is the belt to that braces, since this
+    // page's whole opening depends on starting at exactly 0).
+    getLenisInstance()?.scrollTo(0, { immediate: true, force: true });
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     gsap.registerPlugin(ScrollTrigger);
@@ -207,6 +268,9 @@ export function AchyuthaExperience() {
     // teardown so the effect's main cleanup (below) can run it alongside
     // context.revert().
     let snapCleanup: (() => void) | undefined;
+    // Same story for the plain DOM listeners the amenity hover-preview
+    // below attaches — collected here, run from the effect's cleanup.
+    const extraCleanup: Array<() => void> = [];
     const context = gsap.context(() => {
       if (reducedMotion) {
         gsap.set('.ac-tallest-outline', { clipPath: 'inset(0% 0 0 0)' });
@@ -280,6 +344,22 @@ export function AchyuthaExperience() {
       gsap.to('.ac-sky--day, .ac-sky--night', { yPercent: -4, ease: 'none', ...parallax });
       gsap.to('.ac-building--day, .ac-building--night', { yPercent: -9, ease: 'none', ...parallax });
 
+      // ---- Velumuri section (company intro, right after the hero): a
+      // single centred column that reveals in sequence (eyebrow, FoldText
+      // headline, body, facts, CTA) on one trigger, then drifts slightly
+      // for parallax — the same vocabulary as .ac-tallest's copy. ----
+      const velumuriReveal = gsap.timeline({
+        defaults: { ease: 'power3.out' },
+        scrollTrigger: { trigger: '.ac-velumuri', start: 'top 72%', once: true },
+      });
+      velumuriReveal
+        .from('.ac-velumuri-copy .ac-eyebrow', { y: 16, opacity: 0, duration: .8 }, 0)
+        .call(() => velumuriFoldRef.current?.play(), [], .15)
+        .from('.ac-velumuri-body', { y: 20, opacity: 0, duration: .9 }, .55)
+        .from('.ac-velumuri-fact', { y: 18, opacity: 0, duration: .7, stagger: .1 }, .8)
+        .from('.ac-velumuri-cta', { y: 14, opacity: 0, duration: .7 }, 1.05);
+      gsap.to('.ac-velumuri-copy', { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '.ac-velumuri', start: 'top bottom', end: 'bottom top', scrub: SCRUB } });
+
       // ---- Tallest-building section: the two halves get distinct scroll
       // reveals. Right (image): the same bottom-to-top clip-path wipe used
       // for every masked image elsewhere on the site. Left (copy): a true
@@ -336,11 +416,12 @@ export function AchyuthaExperience() {
 
       // The site nav is suppressed over the immersive pinned hero (see
       // .ac-experience's CSS) and reintroduced once the second section
-      // starts appearing — hides again on scrolling back up into the hero.
+      // (.ac-velumuri) starts appearing — hides again on scrolling back
+      // up into the hero.
       const navHeader = document.getElementById('site-header');
       if (navHeader) {
         ScrollTrigger.create({
-          trigger: '.ac-tallest',
+          trigger: '.ac-velumuri',
           start: 'top 85%',
           onEnter: () => navHeader.classList.add('ac-nav-visible'),
           onLeaveBack: () => navHeader.classList.remove('ac-nav-visible'),
@@ -605,7 +686,17 @@ export function AchyuthaExperience() {
       // (.25s, brand.css) mostly clear before the markers themselves
       // start rising, so the two reveals read as one clear sequence
       // rather than fighting each other. ----
-      gsap.set('.ac-points-eyebrow, .ac-point', { opacity: 0, y: 60 });
+      gsap.set('.ac-points-eyebrow', { opacity: 0, y: 60 });
+      // Each marker's anchor shift (so its dot lands exactly on the
+      // inline left/top from POINT_POSITIONS) lives here as xPercent/
+      // yPercent rather than in CSS: GSAP folds any CSS `translate` on an
+      // element it animates into its own transform, and drops the
+      // vertical part of a percentage pair while doing so — so a plain
+      // `translate: -50% -100%` in brand.css ended up as x-only.
+      // Centred on the anchor horizontally, bottom edge (the dot) on it
+      // vertically — which, with the leader as long as `top`, puts every
+      // label on the container's top edge.
+      gsap.set('.ac-point', { opacity: 0, y: 60, xPercent: -50, yPercent: -100 });
       ScrollTrigger.create({
         trigger: '.ac-points',
         start: 'top top',
@@ -779,11 +870,17 @@ export function AchyuthaExperience() {
           cardsActive = idx;
           cardsStages.forEach((el, i) => el.classList.toggle('is-active', i === cardsActive));
           cardsStageFoldRefs.current[cardsActive]?.play();
+          // Only the active stage's items ever have pointer-events (the
+          // rest are pointer-events:none while clipped shut above), so
+          // whatever the hover-preview card was last showing belonged to
+          // a list that just stopped being interactive — always safe to
+          // snap it to the new stage's own photo here.
+          if (previewImg) previewImg.src = CARDS_STAGES[cardsActive].img;
         }
       };
 
       let cardsActive = 0;
-      ScrollTrigger.create({
+      const cardsTrigger = ScrollTrigger.create({
         trigger: '.ac-cards',
         start: 'top top',
         end: 'bottom bottom',
@@ -818,6 +915,65 @@ export function AchyuthaExperience() {
           applyCardsProgress(self);
         },
       });
+
+      // ---- Amenity hover preview: a square photo card that eases after
+      // the cursor while it's over any list item, swapping to that item's
+      // own photo (data-img, from AMENITY_IMAGES) on enter. gsap.quickTo
+      // (not a fresh tween per mousemove) so the card trails the pointer
+      // smoothly at any event rate. Pointer-only (no hover on touch, and
+      // below 901px the panel is static anyway), so nothing is wired up
+      // there. Photos are pre-warmed so the first hover on each doesn't
+      // flash an empty card while it loads.
+      // On, not just on-hover: it used to sit at opacity 0 until a
+      // visitor happened to hover a list item — nothing on screen hinted
+      // the list was interactive at all, so most people never found it
+      // (client feedback). It now rests visible, showing the active
+      // stage's own photo (already the <img>'s default src in JSX), at a
+      // fixed spot in the photo half clear of the eyebrow/title text —
+      // a visible hint before any interaction, exactly what a first-time
+      // visitor needs to realize hovering an item swaps the photo. It
+      // still eases to the cursor on every mousemove in the sticky area
+      // (not just over a list item) so it reads as "alive"/followable
+      // the moment someone moves their mouse in this section, and on
+      // leaving an item it settles back to the active stage's photo
+      // instead of disappearing. ----
+      const cardsSticky = element.querySelector<HTMLElement>('.ac-cards-sticky');
+      const preview = element.querySelector<HTMLElement>('.ac-cards-preview');
+      const previewImg = preview?.querySelector('img');
+      if (cardsSticky && preview && previewImg && window.matchMedia('(hover: hover) and (min-width: 901px)').matches) {
+        const items = gsap.utils.toArray<HTMLElement>('.ac-cards-stage-list li', element);
+        new Set(items.map((li) => li.dataset.img).filter(Boolean) as string[]).forEach((src) => { const warm = new Image(); warm.src = src; });
+        const stickyRect = cardsSticky.getBoundingClientRect();
+        gsap.set(preview, { opacity: 1, scale: 1, xPercent: -50, yPercent: -50, x: stickyRect.width * 0.27, y: stickyRect.height * 0.5 });
+        const xTo = gsap.quickTo(preview, 'x', { duration: .5, ease: 'power3.out' });
+        const yTo = gsap.quickTo(preview, 'y', { duration: .5, ease: 'power3.out' });
+        const onMove = (e: MouseEvent) => {
+          const rect = cardsSticky.getBoundingClientRect();
+          // Offset up-left of the pointer so the card sits beside the
+          // item being read (over the photo half), not on top of it.
+          xTo(e.clientX - rect.left - 190);
+          yTo(e.clientY - rect.top - 40);
+        };
+        const onEnter = (e: Event) => {
+          const src = (e.currentTarget as HTMLElement).dataset.img;
+          if (src && previewImg.getAttribute('src') !== src) previewImg.src = src;
+          gsap.fromTo(previewImg, { scale: 1.18 }, { scale: 1, duration: .7, ease: 'power3.out', overwrite: 'auto' });
+        };
+        const showActiveStagePhoto = () => {
+          const src = CARDS_STAGES[cardsActive].img;
+          if (previewImg.getAttribute('src') !== src) previewImg.src = src;
+        };
+        cardsSticky.addEventListener('mousemove', onMove, { passive: true });
+        items.forEach((li) => { li.addEventListener('mouseenter', onEnter); li.addEventListener('mouseleave', showActiveStagePhoto); });
+        // A list can scroll out from under a stationary pointer without
+        // the browser ever firing mouseleave — same fallback to the
+        // active stage's photo whenever the section itself is left.
+        ScrollTrigger.create({ trigger: '.ac-cards', start: 'top top', end: 'bottom bottom', onLeave: showActiveStagePhoto, onLeaveBack: showActiveStagePhoto });
+        extraCleanup.push(() => {
+          cardsSticky.removeEventListener('mousemove', onMove);
+          items.forEach((li) => { li.removeEventListener('mouseenter', onEnter); li.removeEventListener('mouseleave', showActiveStagePhoto); });
+        });
+      }
 
       // ---- Location: a plain one-shot reveal, same shape as .ac-cards'
       // own eyebrow-block above — this section isn't pinned/scrubbed at
@@ -907,6 +1063,28 @@ export function AchyuthaExperience() {
         let snapping = false;
         unlistenSnap = lenis.on('scroll', () => {
           if (snapping || Math.abs(lenis.velocity) > 0.15) return;
+          // .ac-cards: once a gesture settles anywhere inside a stage's
+          // wipe/panel-open phase (local progress below PANEL_OPEN_END),
+          // ease the rest of the way to that stage's fully-open hold —
+          // so one scroll always lands on one complete amenity list,
+          // never on a half-wiped photo or a half-slid panel. Stage
+          // boundaries themselves (local ≈ 0, e.g. resting exactly at
+          // the section's own top) are left alone.
+          if (cardsTrigger.isActive) {
+            const p = cardsTrigger.progress * cardsStageCount;
+            const idx = Math.min(cardsStageCount - 1, Math.floor(p));
+            const local = p - idx;
+            if (local > 0.02 && local < PANEL_OPEN_END) {
+              snapping = true;
+              const range = cardsTrigger.end - cardsTrigger.start;
+              lenis.scrollTo(cardsTrigger.start + (range * (idx + PANEL_OPEN_END + 0.03)) / cardsStageCount, {
+                duration: 0.9,
+                easing: (t: number) => 1 - Math.pow(1 - t, 3),
+                onComplete: () => { snapping = false; },
+              });
+              return;
+            }
+          }
           for (const selector of snapSelectors) {
             const target = element.querySelector<HTMLElement>(selector);
             if (!target) continue;
@@ -940,6 +1118,7 @@ export function AchyuthaExperience() {
     return () => {
       context.revert();
       snapCleanup?.();
+      extraCleanup.forEach((fn) => fn());
       document.getElementById('site-header')?.classList.remove('ac-nav-visible');
       document.body.classList.remove('ac-cards-active');
       document.body.classList.remove('ac-points-active');
@@ -967,6 +1146,26 @@ export function AchyuthaExperience() {
           <img className="ac-layer ac-building ac-building--night" src={`${hero}night_elevation.png`} alt="Achyutha residences illuminated at night" />
           {/* <img className="ac-layer ac-cloud ac-cloud--day" src={`${hero}day-right-cloud.png`} alt="" /> */}
           <div className="ac-copy"><p className="ac-eyebrow">Rajamahendravaram · Andhra Pradesh</p><h1><FoldText ref={heroFoldRef} text="Life, elevated." trigger="manual" splitBy="char" hinge="top" duration={.65} stagger={.045} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h1><p>An address shaped by light, landscape and a more considered way to come home.</p></div>
+        </div>
+      </section>
+
+      {/* Company intro — a short, centred "who is Velumuri" beat between
+          the immersive hero and the project story, leading to /about for
+          the full chairman's message, mission and vision. Facts here are
+          the ones already stated on the About page (building since 2008,
+          16 delivered projects, CREDAI membership) — nothing new claimed;
+          the headline is the chairman's own quote from that page. */}
+      <section className="ac-velumuri" aria-labelledby="ac-velumuri-h">
+        <div className="ac-velumuri-copy">
+          <p className="ac-eyebrow">About Velumuri Infra</p>
+          <h2 id="ac-velumuri-h"><FoldText ref={velumuriFoldRef} text={'We are not just builders,\nwe are family.'} trigger="manual" splitBy="line" hinge="top" duration={1.1} stagger={.12} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h2>
+          <p className="ac-velumuri-body">Velumuri Infra has been building homes in Rajahmundry since 2008 &mdash; sixteen residential projects delivered on schedule, hundreds of families settled, and a name that has come to mean reliability. Achyutha is the next chapter of that promise.</p>
+          <ul className="ac-velumuri-facts">
+            <li className="ac-velumuri-fact"><span className="ac-velumuri-fact-value">16</span><span className="ac-velumuri-fact-label">Projects completed</span></li>
+            <li className="ac-velumuri-fact"><span className="ac-velumuri-fact-value">18+</span><span className="ac-velumuri-fact-label">Years of experience</span></li>
+            <li className="ac-velumuri-fact"><span className="ac-velumuri-fact-value">CREDAI</span><span className="ac-velumuri-fact-label">Member</span></li>
+          </ul>
+          <Link className="ac-velumuri-cta" href="/about">About Us <span className="ac-velumuri-cta-arrow" aria-hidden="true">&rarr;</span></Link>
         </div>
       </section>
 
@@ -1089,7 +1288,7 @@ export function AchyuthaExperience() {
                 type="button"
                 key={stage.key}
                 className={`ac-point ac-point--${stage.key}`}
-                style={{ left: POINT_POSITIONS[stage.key].left, height: POINT_POSITIONS[stage.key].top }}
+                style={{ left: POINT_POSITIONS[stage.key].left, top: POINT_POSITIONS[stage.key].top, height: POINT_POSITIONS[stage.key].top }}
                 aria-label={`Show ${stage.label}`}
               >
                 <span className="ac-point-label">{stage.label}</span>
@@ -1171,18 +1370,23 @@ export function AchyuthaExperience() {
                 <p className="ac-cards-stage-copy">{stage.copy}</p>
                 <ul className="ac-cards-stage-list">
                   {stage.items.map((item, itemIndex) => (
-                    <li key={`${item}-${itemIndex}`}>{item}</li>
+                    <li key={`${item}-${itemIndex}`} data-img={amenityImage(stage.img, item)}>{item}</li>
                   ))}
                 </ul>
               </div>
             </div>
           ))}
+
+          {/* Cursor-following preview card — one shared element for every
+              amenity list item on this section; the driver in the effect
+              above swaps its photo (from the hovered item's data-img) and
+              eases it after the pointer. Hover-only (pointer devices ≥
+              901px), so it's inert on touch layouts. */}
+          <div className="ac-cards-preview" aria-hidden="true"><img src={CARDS_STAGES[0].img} alt="" /></div>
         </div>
       </section>
 
-      {/* Location — full-bleed photo (not the 3D map at
-          components/location-3d, which is a separate, heavier
-          experience): heading vertically centered left, the pill
+      {/* Location — full-bleed photo: heading vertically centered left, the pill
           filter bottom-left, and the location list in a glass card
           (same light glass as the pills) vertically centered right.
           Reuses that same real, already-vetted location data
@@ -1239,7 +1443,7 @@ export function AchyuthaExperience() {
           <p className="ac-eyebrow">Floor Plans</p>
           <h2 className="ac-floorplans-heading"><FoldText ref={floorplansFoldRef} text="Spaces, still taking shape." trigger="manual" splitBy="word" hinge="top" duration={.7} stagger={.06} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h2>
 
-          <div className="ac-floorplans-tabs" role="tablist" aria-label="Floor plan types">
+          <div className="ac-floorplans-tabs" role="tablist" aria-label="Towers">
             {FLOOR_PLAN_TYPES.map((plan) => (
               <button
                 type="button"
@@ -1259,7 +1463,7 @@ export function AchyuthaExperience() {
             <div className="ac-floorplans-overlay">
               <p className="ac-floorplans-tag">Coming soon</p>
               <p className="ac-floorplans-plan-label">{activeFloorPlanLabel}</p>
-              <p className="ac-floorplans-text">Detailed layouts for this plan are being finalised — reach out and our team will share the latest floor plans.</p>
+              <p className="ac-floorplans-text">Detailed layouts for this tower are being finalised — reach out and our team will share the latest floor plans.</p>
               <Link href="/contact" className="ac-floorplans-cta">Enquire Now</Link>
             </div>
           </div>

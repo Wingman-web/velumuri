@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { PageBanner } from '@/components/page-banner';
 
 const img = (path: string) => `/velumuri-assets/images/${path}`;
 
@@ -87,9 +88,14 @@ export function ContactPage() {
     document.documentElement.classList.add('js');
     gsap.registerPlugin(ScrollTrigger);
     const context = gsap.context(() => {
-      gsap.from('.contact-intro-heading .eyebrow', { y: 16, opacity: 0, duration: .8, scrollTrigger: { trigger: '.contact-intro', start: 'top 88%', once: true } });
-      gsap.to('.contact-intro-heading h1 .hero-line-inner', { y: 0, duration: 1, stagger: .12, scrollTrigger: { trigger: '.contact-intro', start: 'top 88%', once: true } });
-      gsap.from('.contact-intro-desc', { y: 16, opacity: 0, duration: .9, scrollTrigger: { trigger: '.contact-intro', start: 'top 85%', once: true } });
+      gsap.from('.page-banner-content .eyebrow', { y: 16, opacity: 0, duration: .8, scrollTrigger: { trigger: '.page-banner', start: 'top 90%', once: true } });
+      gsap.to('.page-banner-content h1 .hero-line-inner', { y: 0, duration: 1, stagger: .12, scrollTrigger: { trigger: '.page-banner', start: 'top 90%', once: true } });
+      gsap.from('.page-banner-desc', { y: 14, opacity: 0, duration: .8, delay: .3, scrollTrigger: { trigger: '.page-banner', start: 'top 90%', once: true } });
+      const bannerImg = root.current?.querySelector<HTMLElement>('.page-banner .hero-media img');
+      if (bannerImg) {
+        gsap.set(bannerImg, { scale: 1.12 });
+        gsap.to(bannerImg, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '.page-banner', start: 'top bottom', end: 'bottom top', scrub: true } });
+      }
       gsap.from('.contact-form .field, .contact-form .contact-submit', { y: 16, opacity: 0, duration: .9, stagger: .08, scrollTrigger: { trigger: '.contact-intro', start: 'top 72%', once: true } });
 
       const commitment = document.querySelector<HTMLElement>('.contact-commitment');
@@ -111,18 +117,14 @@ export function ContactPage() {
 
   return (
     <div ref={root}>
-      <section className="contact-intro" aria-labelledby="contact-h">
-        <div className="container contact-intro-head">
-          <div className="contact-intro-heading">
-            <p className="eyebrow">Contact Us</p>
-            <h1 id="contact-h">
-              <span className="hero-line"><span className="hero-line-inner">Let&rsquo;s Help You Find</span></span>
-              <span className="hero-line"><span className="hero-line-inner">The Right Home.</span></span>
-            </h1>
-          </div>
-          <p className="contact-intro-desc">Whether you&rsquo;re looking to buy, explore our ongoing projects, or just have a question — our team is ready to guide every step with clarity.</p>
-        </div>
-
+      <PageBanner
+        eyebrow="Contact Us"
+        lines={['Let’s Help You Find', 'The Right Home.']}
+        description="Whether you’re looking to buy, explore our ongoing projects, or just have a question — our team is ready to guide every step with clarity."
+        image="hero/hero-aerial.jpg"
+        alt="Aerial view of a Velumuri Infra gated community"
+      />
+      <section className="contact-intro" aria-label="Get in touch">
         <div className="container">
           <div className="contact-card">
             <div className="contact-commitment">

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useEnquiryModal } from '@/components/enquiry-modal';
 
 const STORAGE_KEY = 'achyutha-cookie-consent';
 
@@ -23,6 +24,7 @@ export function SiteFooter() {
   const root = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [cookieVisible, setCookieVisible] = useState(false);
+  const openEnquiryModal = useEnquiryModal();
 
   useEffect(() => {
     let alreadyChosen = false;
@@ -88,7 +90,7 @@ export function SiteFooter() {
             <span className="hero-line"><span className="hero-line-inner">Ready To See Your</span></span>
             <span className="hero-line"><span className="hero-line-inner">Next Home?</span></span>
           </h2>
-          <Link className="btn-schedule" href="/contact#visit">Schedule A Visit <span className="arrow">→</span></Link>
+          <button type="button" className="btn-schedule" onClick={() => openEnquiryModal()}>Schedule A Visit <span className="arrow">→</span></button>
         </div>
 
         <div className="footer-top">
@@ -141,9 +143,11 @@ export function SiteFooter() {
         </div>
 
         <div className={cookieVisible ? 'footer-bottom has-cookie-notice' : 'footer-bottom'}>
-          <p>© {new Date().getFullYear()} Velumuri Infra. All rights reserved.</p>
-          <p><Link href="/privacy-policy">Privacy Policy</Link></p>
-          <p><a href="https://wingmanbrandworks.com/" target="_blank" rel="noopener">Designed &amp; Developed by Wingman Brandworks LLP</a></p>
+          <div className="footer-legal">
+            <p>© {new Date().getFullYear()} Velumuri Infra. All rights reserved.</p>
+            <p><Link href="/privacy-policy">Privacy Policy</Link></p>
+          </div>
+          <p><a href="https://wingmanbrandworks.com/" target="_blank" rel="noopener">Designed &amp; Developed by <span className="footer-credit-highlight">Wingman Brandworks LLP</span></a></p>
         </div>
       </div>
 

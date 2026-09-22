@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useEnquiryModal } from '@/components/enquiry-modal';
 
 const primaryLinks = [
   { href: '/about', label: 'About' },
@@ -19,14 +20,12 @@ const projectLinks = [
   { href: '/previous-projects', label: 'Completed' },
 ];
 
-function ScheduleVisit({ className }: { className?: string }) {
+function ScheduleVisit({ className, onBeforeOpen }: { className?: string; onBeforeOpen?: () => void }) {
+  const openEnquiryModal = useEnquiryModal();
   return (
-    <Link className={className ?? 'nav-book'} href="/contact#visit">
+    <button type="button" className={className ?? 'nav-book'} onClick={() => { onBeforeOpen?.(); openEnquiryModal(); }}>
       <span className="nav-book-label">Schedule a Visit</span>
-      <span className="nav-book-icon" aria-hidden="true">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg>
-      </span>
-    </Link>
+    </button>
   );
 }
 
@@ -62,7 +61,6 @@ export function SiteHeader() {
 
     const hero = document.querySelector<HTMLElement>('.hero');
     let trigger: ScrollTrigger | undefined;
-    let onScroll: (() => void) | undefined;
 
     if (hero) {
       gsap.registerPlugin(ScrollTrigger);
@@ -73,19 +71,14 @@ export function SiteHeader() {
         onLeaveBack: () => { setSolid(false); setNavVisible(false); },
       });
     } else {
-      const threshold = 40;
-      onScroll = () => {
-        const past = window.scrollY > threshold;
-        setSolid(past);
-        setNavVisible(past);
-      };
-      onScroll();
-      window.addEventListener('scroll', onScroll, { passive: true });
+      // Pages without a hero show the nav solid from the start instead of
+      // waiting on scroll.
+      setSolid(true);
+      setNavVisible(true);
     }
 
     return () => {
       trigger?.kill();
-      if (onScroll) window.removeEventListener('scroll', onScroll);
     };
   }, []);
 
@@ -121,7 +114,7 @@ export function SiteHeader() {
             <Link className="nav-logo" href="/" aria-label="Achyutha — home">
               <img src="/velumuri-assets/images/velumuri_transparent.png" alt="Achyutha" width={153} height={166} loading="eager" fetchPriority="high" />
             </Link>
-            <Link className="nav-logo nav-logo-achyutha" href="/projects/achyutha" aria-label="Achyutha project">
+            <Link className="nav-logo nav-logo-achyutha" href="/" aria-label="Achyutha — home">
               <img src="/images/hero/achyutha.png" alt="" width={187} height={57} loading="eager" />
             </Link>
           </div>
@@ -139,12 +132,9 @@ export function SiteHeader() {
         <div className="mobile-menu-backdrop" onClick={close} />
         <div className="mobile-menu-panel">
           <div className="mobile-menu-top">
-            <ScheduleVisit />
+            <ScheduleVisit onBeforeOpen={close} />
             <button type="button" className="mobile-menu-close" onClick={close}>
               <span className="nav-toggle-label">Close</span>
-              <span className="mobile-menu-close-icon" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
-              </span>
             </button>
           </div>
 

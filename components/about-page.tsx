@@ -75,7 +75,7 @@ export function AboutPage() {
 
           <div className="chairman-photo">
             <img
-              src={img('chairman.jpg')}
+              src="/images/hero/Chairman.png"
               alt="Bhima Shankar Rao Velumuri, Chairman & Managing Director of Velumuri Infra"
               loading="lazy"
               width={480}

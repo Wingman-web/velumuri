@@ -10,6 +10,8 @@ import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { MotionProvider } from '@/components/motion-provider';
 import { ScrollBadge } from '@/components/scroll-badge';
+import { EnquiryModalProvider } from '@/components/enquiry-modal';
+import { EnquiryTab } from '@/components/enquiry-tab';
 
 export const metadata: Metadata = {
   title: 'Achyutha | Living, considered',
@@ -21,10 +23,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body>
         <MotionProvider>
-          <SiteHeader />
-          <main>{children}</main>
-          <SiteFooter />
-          <ScrollBadge />
+          <EnquiryModalProvider>
+            <SiteHeader />
+            <main>{children}</main>
+            <SiteFooter />
+            <ScrollBadge />
+            <EnquiryTab />
+          </EnquiryModalProvider>
         </MotionProvider>
       </body>
     </html>

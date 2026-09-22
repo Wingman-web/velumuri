@@ -1,6 +1,6 @@
 const img = (path: string) => `/velumuri-assets/images/${path}`;
 
-export function PageBanner({ eyebrow, lines, image, alt }: { eyebrow: string; lines: [string, string]; image: string; alt: string }) {
+export function PageBanner({ eyebrow, lines, image, alt, description }: { eyebrow: string; lines: string[]; image: string; alt: string; description?: string }) {
   return (
     <section className="page-banner mood-image" aria-label={eyebrow}>
       <div className="hero-media">
@@ -10,9 +10,11 @@ export function PageBanner({ eyebrow, lines, image, alt }: { eyebrow: string; li
       <div className="container page-banner-content">
         <p className="eyebrow">{eyebrow}</p>
         <h1>
-          <span className="hero-line"><span className="hero-line-inner">{lines[0]}</span></span>
-          <span className="hero-line"><span className="hero-line-inner">{lines[1]}</span></span>
+          {lines.map((line, i) => (
+            <span className="hero-line" key={i}><span className="hero-line-inner">{line}</span></span>
+          ))}
         </h1>
+        {description && <p className="page-banner-desc">{description}</p>}
       </div>
     </section>
   );
