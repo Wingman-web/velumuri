@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
 
 @font-face { font-family: 'Runalto'; src: url('/fonts/Runalto.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: 'Poppins'; src: url('/fonts/Poppins-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
@@ -50,6 +50,7 @@
 .footer-bottom { transition: padding-bottom var(--dur-fast) var(--ease-out); }
 .footer-bottom.has-cookie-notice { padding-bottom: 220px; }
 @media (max-width: 640px) { .footer-bottom.has-cookie-notice { padding-bottom: 280px; } }
+.footer-bottom p { font-weight: 300; }
 
 /* Groups "All rights reserved" with "Privacy Policy" as one unit so
    .footer-bottom's space-between puts this pair on one side and the
@@ -94,7 +95,7 @@ body:has(.ac-experience) #site-header.ac-nav-visible { opacity: 1; pointer-event
    down to 100%, leaving exactly the missing 10% as a gap (visible as
    the .ac-sticky background peeking through on the right edge). */
 .ac-layer { position: absolute; inset: -5%; width: 110%; max-width: none; height: 110%; object-fit: cover; object-position: center; will-change: transform, opacity; pointer-events: none; }
-.ac-sky--night, .ac-building--night, .ac-cloud--night { opacity: 0; }
+.ac-sky--evening, .ac-building--evening, .ac-sky--night, .ac-building--night, .ac-cloud--night { opacity: 0; }
 /* object-position:center previously cropped evenly off the top AND
    bottom of the elevation cutout — anchoring to the bottom instead
    means any crop comes off the (less important) sky/roof side, and the
@@ -106,7 +107,7 @@ body:has(.ac-experience) #site-header.ac-nav-visible { opacity: 1; pointer-event
 /* Bottom fade strengthened (was .38 max, now goes to full black) so the
    pinned scene visually resolves into .ac-tallest's solid black instead
    of handing off with a visible brightness seam at the section edge. */
-.ac-sticky::after { content: ''; position: absolute; z-index: 4; inset: 0; pointer-events: none; background: linear-gradient(90deg,rgba(0,0,0,.43),transparent 48%),linear-gradient(0deg,#000 0%,transparent 32%); }
+.ac-sticky::after { content: ''; position: absolute; z-index: 4; inset: 0; pointer-events: none; background: linear-gradient(90deg,rgba(0,0,0,.18),transparent 48%),linear-gradient(0deg,#000 0%,transparent 32%); }
 /* Centered brandmark, sitting in the open sky between the left-hand
    copy and the tower — small "Velumuri" wordmark over a large
    "ACHYUTHA" mark, each line masked and reveal-animated on load. */
@@ -115,6 +116,30 @@ body:has(.ac-experience) #site-header.ac-nav-visible { opacity: 1; pointer-event
 .ac-brandmark-line { display: block; }
 .ac-brandmark-small { font-family: var(--font-primary); font-size: clamp(14px, 1.8vw, 30px); font-weight: 500; letter-spacing: .4em; text-transform: uppercase; color: #fff; margin-bottom: clamp(8px, 1.2vw, 16px); text-align: left; }
 .ac-brandmark-big { font-family: var(--serif); font-size: clamp(64px, 14vw, 230px); font-weight: 400; letter-spacing: .04em; text-transform: uppercase; line-height: 1; color: rgba(255,255,255,.94); text-shadow: 0 8px 40px rgba(0,0,0,.35); text-align: left; }
+/* Day/night tagline under the ACHYUTHA wordmark — crossfades on the
+   same GSAP scroll timeline as the sky/building day→night swap
+   (achyutha-experience.tsx), not a CSS transition, so it stays in
+   perfect scrub-sync with everything else that timeline drives rather
+   than animating on its own separate clock. .ac-brandmark-tagline--
+   night's opacity:0 here is only its resting start state.
+   Styled as the same small-caps "eyebrow + thin line" treatment used
+   everywhere else on the site (.eyebrow in components-v4.css) rather
+   than a plain bold label, so it reads as a considered piece of copy
+   instead of a UI tag. */
+.ac-brandmark-tagline-wrap { position: relative; display: block; margin-top: clamp(16px, 2.2vw, 30px); height: clamp(14px, 1.6vw, 20px); }
+.ac-brandmark-tagline { position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 14px; white-space: nowrap; font-family: var(--sans); font-size: clamp(11px, 1.1vw, 14px); font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.45), 0 2px 16px rgba(0,0,0,.55); }
+.ac-brandmark-tagline::before { content: ''; width: 30px; height: 1px; background: #fff; box-shadow: 0 1px 6px rgba(0,0,0,.4); }
+.ac-brandmark-tagline--night { opacity: 0; }
+/* Readable on every sky without a backing pill: crisp white type with a
+   tight shadow (the left-side .ac-sticky::after wash is kept light so it
+   no longer greys the brandmark and tagline). */
+.ac-brandmark-tagline { text-shadow: 0 1px 3px rgba(0,0,0,.45), 0 2px 12px rgba(0,0,0,.25); }
+.ac-brandmark-tagline::before { box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+/* Day tagline (morning + evening skies are light) is dark navy; the night
+   one stays white on the dark sky. Slightly larger for both. */
+.ac-brandmark-tagline { font-size: clamp(12px, 1.2vw, 16px); }
+.ac-brandmark-tagline--day { color: #14202e; text-shadow: 0 1px 10px rgba(255,255,255,.35); }
+.ac-brandmark-tagline--day::before { background: #14202e; box-shadow: none; }
 /* Hidden for now — the centered .ac-brandmark carries the hero's copy
    instead. Left in place (not deleted) so it's easy to bring back. */
 .ac-copy { display: none; position: absolute; z-index: 6; left: clamp(22px,5vw,74px); top: 50%; max-width: 600px; transform: translateY(-48%); }.ac-eyebrow { margin: 0 0 19px; color: var(--cream); font-size: 10px; letter-spacing: .29em; text-transform: uppercase; }
@@ -126,7 +151,7 @@ body:has(.ac-experience) #site-header.ac-nav-visible { opacity: 1; pointer-event
    breaks in Chromium the moment that heading's text wraps onto a
    second line. Applying it per-piece sidesteps that regardless of
    whether a given heading happens to wrap (see the same pattern on
-   .ac-cards-eyebrow-block/.ac-cards-stage-label/.ac-highlight-label/
+   .ac-cards-stage-heading/.ac-cards-stage-label/.ac-highlight-label/
    .ac-amenity-label below). */
 .ac-copy h1 .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 /* A flat #000 here read as a dead, featureless void under the hero's
@@ -152,13 +177,13 @@ body:has(.ac-experience) #site-header.ac-nav-visible { opacity: 1; pointer-event
    .ac-* section (the generic `section` rule in layout-v4.css would
    otherwise add its own). The faint sand glow at top is the same
    treatment .legacy-hero uses, so it reads as one family. */
-.ac-velumuri { position: relative; z-index: 2; display: flex; justify-content: center; padding: clamp(90px,12vw,160px) 8vw clamp(80px,10vw,130px); background: radial-gradient(ellipse at 50% 0%, rgba(236,208,158,.13), transparent 45%), #000; overflow: hidden; }
+.ac-velumuri { position: relative; z-index: 2; display: flex; justify-content: center; padding: clamp(90px,12vw,160px) 8vw clamp(80px,10vw,130px); background: #000; overflow: hidden; }
 .ac-velumuri-copy { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 760px; text-align: center; }
 .ac-velumuri-copy .ac-eyebrow { margin: 0 0 22px; color: var(--sand); font-size: 10px; letter-spacing: .29em; text-transform: uppercase; }
 .ac-velumuri-copy h2 { margin: 0 0 26px; font-family: var(--serif); font-size: clamp(40px,5vw,84px); font-weight: 400; line-height: .98; letter-spacing: -.03em; color: var(--cream); }
 .ac-velumuri-copy h2 .fold-text-line { white-space: nowrap; }
 .ac-velumuri-copy h2 .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.ac-velumuri-body { margin: 0; max-width: 560px; color: rgba(250,244,230,.72); font-size: 15px; line-height: 1.8; }
+.ac-velumuri-body { margin: 0; max-width: 730px; color: rgba(250,244,230,.72); font-size: 15px; line-height: 1.8; }
 .ac-velumuri-facts { list-style: none; display: flex; justify-content: center; gap: clamp(28px,5vw,72px); width: 100%; max-width: 560px; margin: 40px 0 0; padding: 32px 0 0; border-top: 1px solid rgba(250,244,230,.14); }
 .ac-velumuri-fact { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .ac-velumuri-fact-value { font-family: var(--serif); font-size: clamp(24px,2vw,34px); line-height: 1.05; color: var(--cream); white-space: nowrap; }
@@ -183,35 +208,57 @@ body:has(.ac-experience) #site-header.ac-nav-visible { opacity: 1; pointer-event
    ended up sized independently rather than as a true 50/50 split) —
    restoring display:grid here reactivates those and gives both sides
    equal width. */
-.ac-tallest { position: relative; z-index: 2; min-height: 145vh; padding: clamp(70px,12vw,150px) 8vw clamp(24px,6vw,60px); background: linear-gradient(180deg, #000 0%, #1c1c1c 45%, #000 100%); display: flex; gap: clamp(32px,5vw,72px); overflow: hidden; }
+.ac-tallest { position: relative; z-index: 2; height: 145vh; padding-block: 0; background: linear-gradient(180deg, #000 0%, #1c1c1c 45%, #000 100%); }
+/* The copy+photo row used to sit directly in .ac-tallest's own flex
+   layout — since .ac-tallest is deliberately taller than one viewport
+   (145vh, for scroll pacing — see the comment above it), the row
+   scrolled away like normal in-flow content long before the section's
+   extra height ran out, leaving a bare stretch of background with
+   nothing in it before the next section's own reveal caught up.
+   Pinning it keeps it on screen for the section's whole scroll
+   distance instead.
+   This is GSAP-pinned (see the ScrollTrigger.create in
+   achyutha-experience.tsx), not CSS position:sticky like every other
+   -sticky element on this page (.ac-cards-sticky/.ac-highlights-sticky/
+   .ac-points-sticky) — native sticky reproducibly failed to engage
+   here (froze at a stale offset instead of tracking scroll, confirmed
+   by direct rect measurement across many scroll positions) despite
+   matching those working elements property-for-property; didn't
+   reproduce in isolation either, so the cause was never fully
+   identified. GSAP's own pin sidesteps whatever that was.
+   .ac-tallest-row carries the flex layout (not .ac-tallest-sticky
+   itself) — the pinned element being display:flex directly was enough
+   on its own to keep it from ever actually pinning in testing, for
+   reasons as unclear as the sticky failure itself. */
+.ac-tallest-sticky { position: relative; height: 100vh; min-height: 560px; overflow: hidden; }
+.ac-tallest-row { display: flex; align-items: center; gap: clamp(32px,5vw,72px); padding: 0 8vw; box-sizing: border-box; height: 100%; }
+/* Lives inside .ac-tallest-sticky (not .ac-tallest directly) so the
+   Silk WebGL backdrop is part of the pinned subtree and holds still
+   with the photo/copy row instead of continuing to scroll past a now-
+   static foreground — it used to sit directly in .ac-tallest and needed
+   an explicit 100vh cap (inset:0 on a 145vh parent otherwise stretched
+   the canvas that tall); now that its parent is .ac-tallest-sticky
+   itself (100vh), inset:0 already gives it the right size with no cap
+   needed. The remaining 45vh of .ac-tallest below the pin falls through
+   to its own dark gradient background, same as before. */
 .ac-tallest-silk { position: absolute; inset: 0; }
-/* .ac-tallest's min-height is deliberately 145vh (see the comment
-   above it) so it takes more scroll distance to pass — but that same
-   145vh was stretching the Silk WebGL canvas behind it just as tall.
-   Capping the canvas at 100vh keeps the animated backdrop to one
-   viewport; the extra scroll distance below it falls through to
-   .ac-tallest's own dark gradient background instead. Selector scoped
-   here (rather than editing Silk.css) both keeps Silk itself generic
-   and outweighs Silk.css's same-specificity rule regardless of which
-   stylesheet's import happens to land later in the bundle. */
-.ac-tallest-silk .silk-container, .ac-tallest-silk .silk-container canvas { height: 100vh; max-height: 100vh; }
 /* order:2 keeps the image on the right despite being first in the DOM
    (the copy block below is order:1) — equal-width columns via
    flex:1 1 0 (a zero basis so both sides grow to share the row
    equally) rather than grid-column, now that the parent is flex. */
-.ac-tallest-outline { position: relative; display: flex; order: 2; flex: 1 1 0; max-width: 520px; aspect-ratio: 3/4; max-height: 620px; margin-inline: auto; overflow: hidden; border-radius: 16px; }
+.ac-tallest-outline { position: relative; display: flex; order: 2; flex: 1 1 0; max-width: 520px; aspect-ratio: 3/4; max-height: 545px; margin-inline: auto; overflow: hidden; border-radius: 16px; }
 .ac-tallest-sky, .ac-tallest-building, .ac-tallest-cloud { position: absolute; }
 .ac-tallest-sky, .ac-tallest-cloud { filter: grayscale(1) contrast(1.3) brightness(.6); }
 .ac-tallest-sky, .ac-tallest-building { inset: 0; width: 100%; height: 100%; object-fit: cover; }
 /* Same wide-establishing-shot framing as the hero — the tower sits in
    the right half of day_elevation.png, so bias the crop that way
    instead of centering on the empty sky to its left. */
-.ac-tallest-building { z-index: 1; object-position: 80% 50%; }
+.ac-tallest-building { z-index: 1; object-position: 52% 50%; }
 .ac-tallest-cloud { top: 4%; right: -12%; width: 42%; height: auto; opacity: .5; z-index: 1; }
 .ac-tallest-copy { position: relative; z-index: 2; display: flex; flex-direction: column; order: 1; flex: 1 1 0; max-width: 520px; margin-inline: auto; }
 .ac-tallest-copy .ac-eyebrow { margin: 0 0 19px; color: var(--cream); font-size: 10px; letter-spacing: .29em; text-transform: uppercase; }
 .ac-tallest-copy h2 { margin: 0 0 22px; font-family: var(--serif); font-size: clamp(40px,4.8vw,84px); font-weight: 400; line-height: .96; letter-spacing: -.03em; color: var(--cream); }
-.ac-tallest-copy p { margin: 0; max-width: 420px; color: rgba(250,244,230,.72); font-size: 15px; line-height: 1.8; }
+.ac-tallest-copy p { margin: 0; max-width: 420px; color: rgba(250,244,230,.72); font-size: 14px; line-height: 1.8;font-weight:300; }
 /* Headline + body copy are split into per-word spans and start dim gray;
    a scroll-scrubbed GSAP tween lights each one up to white/cream in
    sequence as the section scrolls through view (see
@@ -226,15 +273,29 @@ body:has(.ac-experience) #site-header.ac-nav-visible { opacity: 1; pointer-event
    its own line-box, same reasoning the old masked-line version needed. */
 .ac-tallest-copy h2 .fold-text-line { white-space: nowrap; }
 .ac-tallest-copy h2 .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* line-height .96 is shorter than the serif's descenders, and background-clip:text
+   only paints inside the box — pad the piece down (and pull it back) so the
+   gradient reaches the tails of p/g/y without changing line spacing. */
+.ac-tallest-copy h2 .fold-text-piece { padding-bottom: .16em; margin-bottom: -.16em; }
 /* Project stats — 2x2 grid, reference: a gold diagonal accent line
    crossing a stat-number/label grid. Approximated here with a rotated
    gradient line + a small glowing dot rather than a full SVG replica. */
-.ac-tallest-stats { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 30px 44px; max-width: 420px; margin-top: 40px; padding-top: 34px; border-top: 1px solid rgba(250,244,230,.14); }
-/* .ac-tallest-stats::before { content: ''; position: absolute; top: -16%; left: 48%; width: 1px; height: 132%; background: linear-gradient(180deg, transparent, rgba(236,208,158,.45), transparent); transform: rotate(18deg); pointer-events: none; } */
-/* .ac-tallest-stats::after { content: ''; position: absolute; top: 40%; left: 47%; width: 6px; height: 6px; border-radius: 50%; background: var(--sand); box-shadow: 0 0 0 5px rgba(236,208,158,.14), 0 0 14px rgba(236,208,158,.5); pointer-events: none; } */
-.ac-tallest-stat { display: flex; flex-direction: column; gap: 6px; }
-.ac-tallest-stat-value { font-family: var(--serif); font-size: clamp(24px,2vw,36px); font-weight: 400; line-height: 1.05; color: var(--cream); }
-.ac-tallest-stat-label { font-family: var(--sans); font-size: 11px; letter-spacing: .06em; color: rgba(250,244,230,.6); }
+/* 6 stats: 2 columns (3 lines) by default — only safely fits on the
+   narrowest/stacked layout below. From 701px up (where .ac-tallest
+   still has the side-by-side photo, same breakpoint the section
+   already switches on), 3 columns puts all 6 in two lines instead,
+   as requested — widened to the copy column's own max-width (520px)
+   so three columns have room, with a tighter gap and a smaller value
+   size so the longer entries ("2,700-4,000", "Sq.ft. Residences")
+   don't wrap mid-value. */
+.ac-tallest-stats { position: relative; display: grid; grid-template-columns: repeat(2,1fr); gap: 28px 32px; max-width: 420px; margin-top: 40px; padding-top: 34px; border-top: 1px solid rgba(250,244,230,.14); }
+.ac-tallest-stat { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ac-tallest-stat-value { font-family: var(--serif); font-size: clamp(22px,2vw,36px); font-weight: 400; line-height: 1.05; color: var(--sand); }
+.ac-tallest-stat-label { font-family: var(--sans); font-size: 11px; letter-spacing: .06em; color: rgba(250,244,230,.6); white-space: nowrap; }
+@media (min-width:701px) {
+  .ac-tallest-stats { grid-template-columns: repeat(3,1fr); max-width: 520px; gap: 26px 28px; }
+  .ac-tallest-stat-value { font-size: clamp(19px,1.5vw,30px); white-space: nowrap; }
+}
 /* Two-point highlight reel — a scroll-scrubbed crossfade between two
    full-bleed images stands in for the reference video's flat
    background-color swap, pinned for the length of the transition;
@@ -294,7 +355,15 @@ body:has(.ac-experience) #site-header.ac-nav-visible { opacity: 1; pointer-event
    is why the text ended up flush against the screen edge once the
    items became absolute. Each item now carries that padding/max-width
    itself instead. */
-.ac-highlight-item { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 8vw; max-width: 640px; box-sizing: border-box; opacity: 0; pointer-events: none; transform: translateX(-28px); transition: opacity .6s var(--ease-out,ease), transform .6s var(--ease-out,ease); }
+/* max-width raised from 640px — at that width, each line's
+   white-space:nowrap (below) let a longer heading like "Setting A
+   Benchmark" overflow its own padding box by ~80px rather than
+   wrapping, bleeding into the photo instead of just sitting over it
+   (there's no side-by-side column to collide with here — the photo is
+   a full-bleed background behind the whole section — so the extra
+   room is otherwise free). 760px comfortably fits that heading with
+   margin for other copy this slide rotates through. */
+.ac-highlight-item { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 8vw; max-width: none; box-sizing: border-box; opacity: 0; pointer-events: none; transform: translateX(-28px); transition: opacity .6s var(--ease-out,ease), transform .6s var(--ease-out,ease); }
 .ac-highlight-item.is-active { opacity: 1; pointer-events: auto; transform: translateX(0); }
 .ac-highlight-head { display: flex; align-items: baseline; gap: 18px; overflow: hidden; }
 .ac-highlight-index { font-family: var(--sans); font-size: 12px; letter-spacing: .22em; color: var(--sand); }
@@ -305,6 +374,7 @@ body:has(.ac-experience) #site-header.ac-nav-visible { opacity: 1; pointer-event
 @media (max-width:700px) {
   .ac-highlights-sticky { min-height: 520px; }
   .ac-highlight-item { padding: 0 7vw; max-width: none; transform: translateX(-16px); }
+  .ac-highlight-label .fold-text-line { white-space: normal; }
   .ac-highlight-copy { margin-left: 0; max-width: none; }
 }
 
@@ -315,7 +385,7 @@ body:has(.ac-experience) #site-header.ac-nav-visible { opacity: 1; pointer-event
    sequence below. */
 .ac-podium-intro { padding:0px; position: relative; min-height: 100vh; min-height: 100dvh; overflow: hidden; background: #00000000; }
 .ac-podium-intro-copy { position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; min-height: 100vh; min-height: 100dvh; padding: clamp(90px,10vw,140px) 8vw; }
-.ac-podium-intro-copy p { margin: 0 auto; max-width: 720px; text-align: center; font-family: var(--serif); font-size: clamp(20px,2.4vw,34px); font-weight: 400; line-height: 1.45; color: var(--cream); }
+.ac-podium-intro-copy p { margin: 0 auto; max-width: 800px; text-align: center; font-family: var(--serif); font-size: clamp(20px,2.4vw,34px); font-weight: 400; line-height: 1.45; color: var(--cream); }
 /* Words start dim and light up to full cream in sequence as the
    section scrolls through view — the same scroll-scrubbed reveal used
    for .ac-tallest-copy, layered on top of the block-level fade/lift-in
@@ -423,7 +493,7 @@ body:has(.ac-experience) #site-header.ac-nav-visible { opacity: 1; pointer-event
    — toggled from achyutha-experience.tsx's own ScrollTrigger for
    .ac-cards, same body-class-on-a-fixed-global-element pattern as
    #site-header's own ac-nav-visible toggle above. */
-body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac-location-active #scroll-badge { opacity: 0; pointer-events: none; }
+body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac-location-active #scroll-badge, body.ac-floorplans-active #scroll-badge, body.ac-lightbox-open #scroll-badge { opacity: 0; pointer-events: none; }
 /* #scroll-badge's own id-selector transition here beats .scroll-badge's
    class-selector one in components-v4.css regardless of load order (id
    > class specificity) — repeating that rule's left/bottom/transform/
@@ -441,13 +511,13 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
    of a synced backdrop+card pair, and both the title and the panel
    living in a single .ac-cards-stage per category so reduced-motion can
    just stack each stage whole. */
-/* 700vh (was 400vh): the sticky child pins for (height − 100vh), so
+/* 900vh (700vh for three categories, 400vh before that): the sticky child pins for (height − 100vh), so
    this is 200vh of scroll per category instead of 100vh — one trackpad
    fling was carrying clear across a whole category (or two), landing on
    the third list from the first. Paired with the settle-snap in
    achyutha-experience.tsx, which eases any rest inside a transition on
    to that category's fully-open list. */
-.ac-cards { position: relative; z-index: 2; height: 700vh; padding-block: 0; background: #000; }
+.ac-cards { position: relative; z-index: 2; height: 900vh; padding-block: 0; background: #000; }
 /* Cursor-following amenity preview — a square photo card, driven from
    achyutha-experience.tsx (position via GSAP x/y, shown/hidden on list
    item hover). z-index above the stage panel (2) so it rides over the
@@ -461,9 +531,17 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
    .ac-points→.ac-cards range — see .ac-points-sticky). */
 .ac-cards-sticky { position: sticky; top: 0; height: 100vh; height: 100dvh; min-height: 600px; overflow: hidden; border-radius: clamp(20px,3vw,40px) clamp(20px,3vw,40px) 0 0; }
 
-.ac-cards-eyebrow-block { position: absolute; z-index: 3; left: clamp(22px,5vw,74px); top: clamp(90px,12vh,140px); max-width: 420px; }
-.ac-cards-eyebrow-block h2 { margin: 0; font-family: var(--serif); font-size: clamp(26px,3vw,40px); font-weight: 400; line-height: 1.15; letter-spacing: -.02em; color: var(--cream); }
-.ac-cards-eyebrow-block h2 .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* One per stage now (used to be a single shared block with its own
+   "Amenities" eyebrow above it — both dropped: the heading now reads
+   differently per category, set via `heading` in CARDS_STAGES, and
+   rides the same opacity/y crossfade as .ac-cards-stage-title below
+   instead of its own one-shot entrance). Font-size reduced from
+   clamp(26px,3vw,40px) — it was competing too hard with the giant
+   .ac-cards-stage-label below it for the same "biggest text on
+   screen" attention. */
+.ac-cards-stage-heading { position: absolute; z-index: 3; left: clamp(22px,5vw,74px); top: clamp(90px,12vh,140px); max-width: 420px; }
+.ac-cards-stage-heading h2 { margin: 0; font-family: var(--serif); font-size: clamp(20px,2.4vw,32px); font-weight: 400; line-height: 1.15; letter-spacing: -.02em; color: var(--cream); }
+.ac-cards-stage-heading h2 .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
 /* Each category is one self-contained, stacked unit — photo, scrim,
    title and panel together — rather than a shared backdrop layer plus
@@ -491,10 +569,10 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
    pre-wrap directly on itself — that's a descendant of this h3, so it
    still overrides the h3's white-space by inheritance rules, and needs
    its own override rather than relying on the one above. */
-.ac-cards-stage-label { margin: 0 0 8px; font-family: var(--serif); font-size: clamp(48px,7vw,110px); font-weight: 400; line-height: 1; letter-spacing: -.02em; color: var(--cream); white-space: nowrap; }
+.ac-cards-stage-label { margin: 0 0 8px; font-family: var(--serif); font-size: clamp(40px,5.6vw,88px); font-weight: 400; line-height: 1; letter-spacing: -.02em; color: var(--cream); white-space: nowrap; }
 .ac-cards-stage-label .fold-text { white-space: nowrap; }
 .ac-cards-stage-label .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.ac-cards-stage-tagline { margin: 0; font-family: var(--sans); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--sand); }
+.ac-cards-stage-tagline { margin: 0; font-family: var(--sans); font-size: 11px; letter-spacing: .2em; }
 
 /* Half the screen, not a floating card — the panel's own clip-path is
    what performs the "photo gives up half the frame" reveal (see the
@@ -510,22 +588,27 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
    not for 25), and top-aligned with its own scrollbar as a safety net
    for shorter viewports rather than assuming everything fits. */
 .ac-cards-stage-panel { position: absolute; z-index: 2; right: 0; top: 0; bottom: 0; width: 50%; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; justify-content: flex-start; gap: 16px; padding: clamp(80px,10vh,120px) clamp(28px,4vw,56px) clamp(40px,6vh,64px); box-sizing: border-box; background: #08090785; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-left: 1px solid rgba(250,244,230,.1); }
-.ac-cards-stage-copy { margin: 0; color: rgba(250,244,230,.8); font-size: 14px; line-height: 1.6; }
+.ac-cards-stage-copy { margin: 0; color: rgba(250,244,230,.8); font-size: 13px; line-height: 1.6;font-weight:300;padding-top:14px; }
 .ac-cards-stage-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; row-gap: 0; align-content: start; }
 /* Each item's own clip-path wipes bottom→top as it reveals (set every
    scroll frame, staggered across the panel-open window) — not a CSS
    transition, same reasoning as -title/-panel above. */
-.ac-cards-stage-list li { position: relative; padding: 9px 0 9px 16px; font-family: var(--sans); font-size: 12px; font-weight:100; line-height: 1.4; letter-spacing: .02em; color: rgba(250,244,230,.78); border-top: 1px solid rgba(250,244,230,.12); }
+.ac-cards-stage-list li { position: relative; padding: 9px 0 9px 16px; font-family: var(--sans); font-size: 12px; font-weight:300; line-height: 1.4; letter-spacing: .02em; color: rgba(250,244,230,.78); border-top: 1px solid rgba(250,244,230,.12); }
 .ac-cards-stage-list li::before { content: ''; position: absolute; left: 0; top: 16px; width: 5px; height: 5px; border-radius: 50%; background: var(--sand); }
+/* Long lists (Podium, ~48 items): three tighter columns so it still fits the panel */
+.ac-cards-stage-list.is-long { grid-template-columns: repeat(3, 1fr); column-gap: 16px; }
+.ac-cards-stage-list.is-long li { padding-top: 7px; padding-bottom: 7px; font-size: 11.5px; }
+.ac-cards-stage-list.is-long li::before { top: 14px; }
 
 @media (max-width:900px) {
-  .ac-cards { height: 550vh; }
+  .ac-cards { height: 700vh; }
   .ac-cards-stage-panel { width: 58%; padding-left: clamp(20px,3vw,32px); padding-right: clamp(20px,3vw,32px); }
-  .ac-cards-stage-label { font-size: clamp(38px,10vw,64px); }
+  .ac-cards-stage-label { font-size: clamp(32px,8vw,54px); }
   .ac-cards-stage-list { grid-template-columns: 1fr; }
+  .ac-cards-stage-list.is-long { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width:700px) {
-  .ac-cards-eyebrow-block { max-width: calc(100% - 44px); }
+  .ac-cards-stage-heading { max-width: calc(100% - 44px); }
   .ac-cards-stage-title { right: 6vw; max-width: none; }
   .ac-cards-stage-panel { position: static; width: auto; margin-top: 46vh; height: auto; min-height: 40vh; border-left: 0; border-top: 1px solid rgba(250,244,230,.1); }
 }
@@ -536,13 +619,16 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
 @media (prefers-reduced-motion:reduce) {
   .ac-cards { height: auto; }
   .ac-cards-sticky { position: static; height: auto; min-height: 0; padding: clamp(60px,10vw,100px) 8vw; }
-  .ac-cards-eyebrow-block { position: static; margin: 0 0 clamp(40px,6vw,64px); max-width: 720px; }
   .ac-cards-stage { position: static; overflow: visible; pointer-events: auto; display: flex; flex-wrap: wrap; gap: 24px; }
   .ac-cards-stage:not(:last-child) { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid rgba(250,244,230,.12); }
   /* The full-bleed photo/scrim only make sense as a pinned backdrop —
      dropped entirely here in favor of plain readable text, same call
      .ac-amenities' own reduced-motion fallback makes above. */
   .ac-cards-stage-bg, .ac-cards-stage-scrim { display: none; }
+  /* flex:1 1 100% — its own row above the title/panel pair, now that
+     it's one per (stacked) stage instead of a single block sitting
+     above all of them. */
+  .ac-cards-stage-heading { position: static; max-width: none; flex: 1 1 100%; margin: 0 0 8px; }
   .ac-cards-stage-title, .ac-cards-stage-panel { position: static; width: auto; flex: 1 1 260px; background: none; backdrop-filter: none; border: 0; padding: 0; }
   .ac-cards-stage-label { font-size: clamp(30px,4vw,48px);}
 }
@@ -634,12 +720,12 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
    there). */
 /* Top-inset clears the fixed site header — same clamp() the header
    itself is cleared by everywhere else on this page
-   (.ac-cards-eyebrow-block, .ac-tallest-stat, etc.) — without it a
+   (.ac-cards-stage-heading, .ac-tallest-stat, etc.) — without it a
    marker label near the top would render right underneath the header
    and be unreadable against it. */
 .ac-points-markers { position: absolute; z-index: 2; inset: clamp(90px,12vh,140px) 0 0 0; }
 .ac-point { position: absolute; display: flex; flex-direction: column; align-items: center; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.ac-point-label { white-space: nowrap; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--cream); text-shadow: 0 1px 8px rgba(0,0,0,.65); transition: color .3s ease; }
+.ac-point-label { white-space: pre-line; text-align: center; line-height: 1.35; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--cream); text-shadow: 0 1px 8px rgba(0,0,0,.65); transition: color .3s ease; }
 .ac-point-line { flex: 1 1 auto; width: 1px; margin: 8px 0; background: rgba(250,244,230,.5); }
 .ac-point-dot { position: relative; flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(250,244,230,.7); background-color: rgba(10,10,8,.5); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); transform: translateY(50%); transition: transform .3s ease, background-color .3s ease, border-color .3s ease; }
 .ac-point-dot::before, .ac-point-dot::after { content: ''; position: absolute; top: 50%; left: 50%; background: var(--cream); transition: background-color .3s ease; }
@@ -688,7 +774,7 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
    are positioned absolutely within it instead of flexed, since each
    sits at its own independent edge/center rather than in one flow
    (same "positioned overlays on a full-bleed backdrop" approach as
-   .ac-cards-eyebrow-block/.ac-cards-stage-panel above). */
+   .ac-cards-stage-heading/.ac-cards-stage-panel above). */
 .ac-location-inner { position: relative; z-index: 2; min-height: 100vh; min-height: 100dvh; box-sizing: border-box; }
 
 .ac-location-heading-block { position: absolute; z-index: 2; left: clamp(22px,5vw,74px); top: 50%; transform: translateY(-50%); max-width: 480px; }
@@ -722,38 +808,74 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
   .ac-location-heading-block, .ac-location-pills, .ac-location-card { position: static; transform: none; max-width: none; width: 100%; }
 }
 
-/* Floor plans — placeholder-level (achyutha-experience.tsx:
-   FLOOR_PLAN_TYPES has the full reasoning): a plain centered section,
-   not pinned/full-bleed like the sections above, since there's no
-   photo here to be full-bleed — .ac-floorplans-mask is a purely
-   abstract CSS blueprint-style grid, not a real (or borrowed) floor
-   plan, with a plain glass "ask us" card over it per plan type. */
+/* Floor plans — tower tabs, then unit chips, then the plan on a light
+   sheet (the client's drawings are on white). A plain centred section,
+   not pinned like the sections above. */
 .ac-floorplans { position: relative; z-index: 2; background: #00000000; padding: clamp(90px,12vw,140px) 0; }
 .ac-floorplans-inner { max-width: 900px; margin: 0 auto; padding: 0 clamp(22px,5vw,74px); text-align: center; }
 .ac-floorplans-heading { margin: 12px 0 clamp(32px,5vw,56px); font-family: var(--serif); font-size: clamp(32px,4vw,56px); font-weight: 400; line-height: 1.1; letter-spacing: -.02em; color: var(--cream); }
 .ac-floorplans-heading .fold-text-piece { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-
 .ac-floorplans-tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: clamp(28px,4vw,40px); }
 .ac-floorplans-tab { padding: 10px 24px; border-radius: 999px; border: 1px solid rgba(250,244,230,.22); background: transparent; color: rgba(250,244,230,.65); font-family: var(--sans); font-size: 12px; letter-spacing: .04em; cursor: pointer; transition: background-color .3s ease, border-color .3s ease, color .3s ease; }
 .ac-floorplans-tab:hover { border-color: rgba(250,244,230,.45); color: var(--cream); }
 .ac-floorplans-tab.is-active { background: var(--gradient); border-color: transparent; color: #1a1408; }
 
-/* The "mask" — a plain graph-paper-style grid plus a soft gold-to-black
-   wash, blurred just enough to read as an abstract sketch rather than
-   a flat pattern. Never anything to unblur into (no real image behind
-   it), which is the point: this is a placeholder standing in for
-   content that doesn't exist yet, not real content hidden from view. */
-.ac-floorplans-card { position: relative; aspect-ratio: 4/3; max-width: 720px; margin: 0 auto; border-radius: 20px; overflow: hidden; border: 1px solid rgba(250,244,230,.14); background: #0a0a08; }
-.ac-floorplans-mask { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(250,244,230,.07) 0 1px, transparent 1px 42px), repeating-linear-gradient(90deg, rgba(250,244,230,.07) 0 1px, transparent 1px 42px), linear-gradient(135deg, rgba(191,164,111,.14), rgba(0,0,0,.45)); filter: blur(3px); }
-.ac-floorplans-overlay { position: relative; z-index: 1; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: clamp(24px,4vw,40px); text-align: center; background: rgba(8,9,7,.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-.ac-floorplans-tag { margin: 0; font-family: var(--sans); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--sand); }
-.ac-floorplans-plan-label { margin: 0; font-family: var(--serif); font-size: clamp(28px,3.4vw,40px); font-weight: 400; color: var(--cream); }
-.ac-floorplans-text { margin: 0; max-width: 380px; color: rgba(250,244,230,.72); font-size: 13px; line-height: 1.6; }
-.ac-floorplans-cta { margin-top: 8px; padding: 12px 28px; border-radius: 999px; background: var(--gradient); color: #1a1408; font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-decoration: none; transition: opacity .3s ease; }
-.ac-floorplans-cta:hover { opacity: .85; }
+/* Unit chips: smaller and quieter than the tower tabs above them */
+.ac-floorplans-units { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: clamp(20px,3vw,28px); }
+.ac-floorplans-unit { padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(250,244,230,.16); background: rgba(250,244,230,.03); color: rgba(250,244,230,.7); font-family: var(--sans); font-size: 12px; letter-spacing: .04em; cursor: pointer; transition: border-color .3s ease, color .3s ease, background .3s ease; }
+.ac-floorplans-unit span { margin-left: 4px; color: rgba(236,208,158,.7); font-size: 11px; }
+.ac-floorplans-unit:hover { border-color: rgba(236,208,158,.5); color: var(--cream); }
+.ac-floorplans-unit.is-active { border-color: var(--sand); background: rgba(236,208,158,.12); color: var(--cream); }
 
-@media (max-width:700px) {
-  .ac-floorplans-card { aspect-ratio: 3/4; }
+.ac-floorplans-card { max-width: 820px; margin: 0 auto; border-radius: 20px; overflow: hidden; border: 1px solid rgba(250,244,230,.14); background: #f7f4ee; }
+.ac-floorplans-frame { display: block; width: 100%; padding: clamp(14px,2.5vw,28px); border: 0; background: none; cursor: zoom-in; }
+.ac-floorplans-frame img { display: block; width: 100%; height: auto; max-height: 72vh; object-fit: contain; animation: ac-plan-in .5s var(--ease-out, ease) both; }
+@keyframes ac-plan-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.ac-floorplans-caption { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; padding: 14px clamp(16px,2.5vw,28px); border-top: 1px solid rgba(26,20,8,.1); background: #efe9dd; color: #3a2e1c; font-size: 13px; text-align: left; }
+.ac-floorplans-caption strong { font-weight: 600; color: #1a1408; }
+.ac-floorplans-caption button { padding: 0; border: 0; background: none; color: #7a5a24; font: 500 13px var(--sans); white-space: nowrap; cursor: pointer; }
+.ac-floorplans-caption button:hover { text-decoration: underline; }
+.ac-floorplans-note { margin: 16px auto 0; max-width: 520px; color: rgba(250,244,230,.5); font-size: 12px; line-height: 1.6; }
+.ac-floorplans-note a { color: var(--sand); }
+@media (prefers-reduced-motion: reduce) { .ac-floorplans-frame img { animation: none; } }
+/* Floor plan lightbox — portalled to <body> (see achyutha-experience.tsx).
+   Fit-to-screen by default; Zoom in (or clicking the plan) shows it at full
+   resolution inside a scrollable stage (data-lenis-prevent lets that scroll
+   natively while Lenis is stopped). */
+.ac-plan-lightbox { position: fixed; inset: 0; z-index: 2000; display: flex; flex-direction: column; background: rgba(6,5,3,.94); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: ac-lightbox-in .3s ease both; }
+@keyframes ac-lightbox-in { from { opacity: 0; } to { opacity: 1; } }
+.ac-plan-lightbox-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px clamp(16px,3vw,32px); color: rgba(250,244,230,.75); font-size: 13px; }
+.ac-plan-lightbox-bar strong { color: var(--cream); font-weight: 600; }
+.ac-plan-lightbox-actions { display: flex; gap: 10px; flex: none; }
+.ac-plan-lightbox-actions button { height: 40px; min-width: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(250,244,230,.25); background: rgba(250,244,230,.06); color: var(--cream); font: 500 12px var(--sans); letter-spacing: .04em; cursor: pointer; transition: background .25s ease, border-color .25s ease; }
+.ac-plan-lightbox-actions button:hover { background: rgba(250,244,230,.14); border-color: rgba(236,208,158,.6); }
+.ac-plan-lightbox-stage { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 0 clamp(56px,7vw,96px) clamp(16px,3vw,32px); overflow: auto; overscroll-behavior: contain; }
+.ac-plan-lightbox-stage img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; background: #fff; cursor: zoom-in; animation: ac-plan-in .35s var(--ease-out, ease) both; }
+.ac-plan-lightbox-stage.is-zoomed { display: block; }
+.ac-plan-lightbox-stage.is-zoomed img { max-width: none; max-height: none; width: min(2400px, 220vw); margin: 0 auto; cursor: zoom-out; }
+.ac-plan-lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(250,244,230,.25); background: rgba(10,10,8,.6); color: var(--cream); font-size: 26px; line-height: 1; cursor: pointer; transition: background .25s ease, border-color .25s ease; }
+.ac-plan-lightbox-nav:hover { background: rgba(236,208,158,.18); border-color: rgba(236,208,158,.6); }
+.ac-plan-lightbox-nav.is-prev { left: clamp(8px,2vw,24px); }
+.ac-plan-lightbox-nav.is-next { right: clamp(8px,2vw,24px); }
+@media (max-width: 700px) {
+  .ac-plan-lightbox-bar { flex-wrap: wrap; }
+  .ac-plan-lightbox-stage { padding: 0 12px 76px; }
+  .ac-plan-lightbox-nav { top: auto; bottom: 16px; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .ac-plan-lightbox, .ac-plan-lightbox-stage img { animation: none; } }
+/* Desktop: two columns — heading, tower tabs, unit list and note on the
+   left; the plan sheet on the right. Stacks (centred) below 1000px. */
+@media (min-width: 1000px) {
+  .ac-floorplans-inner { max-width: 1280px; display: grid; grid-template-columns: minmax(320px, .8fr) 1.35fr; gap: clamp(40px, 5vw, 80px); align-items: center; text-align: left; }
+  .ac-floorplans-aside .ac-eyebrow { justify-content: flex-start; }
+  .ac-floorplans-heading { margin-bottom: clamp(28px, 3vw, 40px); }
+  .ac-floorplans-tabs { justify-content: flex-start; }
+  .ac-floorplans-units { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); justify-content: stretch; max-width: 380px; }
+  .ac-floorplans-unit { display: flex; justify-content: space-between; align-items: center; padding: 11px 16px; border-radius: 14px; text-align: left; }
+  .ac-floorplans-unit:first-child { grid-column: 1 / -1; }
+  .ac-floorplans-note { margin: 24px 0 0; max-width: 380px; }
+  .ac-floorplans-card { max-width: none; margin: 0; }
+  .ac-floorplans-frame img { max-height: min(64vh, 760px); }
 }
 
 /* Closing gallery strip — a plain static grid (the previous marquee +
@@ -777,8 +899,8 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
 }
 
 .ac-after { position: relative; z-index: 2; padding: clamp(70px,12vw,150px) 8vw; background: #000; display: grid; grid-template-columns: 1fr minmax(230px,460px); gap: 8vw; }.ac-after p { margin: 0; color: var(--sand); letter-spacing: .2em; font-size: 11px; text-transform: uppercase; }.ac-after h2 { margin: -8px 0 0; font-family: var(--serif); font-size: clamp(38px,5vw,76px); font-weight: 400; line-height: .98; }.ac-after__body { align-self: end; color: rgba(250,244,230,.72); line-height: 1.85; font-size: 15px; }.ac-after__body a { display: inline-block; margin-top: 27px; padding-bottom: 6px; color: var(--cream); border-bottom: 1px solid var(--sand); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; }
-@media (max-width:700px) { .ac-scene { height: 240vh; }.ac-sticky { min-height: 520px; }.ac-brandmark { top: 36%; }.ac-copy { top: auto; bottom: 18%; transform: none; max-width: 90%; }.ac-copy > p:last-child { font-size: 12px; margin-top: 17px; }.ac-cloud { width: 120vw; bottom: 31%; right: -33%; }.ac-cloud--day { top: 3%; right: 2%; bottom: auto; width: 34vw; }.ac-cloud--night { width: 155%; bottom: 9%; }.ac-tallest { flex-direction: column; gap: 40px; min-height: 0; }.ac-tallest-outline { order: -1; }.ac-tallest-copy { margin: 0 auto; }.ac-after { grid-template-columns: 1fr; gap: 30px; } }
-@media (prefers-reduced-motion:reduce) { .ac-sky--night,.ac-building--night { opacity:0; } }
+@media (max-width:700px) { .ac-scene { height: 240vh; }.ac-sticky { min-height: 520px; }.ac-brandmark { top: 36%; }.ac-copy { top: auto; bottom: 18%; transform: none; max-width: 90%; }.ac-copy > p:last-child { font-size: 12px; margin-top: 17px; }.ac-cloud { width: 120vw; bottom: 31%; right: -33%; }.ac-cloud--day { top: 3%; right: 2%; bottom: auto; width: 34vw; }.ac-cloud--night { width: 155%; bottom: 9%; }.ac-tallest { height: auto; }.ac-tallest-sticky { position: static; height: auto; min-height: 0; overflow: visible; }.ac-tallest-row { flex-direction: column; gap: 40px; padding: clamp(70px,12vw,150px) 8vw clamp(24px,6vw,60px); height: auto; }.ac-tallest-outline { order: -1; }.ac-tallest-copy { margin: 0 auto; }.ac-after { grid-template-columns: 1fr; gap: 30px; } }
+@media (prefers-reduced-motion:reduce) { .ac-sky--evening,.ac-building--evening,.ac-sky--night,.ac-building--night { opacity:0; } }
 
 /* Shared React layouts for the converted company, project and journal pages. */
 .legacy-hero { min-height: 55vh; display: grid; align-items: end; padding: 130px max(6vw,32px) 88px; background: radial-gradient(circle at 78% 20%,rgba(236,208,158,.23),transparent 25%),#000; border-bottom: 1px solid var(--line); }.legacy-hero>div { max-width: 850px; }.legacy-kicker { margin: 0 0 20px; color: var(--sand); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }.legacy-hero h1 { margin: 0; font: 400 clamp(50px,6.8vw,105px)/.96 var(--serif); letter-spacing: -.045em; }.legacy-hero h1+p { max-width: 590px; margin: 27px 0 0; color: rgba(250,244,230,.75); font-size: 15px; line-height: 1.8; }
@@ -871,6 +993,69 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
 .footer-video { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; }
 .footer-video-scrim { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.35) 20%, #000000fc 75%); }
 
+/* PageBanner wraps its image in <picture>; let the img fill .hero-media as before */
+.page-banner .hero-media picture { display: block; width: 100%; height: 100%; }
+/* Art-directed banners (PageBanner with tablet/mobile crops): the box takes the
+   active image's aspect ratio so the whole photo shows, the pages' GSAP
+   zoom/parallax is neutralised (it would crop the edges), and the light sunset
+   photos carry dark brown type with no scrim. Media queries mirror the
+   <source> order in page-banner.tsx. */
+.page-banner--art { min-height: 0; aspect-ratio: 1920 / 510; }
+.page-banner--art .hero-media img { transform: none !important; }
+.page-banner--art .page-banner-content .eyebrow { color: #6b4a2c; text-shadow: none; }
+.page-banner--art .page-banner-content .eyebrow::before { background: #6b4a2c; }
+.page-banner--art .page-banner-content h1 { color: #5c3b1e; text-shadow: none; font-size: clamp(1.75rem, 1.6vw + 1rem, 3.25rem); }
+.page-banner--art .page-banner-desc { color: #6b4a2c; text-shadow: none; }
+/* onDark: art-directed layout on a dark photo (Contact) keeps the light type */
+.page-banner--art.page-banner--on-dark .page-banner-content .eyebrow { color: var(--accent); }
+.page-banner--art.page-banner--on-dark .page-banner-content .eyebrow::before { background: var(--accent); }
+.page-banner--art.page-banner--on-dark .page-banner-content h1 { color: var(--color-white); }
+.page-banner--art.page-banner--on-dark .page-banner-desc { color: rgba(255,255,255,.78); max-width: 30rem; }
+.page-banner--art.page-banner--on-dark .page-banner-content h1,
+.page-banner--art.page-banner--on-dark .page-banner-desc { text-shadow: 0 2px 18px rgba(0,0,0,.85); }
+/* align="left|right": the copy stays centred, but within the clear-sky side of
+   the desktop crop (its box spans that side instead of the full width) */
+.page-banner--left .page-banner-content,
+.page-banner--right .page-banner-content { width: 62%; max-width: none; }
+.page-banner--right .page-banner-content { margin-left: auto; margin-right: 0; }
+.page-banner--left .page-banner-content { margin-left: 0; margin-right: auto; }
+/* Blogs banner: copy over the open sky left of the bridge — a narrower left
+   zone (so it sits further left) and raised toward the top */
+.journal-page .page-banner--left .page-banner-content { width: 44%; }
+/* raised: copy sits near the top of the desktop crop instead of centred */
+.page-banner--raised { align-items: flex-start; padding-top: 3.5%; }
+@media (orientation: portrait) and (max-width: 1099px) {
+  .page-banner--art { aspect-ratio: 1200 / 780; }
+  /* portrait crops are composed for full-width centred copy */
+  .page-banner--left .page-banner-content,
+  .page-banner--right .page-banner-content { width: 100%; margin-inline: auto; }
+  .page-banner--raised { align-items: center; padding-top: 0; }
+}
+@media (orientation: portrait) and (max-width: 699px) { .page-banner--art { aspect-ratio: 1080 / 1260; } }
+/* Gallery banner: the brown art-banner type was lost against the busy
+   playground render — white type with a soft dark halo, centred in the banner */
+.gallery-page .page-banner--art .page-banner-content .eyebrow { color: #fff; text-shadow: 0 1px 10px rgba(0,0,0,.55); }
+.gallery-page .page-banner--art .page-banner-content .eyebrow::before { background: #fff; }
+.gallery-page .page-banner--art .page-banner-content h1 { color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.35), 0 4px 28px rgba(0,0,0,.55); }
+/* Blogs on portrait tablets/phones: both crops have open sky across the top */
+@media (orientation: portrait) and (max-width: 1099px) {
+  .journal-page .page-banner--raised { align-items: flex-start; padding-top: 7%; }
+  .journal-page .page-banner--left .page-banner-content { width: 100%; }
+}
+@media (orientation: portrait) and (max-width: 699px) {
+  .journal-page .page-banner--raised { padding-top: 9%; }
+  .journal-page .page-banner-content h1 { font-size: 22px; }
+}
+/* Body paragraphs use Poppins Light (300, loaded in the import on line 1).
+   :where() keeps this at zero specificity so any component rule that sets its
+   own weight still wins; eyebrow labels (also <p>) keep their weight. */
+:where(p:not(.eyebrow)) { font-weight: 300; }
+/* Inner-page section headings share one size. Scoped to <main> on every page
+   except the home experience (.ac-experience), so the footer and home display
+   type keep theirs (journal post-card titles are excluded too); !important
+   beats the many per-section h2 rules above. */
+main:not(:has(.ac-experience)) h2:not(.journal-title) { font-size: 52px !important; }
+@media (max-width: 699px) { main:not(:has(.ac-experience)) h2:not(.journal-title) { font-size: 36px !important; } }
 /* PageBanner's optional description paragraph (see components/page-banner.tsx) */
 .page-banner-desc { position: relative; z-index: 2; max-width: 34rem; margin: 14px auto 0; color: rgba(255,255,255,.78); font-size: 15px; line-height: 1.7; text-align: center; text-shadow: 0 2px 12px rgba(14,12,10,.5); }
 
@@ -887,6 +1072,10 @@ body.ac-cards-active #scroll-badge, body.ac-points-active #scroll-badge, body.ac
    browser's default button chrome so it's visually identical; the
    actual pill look still lives entirely on .nav-book-label. */
 button.nav-book { border: none; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer; }
+/* Schedule a Visit is the header's primary action: gold pill with dark text at
+   rest (it used to be dark and only turned gold on hover); hover deepens it. */
+.nav-book .nav-book-label { background: var(--gold-gradient); border-color: transparent; color: var(--color-navy); font-weight: 400; }
+.nav-book:hover .nav-book-label { filter: brightness(.92); }
 
 /* Fixed vertical "Enquire Now" tab, right-middle of the viewport —
    opens the same sitewide enquiry modal as the navbar's Schedule a
@@ -939,3 +1128,235 @@ button.nav-book { border: none; background: none; padding: 0; font: inherit; col
 /* The icon-only close chip next to the "Close" pill has been removed
    (site-header.tsx) — the text pill alone is the close control now. */
 .mobile-menu-close { gap: 0; }
+
+/* ============================================================
+   About page additions — Key Statistics, Our Values, Closing CTA.
+   Mission & Vision now shares one section-level eyebrow ("Our
+   Purpose") instead of one per column — see .mv-col in about-page.tsx. ============================================================ */
+/* .mv-col-vision's own diagonal offset (components-v4.css) assumed
+   Vision was the second column — about-page.tsx now renders Vision
+   first, Mission second, so the "offset down" needs to move to
+   whichever column is second now, or the pair reads top-to-bottom as
+   Mission-then-Vision despite the markup order. */
+@media (min-width: 900px) {
+  .mv-col-vision { margin-top: 0; }
+  .mv-col-mission { margin-top: clamp(4rem, 10vw, 8rem); }
+}
+
+/* The About page's "Who We Are" intro reuses .about-intro (the same
+   eyebrow-left/copy-right split the homepage's "About Achyutha"
+   section uses) but reads better centred here — scoped to
+   .about-page-intro so the homepage's own section is untouched. */
+.about-page-intro { padding-block: 6vw; }
+.about-page-intro .about-intro-grid { text-align: center; }
+.about-page-intro .about-intro-eyebrow { justify-self: center; color: var(--sand); font-size: 10px; letter-spacing: .29em; text-transform: uppercase; }
+.about-page-intro .about-intro-eyebrow::before { display: none; }
+/* Giant gradient-gold heading, same treatment as the homepage's
+   .ac-velumuri section (var(--gradient) clipped to the text) — that
+   one gets it per-character via FoldText's .fold-text-piece, this
+   heading isn't FoldText-driven so it's applied to the whole h2
+   instead; one continuous gradient across both lines reads the same. */
+.about-page-intro .about-intro-copy h2 { font-family: var(--serif); font-size: var(--fs-h1); font-weight: 400; line-height: .98; letter-spacing: -.03em; max-width: none; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.about-page-intro .about-intro-copy p { max-width: 900px; margin-inline: auto; color: rgba(250,244,230,.72); font-size: 15px; line-height: 1.8; }
+/* The reference grid's row-gap (--space-6/--space-7, inherited for
+   the 12-col eyebrow/copy split) left a 70px+ gap between the eyebrow
+   and the giant heading once both were stacked into one centred
+   column — far more than the ~22px .ac-velumuri (the section this
+   look is based on) uses between its own eyebrow and heading. */
+.about-page-intro .about-intro-grid { gap: 0; }
+.about-page-intro .about-intro-eyebrow { margin-bottom: 20px; }
+@media (min-width: 900px) {
+  .about-page-intro .about-intro-grid { grid-template-columns: 1fr; }
+  .about-page-intro .about-intro-eyebrow,
+  .about-page-intro .about-intro-copy { grid-column: 1 / -1; }
+  .about-page-intro .about-intro-eyebrow { padding-top: 0; }
+}
+
+.about-stats { padding-top: 0; }
+.about-stats .section-head { text-align: center; }
+.about-stats .section-head .eyebrow { justify-self: center; }
+.about-stats .section-head h2 { font-size: var(--fs-h1); font-weight: 400; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.about-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-7) var(--space-5); text-align: center; }
+.about-stat { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+/* Number + unit word sit on one baseline, the unit scaled down (em,
+   relative to .about-stat-value's own font-size) rather than given a
+   fixed size — this is what keeps every stat the same height/shape
+   regardless of how long its unit word is ("Residences" vs "Homes"),
+   instead of the unit wrapping onto its own line at the big size and
+   pushing that one label out of line with the rest. */
+.about-stat-value { display: inline-flex; align-items: baseline; gap: .2em; flex-wrap: wrap; justify-content: center; font-family: var(--font-display); font-size: clamp(1.7rem, 2.6vw, 2.5rem); line-height: 1.15; color: var(--accent-on-light); }
+.about-stat-unit { font-size: .42em; font-family: var(--font-body); font-weight: 500; letter-spacing: .01em; }
+.about-stat-label { font-size: var(--fs-small); color: var(--text-on-light-dim); }
+@media (min-width: 900px) {
+  .about-stats-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Gradient-gold treatment applied consistently to every main section
+   heading on the About page (matching "Who We Are" and the closing
+   CTA) — card-level titles (.value-card h3, stat labels, etc.) stay
+   plain so the gradient reads as a page-level heading signature
+   rather than a per-card accent. */
+.chairman-copy h2,
+.mv-col h3,
+.our-values .section-head h2 {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.our-values .section-head h2 { font-size: var(--fs-h1); font-weight: 400; }
+
+/* ---------- Our Values — four-point icon grid, same language as
+   .wc-grid (Why Choose Us) directly below it. ---------- */
+.our-values { padding-bottom: 0; }
+.our-values .section-head { text-align: center; }
+.our-values .section-head .eyebrow { justify-self: center; }
+.value-grid { display: grid; gap: var(--space-6); }
+.value-card { text-align: center; padding-inline: var(--space-4); }
+.value-icon { display: grid; place-items: center; width: 76px; height: 76px; margin-inline: auto; border-radius: 50%; background: rgba(236, 208, 158, 0.14); color: var(--accent-on-light); }
+.value-icon svg { width: 34px; height: 34px; }
+.value-card h3 { margin-top: var(--space-5); font-family: var(--font-secondary); font-size: 24px; }
+.value-card p { margin-top: var(--space-3); color: var(--text-on-light-dim); max-width: 30rem; margin-inline: auto; font-size: 14px; }
+@media (min-width: 900px) {
+  .value-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1200px) {
+  .value-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ---------- Closing CTA — simple centred band, reuses .btn-explore
+   (the same pill button the hero and other pages already use). ---------- */
+.about-cta-inner { max-width: 60rem; margin-inline: auto; text-align: center; }
+.about-cta h2 { font-family: var(--serif); font-size: var(--fs-h1); font-weight: 400; line-height: 1.05; letter-spacing: -.02em; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.about-cta p { margin-top: var(--space-5); color: var(--text-on-light-dim); }
+.about-cta .btn-explore { display: inline-flex; margin-top: var(--space-6); color: var(--text-on-light); }
+/* .btn-explore is normally an <a> (color/border/font all inherited
+   cleanly) — the Projects page's "Enquire Now" is a <button> instead
+   (it opens the enquiry modal, nothing to navigate to), so it needs
+   the usual UA button chrome (grey face, system font, default cursor)
+   reset explicitly; the shared rule above only needed a color. */
+button.btn-explore { background: none; font-family: inherit; cursor: pointer; }
+
+/* ============================================================
+   Projects overview (/projects) — Ongoing/Upcoming/Completed tabs.
+   ============================================================ */
+.projects-tablist { display: flex; justify-content: center; gap: clamp(28px,5vw,56px); margin-bottom: var(--space-8); border-bottom: 1px solid var(--color-border); }
+.projects-tab { padding: 0 2px 18px; border: 0; background: none; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--text-on-light-dim); position: relative; transition: color .25s ease; }
+.projects-tab::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--gradient); transform: scaleX(0); transition: transform .3s ease; }
+.projects-tab:hover { color: var(--text-on-light); }
+.projects-tab[aria-selected="true"] { color: var(--accent-on-light); }
+.projects-tab[aria-selected="true"]::after { transform: scaleX(1); }
+
+
+/* .legacy-split's own full-bleed dark panel/padding isn't wanted
+   nested inside an already-contained tab panel — this just reuses its
+   image+content column layout. */
+.project-feature { background: transparent; padding: var(--space-7) 0 0; }
+.project-feature .legacy-kicker { margin-bottom: 14px; }
+.project-feature-status { display: inline-block; margin-top: var(--space-4); padding: 6px 16px; border: 1px solid var(--color-border); border-radius: 999px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-on-light); }
+.project-feature .btn-explore { display: inline-flex; margin-top: var(--space-5); margin-left: var(--space-4); }
+@media (max-width: 800px) {
+  .project-feature .btn-explore { margin-left: 0; margin-top: var(--space-4); }
+}
+
+/* Completed-project cards: full-bleed photo with the copy laid over a dark
+   fade at the foot, a status pill top-left, and a slow zoom + gold rule on hover. */
+.project-card { position: relative; aspect-ratio: 4 / 5; border-radius: 20px; overflow: hidden; isolation: isolate; background: #080808; border: 1px solid rgba(236,208,158,.14); transition: transform .45s var(--ease-out, ease), box-shadow .45s var(--ease-out, ease), border-color .45s ease; }
+.project-card img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; transition: transform .9s var(--ease-out, ease); }
+.project-card::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.55) 62%, rgba(0,0,0,.92) 100%); }
+.project-card-tag { position: absolute; top: 18px; left: 18px; padding: 6px 14px; border-radius: 999px; background: rgba(10,10,8,.45); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border: 1px solid rgba(250,244,230,.25); color: var(--cream); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+.project-card-body { position: absolute; left: 0; right: 0; bottom: 0; padding: 24px 24px 26px; }
+.project-card-body::before { content: ''; display: block; width: 36px; height: 1px; margin-bottom: 16px; background: var(--gradient); transition: width .45s var(--ease-out, ease); }
+.project-card-type { margin: 0 0 10px; color: var(--sand); font-size: 10px; line-height: 1.6; letter-spacing: .14em; text-transform: uppercase; }
+.project-card h3 { margin: 0 0 10px; font-family: var(--serif); font-size: 28px; font-weight: 400; line-height: 1.05; letter-spacing: -.02em; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.project-card-location { display: flex; align-items: center; gap: 7px; margin: 0; color: rgba(250,244,230,.72); font-size: 13px; }
+.project-card-location svg { flex: none; color: var(--sand); }
+.project-card:hover { transform: translateY(-6px); border-color: rgba(236,208,158,.4); box-shadow: 0 24px 50px rgba(0,0,0,.45); }
+.project-card:hover img { transform: scale(1.06); }
+.project-card:hover .project-card-body::before { width: 72px; }
+@media (min-width: 601px) and (max-width: 800px) { .projects-page .completed-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .project-card, .project-card img, .project-card-body::before { transition: none; } }
+.completed-view-all { display: block; width: fit-content; margin: var(--space-7) auto 0; }
+
+/* Tighter vertical rhythm on /projects (.projects-page wraps the page) and
+   rounded project imagery to match the 20px banner radius. The intro keeps
+   its own 6vw padding (.about-page-intro). */
+.projects-page .projects-tabs,
+.projects-page .projects-cta { padding-block: clamp(3rem, 5vw, 5.5rem); }
+.projects-page .projects-tabs { padding-top: 0; }
+.projects-page .projects-tablist { margin-bottom: var(--space-6); }
+.projects-page .project-feature { padding-top: var(--space-5); }
+.projects-page .completed-view-all { margin-top: var(--space-5); }
+.projects-page .project-feature img { border-radius: 20px; }
+
+/* ============================================================
+   Ongoing project (/ongoing-projects) — components/ongoing-project-page.tsx
+   ============================================================ */
+/* Banner: copy sits left over the night sky; scrim weighted to that side */
+.ongoing-page .hero-scrim { background: linear-gradient(90deg, rgba(0,0,0,.78) 0%, rgba(0,0,0,.45) 45%, rgba(0,0,0,.12) 75%); }
+/* Text left-justified (not centred within the left zone, unlike the other
+   left banners); heading matches the art banners' size so it stays clear of the tower */
+.ongoing-page .page-banner--left .page-banner-content { text-align: left; width: 100%; max-width: var(--container-max); margin-inline: auto; }
+.ongoing-page .page-banner--left .page-banner-content > * { max-width: min(36rem, 55%); }
+.ongoing-page .page-banner--left .page-banner-content .eyebrow { justify-content: flex-start; }
+.ongoing-page .page-banner--left .page-banner-content h1 { margin-inline: 0; font-size: clamp(1.75rem, 1.6vw + 1rem, 3.25rem); }
+.ongoing-page .page-banner--left .page-banner-desc { margin-inline: 0; max-width: 30rem; text-align: left; }
+@media (orientation: portrait) and (max-width: 1099px) {
+  .ongoing-page .page-banner--left .page-banner-content { width: 100%; }
+  .ongoing-page .page-banner--left .page-banner-content > * { max-width: none; }
+}
+
+.ongoing-intro,
+.ongoing-amenities,
+.ongoing-cta { padding-block: clamp(3rem, 5vw, 5.5rem); background: transparent; }
+
+/* About the project — rounded image beside the copy, no dark panel */
+.ongoing-intro-grid { display: grid; gap: clamp(32px, 5vw, 72px); align-items: center; }
+.ongoing-intro-media { border-radius: 20px; overflow: hidden; }
+.ongoing-intro-media img { width: 100%; height: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.ongoing-intro-copy .eyebrow { margin-bottom: var(--space-4); }
+.ongoing-intro-copy h2 { font-family: var(--serif); font-weight: 400; line-height: 1.02; letter-spacing: -.02em; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ongoing-intro-copy p { margin-top: var(--space-5); max-width: 32rem; color: rgba(250,244,230,.72); font-size: 15px; line-height: 1.8; }
+.ongoing-intro-copy .btn-explore { display: inline-flex; margin-top: var(--space-6); }
+@media (min-width: 900px) { .ongoing-intro-grid { grid-template-columns: 1.1fr 1fr; } }
+
+/* Amenities — centred head + three rounded cards with chip lists */
+.ongoing-amenities .section-head { margin-bottom: var(--space-7); text-align: center; }
+.ongoing-amenities .section-head .eyebrow { justify-self: center; }
+.ongoing-amenities .section-head h2 { font-family: var(--serif); font-weight: 400; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.amenity-grid { display: grid; gap: 24px; }
+.amenity-card { padding: 32px 30px 34px; border-radius: 20px; border: 1px solid rgba(236,208,158,.16); background: linear-gradient(180deg, rgba(250,244,230,.045), rgba(250,244,230,.01)); transition: border-color .4s ease, transform .4s var(--ease-out, ease); }
+.amenity-card:hover { border-color: rgba(236,208,158,.42); transform: translateY(-4px); }
+.amenity-card-top { display: flex; align-items: center; justify-content: space-between; }
+.amenity-icon { width: 60px; height: 60px; margin: 0; color: var(--sand); }
+.amenity-icon svg { width: 26px; height: 26px; }
+.amenity-index { font-size: 11px; letter-spacing: .22em; color: rgba(236,208,158,.55); }
+.amenity-card h3 { margin: 26px 0 18px; font-family: var(--serif); font-size: 28px; font-weight: 400; line-height: 1.1; color: var(--cream); }
+.amenity-card ul { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.amenity-card li { padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(250,244,230,.16); color: rgba(250,244,230,.78); font-size: 13px; font-weight: 300; }
+@media (min-width: 900px) { .amenity-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .amenity-card { transition: none; } }
+
+/* Closing CTA — rounded gold patch, one action (the footer below carries
+   the full brand/contact block, so no form is repeated here) */
+.ongoing-cta { padding-inline: 20px; }
+.ongoing-cta-card { max-width: var(--container-max); margin-inline: auto; padding: clamp(48px, 6vw, 84px) clamp(24px, 5vw, 72px); border-radius: 20px; background: var(--gradient); color: #000; text-align: center; }
+.ongoing-cta-card .eyebrow { justify-content: center; color: #3a2a17; }
+.ongoing-cta-card .eyebrow::before { background: #3a2a17; }
+.ongoing-cta-card h2 { margin-top: var(--space-4); font-family: var(--serif); font-weight: 400; line-height: 1.02; letter-spacing: -.02em; color: #000; }
+.ongoing-cta-btn { display: inline-flex; align-items: center; gap: 14px; margin-top: var(--space-6); padding: 16px 28px; border: 0; border-radius: 999px; background: #000; color: var(--cream); font: 500 12px var(--sans); letter-spacing: .12em; text-transform: uppercase; cursor: pointer; transition: transform .3s ease, box-shadow .3s ease; }
+.ongoing-cta-btn .arrow { color: var(--sand); }
+.ongoing-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,.28); }
+
+/* Contact "Our Commitment" card — handshake artwork: pinned to the top so the
+   hands sit above the copy, with a deeper fade under the text. */
+.contact-commitment img { object-position: 50% 0%; }
+.contact-commitment-scrim { background: linear-gradient(0deg, rgba(10,9,8,.96) 0%, rgba(10,9,8,.8) 32%, rgba(10,9,8,0) 62%); }
+.contact-commitment-bottom { text-align: center; display: flex; flex-direction: column; align-items: center; }
+.contact-commitment-bottom p { margin-inline: auto; }
+
+/* Blog article pages (legacy-pages.tsx BlogArticle) — no GSAP reveal runs
+   here, so the banner title is shown outright instead of staying masked; the
+   photo banners get a soft dark wash so the white type reads on busy images. */
+.blog-article .page-banner .hero-line-inner { transform: none; }
+.blog-article .page-banner--art .hero-media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,.35), rgba(0,0,0,.35)), radial-gradient(ellipse at center, rgba(0,0,0,.35), transparent 70%); pointer-events: none; }

@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import { createPortal } from 'react-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Silk } from './Silk';
@@ -11,6 +12,7 @@ import { CATEGORY_FILTERS, nearbyLocations } from '@/lib/achyutha-locations';
 
 const hero = '/images/hero/';
 const gallery = '/velumuri-assets/images/gallery/';
+const amenities = '/velumuri-assets/images/amenities/';
 
 // Closing gallery strip — reference: cards-hover-animation.mp4 (an
 // equal-width row of portrait cards that expands whichever one the
@@ -32,31 +34,58 @@ const COMMUNITY_CARDS = [
 
 // Full real amenity lists per category, as supplied — corrected for
 // obvious typos/casing only (e.g. "Libreray"→"Library", "Pickel
-// ball"→"Pickleball", "Temparature"→"Temperature"), nothing added,
-// removed, merged or reworded beyond that, including the two separately
-// listed "Deck" entries under Terrace.
+// ball"→"Pickleball", "Temparature"→"Temperature"), nothing added
+// or reworded beyond that. Sky Zone (revised list): entries the client
+// listed twice ("Feature bench", "Deck", "F&B Terrace") are shown once,
+// pending client confirmation. Podium (revised list): "Hindu Temple" is left out
+// as the one entry the client didn't mark "Yes", and its two drop-off rows
+// ("Drop off" / "dropoffs") are shown once — both pending client confirmation.
 const CARDS_STAGES = [
   {
     key: 'podium',
-    label: 'Podium',
-    tagline: 'Gardens, seating and play',
+    heading: 'Luxury That Grounds You',
+    label: 'Podium\nAmenities',
+    tagline: 'Crafted for leisure and interaction, the vehicle-free podium turns the space between buildings into a Godavari-inspired landscape of rippling forms, reflective water, meandering paths and bridges.',
     copy: 'A landscaped podium level threading gardens, seating and play across the block.',
-    img: `${hero}podium.jpeg`,
+    img: `${amenities}podium-amenities.webp`,
     items: [
-      'Project Signage', 'Water Feature', 'Gate', 'Walking Track', 'Tree House',
-      'Half Basketball Court', 'Pickleball Court', 'Squash Court', 'Cricket Pitch',
-      'Multipurpose Plaza', 'Outdoor Fitness Station', 'Jain Temple', 'Hindu Temple',
-      'Rejuvenating Path', 'Children’s Playground', 'Supermarket', 'Pets’ Zone',
-      'Store Room', 'Library', 'Tennis Court', 'Koi Pond & Bubble Pond',
-      'Temperature-Controlled Pool', 'Skating Rink', 'Jogging Track',
+      'Project Signage', 'Water Feature', 'Gate', 'Driveway', 'Walking Track',
+      'Drop-Off Points', 'Outdoor Co-Working Space', 'Serene Garden (Meditation Path)',
+      'Hammock', 'Tree House', 'Half Basketball Court', 'Pickleball Court', 'Squash Court',
+      'Cricket Pitch', 'Feature Wall', 'Reflective Pond', 'Toddlers’ Play Area', 'Serene Path',
+      'Art Garden', 'Multipurpose Plaza', 'Outdoor Fitness Station', 'Jain Temple',
+      'Rejuvenating Path', 'Children’s Playground', 'Old Neem Tree', 'Elderly Garden',
+      'Outdoor F&B Area', 'Clinic', 'Tuition Center', 'Drivers’ Waiting Lounge', 'Supermarket',
+      'Pets’ Zone', 'Store Room', 'Creche', 'Library', 'Tennis Court', 'Koi Pond & Bubble Pond',
+      'Maintenance Office', 'EPDM Play Court', 'Bonfire Pit', 'Association Room',
+      'DG & Transformer', 'Temperature-Controlled Pool', 'Skating Rink', 'Cycling Path',
+      'Bus Waiting Area', 'Jogging Track',
+    ],
+  },
+  {
+    // Basement: list as supplied (typos/casing fixed: "Sailent"→"Silent",
+    // "dinning"→"Dining"). Heading/tagline/copy only describe that list
+    // (no claims); photo is the client's basement badminton court render.
+    // Not shown in .ac-points (nothing
+    // to point at on the elevation photo — see POINTS_STAGES).
+    key: 'basement',
+    heading: 'Everyday Ease, Below',
+    label: 'Basement',
+    tagline: 'Beneath the podium, the basement looks after the everyday — parking, services and support spaces kept out of sight, so the levels above stay open for living.',
+    copy: 'Parking, services and everyday conveniences, kept neatly below the podium.',
+    img: `${amenities}basement.webp`,
+    items: [
+      'Badminton Court', 'Massage Chair Corner', 'Car Wash', 'Maids’ & Staff Dining & Toilets',
+      'Car Parking', 'Bike Parking', 'Laundry Area', 'Service Room', 'Silent Room', 'Stores',
     ],
   },
   {
     key: 'clubhouse',
+    heading: 'Your Sanctuary Of Leisure',
     label: 'Clubhouse',
-    tagline: 'Built for every mood',
+    tagline: 'At the heart of the community lies a clubhouse that brings people and experiences together. Here, wellness, leisure, celebration and connection come together to become the soul of the community.',
     copy: 'A clubhouse built for every mood — quiet mornings, and evenings with friends.',
-    img: `${hero}clubhouse.jpeg`,
+    img: `${amenities}clubhouse.webp`,
     items: [
       'Coffee Bar', 'Waiting Lounge', 'Banquet Hall', 'Guest Bedroom', 'Board Room',
       'Sports Lounge', 'Mini Theater', 'Seniors’ Room', 'Indoor Game Zone',
@@ -65,17 +94,21 @@ const CARDS_STAGES = [
   },
   {
     key: 'terrace',
-    label: 'Terrace',
-    tagline: 'Slow evenings above the city',
+    heading: 'The Pinnacle\nOf Luxury',
+    label: 'Sky Zone',
+    tagline: 'The Sky Zone brings together indulgence on a whole other level through sky amenities, where you can unwind with the city as your backdrop.',
     copy: 'Open-air terraces framed by the skyline, made for slow evenings above the city.',
     img: `${hero}terrace.jpeg`,
     items: [
-      'Feature Bench', 'Swimming Pool Terrace', 'Shallow Deck', 'Kids’ Swimming Pool',
-      'Underwater Seat', 'Spa Seat', 'Adults’ Swimming Pool', 'F&B Terrace',
-      'Kids’ Playground', 'Elderly Garden', 'Deck', 'Sky Viewing Terrace', 'Bar',
-      'Jacuzzi', 'Deck', 'Seating', 'Multipurpose Plaza', 'BBQ Station', 'Sky Bar',
-      'F&B Plaza', 'Amphitheater', 'Sky Bar & Pantry', 'Feature Pavilion',
-      'Cooldown Space', 'Sky Theater & Star Gazing',
+      'Feature Bench', 'Swimming Pool Terrace', 'Pool Party Terrace', 'Sky Viewing Bridge',
+      'Shallow Deck', 'Kids’ Swimming Pool', 'Underwater Seat', 'Spa Seat',
+      'Adults’ Swimming Pool', 'F&B Terrace', 'Kids’ Playground', 'Elderly Garden', 'Deck',
+      'Sky Viewing Terrace', 'Gazebo', 'Sauna / Steam', 'Bar', 'Jacuzzi', 'Changing Room',
+      'Seating', 'Water Feature', 'Multipurpose Plaza', 'Provisional Area for Audio',
+      'Feature Pavilion & Private Seating', 'Feature Seating', 'BBQ Station', 'Sky Bar',
+      'F&B Plaza', 'Amphitheater', 'Foyer', 'Garden Lounge (Outdoor Co-Working Space)',
+      'BBQ Terrace', 'Viewing Bench', 'Rejuvenating Path', 'Solar & Cloth-Drying Area',
+      'Sky Bar & Pantry', 'Feature Pavilion', 'Cooldown Space', 'Sky Theater & Star Gazing',
     ],
   },
 ];
@@ -111,8 +144,8 @@ const POINT_POSITIONS: Record<string, { left: string; top: string }> = {
 // Residential) rather than dedicated photography, since neither exists
 // yet for these two.
 const POINTS_EXTRA_STAGES: { key: string; label: string; copy: string; img: string }[] = [
-  { key: 'commercial', label: 'Commercial', copy: 'Ground-level retail and everyday convenience, right at the address.', img: `${gallery}entrance.jpeg` },
-  { key: 'residential', label: 'Residence', copy: 'Home to Achyutha’s residences, rising floor after floor above it.', img: `${hero}night_elevation.jpeg` },
+  { key: 'commercial', label: 'Commercial', copy: 'Ground-level retail and everyday convenience, right at the address.', img: `${amenities}podium.webp` },
+  { key: 'residential', label: 'Residence', copy: 'Home to Achyutha’s residences, rising floor after floor above it.', img: `${amenities}residences.webp` },
 ];
 
 // .ac-points' own full stage list — the three real, client-supplied
@@ -124,7 +157,7 @@ const POINTS_EXTRA_STAGES: { key: string; label: string; copy: string; img: stri
 // swaps into .ac-points-bg on hover (see the :has() rules in brand.css)
 // — a real per-category crossfade, not one shared backdrop.
 const POINTS_STAGES: { key: string; label: string; copy: string; img: string }[] = [
-  ...CARDS_STAGES.map(({ key, label, copy, img }) => ({ key, label, copy, img })),
+  ...CARDS_STAGES.filter(({ key }) => key in POINT_POSITIONS).map(({ key, label, copy, img }) => ({ key, label, copy, img })),
   ...POINTS_EXTRA_STAGES,
 ];
 
@@ -138,26 +171,28 @@ const POINTS_STAGES: { key: string; label: string; copy: string; img: string }[]
 const AMENITY_IMAGES: Record<string, string> = {
   // Podium
   'Project Signage': `${hero}podium.jpeg`,
-  'Water Feature': `${gallery}podium.jpg`,
+  'Water Feature': `${amenities}podium.webp`,
   'Gate': `${gallery}entrance.jpeg`,
   'Walking Track': `${gallery}pathway.jpeg`,
   'Tree House': `${gallery}podium-tree-court.jpg`,
-  'Half Basketball Court': `${gallery}half-basketball.jpeg`,
-  'Pickleball Court': `/velumuri-assets/images/hero/hero-courts.jpg`,
+  'Half Basketball Court': `${amenities}podium-amenities.webp`,
+  'Pickleball Court': `${amenities}podium-amenities.webp`,
   'Cricket Pitch': `${gallery}cricket-practice-net.jpg`,
   'Multipurpose Plaza': `${gallery}podium.jpg`,
   'Outdoor Fitness Station': `/velumuri-assets/images/hero/hero-courts.jpg`,
   'Rejuvenating Path': `${gallery}pathway.jpeg`,
   'Children’s Playground': `${gallery}kids-play-area.jpeg`,
   'Pets’ Zone': `${gallery}podium-tree-court.jpg`,
-  'Tennis Court': `/velumuri-assets/images/hero/hero-courts.jpg`,
+  'Tennis Court': `${amenities}podium-amenities.webp`,
   'Temperature-Controlled Pool': `${hero}terrace.jpeg`,
   'Skating Rink': `${gallery}skating-rink.jpeg`,
   'Jogging Track': `${gallery}pathway.jpeg`,
+  // Basement
+  'Badminton Court': `${amenities}basement.webp`,
   // Clubhouse
   'Coffee Bar': `${hero}clubhouse.jpeg`,
   'Waiting Lounge': `${gallery}waiting-hall.png`,
-  'Banquet Hall': `${hero}bridge_view.jpeg`,
+  'Banquet Hall': `${amenities}clubhouse.webp`,
   'Board Room': `${gallery}guest-waiting-lounge.png`,
   'Sports Lounge': `${hero}clubhouse.jpeg`,
   'Seniors’ Room': `${gallery}waiting-hall.png`,
@@ -179,21 +214,20 @@ const amenityImage = (stageImg: string, item: string) => AMENITY_IMAGES[item] ??
 
 const LOCATION_IMG = `${hero}location.jpeg`;
 
-// Floor plans — one tab per tower (A, B, C), placeholder-level per
-// instruction ("make A,B,C with some masked one"): real per-block floor plans do exist for the
-// sibling Velumuri Vistas project (public/velumuri-assets/images/
-// vistas/floor-plan-block-*.jpg) but are deliberately NOT used here,
-// even blurred — they're labelled, specific-unit-number layouts for a
-// different project, and blurring wouldn't make showing another
-// client's actual floor plans under Achyutha's name any less
-// misleading. .ac-floorplans-mask below is a purely abstract CSS
-// grid/blueprint pattern instead — no real (or borrowed) floor plan
-// content, and no fabricated specs (BHK count, sqft) attached to any
-// one type, just a plain "ask us" placeholder per type.
-const FLOOR_PLAN_TYPES: { id: string; label: string }[] = [
-  { id: 'a', label: 'Tower A' },
-  { id: 'b', label: 'Tower B' },
-  { id: 'c', label: 'Tower C' },
+// Floor plans — one tab per tower, labelled to match the drawings' own
+// titles (Block A, Block B, Block D; there is no Block C sheet). Each tower
+// opens on its key plan (Blocks A and B share one first-floor key plan),
+// then a chip per unit. Images are web exports of the client's sheets in
+// floorplans/ (display .webp + a ~3600px -full.jpg for the zoom link).
+const FLOOR_PLAN_IMG = '/velumuri-assets/images/floorplans/web/';
+type FloorPlanUnit = { code: string; type: string };
+const FLOOR_PLANS: { id: string; label: string; block: string; floor: string; keyPlan: { img: string; title: string }; units: FloorPlanUnit[] }[] = [
+  { id: 'a', label: 'Tower A', block: 'Block A', floor: 'First floor plan', keyPlan: { img: 'block-ab', title: 'First floor key plan · Blocks A & B' },
+    units: [{ code: 'A1', type: '4 BHK' }, { code: 'A2', type: '3 BHK' }, { code: 'A3', type: '3 BHK' }, { code: 'A4', type: '4 BHK' }] },
+  { id: 'b', label: 'Tower B', block: 'Block B', floor: 'First floor plan', keyPlan: { img: 'block-ab', title: 'First floor key plan · Blocks A & B' },
+    units: [{ code: 'B1', type: '3 BHK' }, { code: 'B2', type: '4 BHK' }, { code: 'B3', type: '4 BHK' }, { code: 'B4', type: '3 BHK' }] },
+  { id: 'd', label: 'Tower D', block: 'Block D', floor: 'Typical floor plan', keyPlan: { img: 'block-d', title: 'Typical floor key plan · Block D' },
+    units: [{ code: 'D1', type: '5 BHK' }, { code: 'D2', type: '5 BHK' }, { code: 'D3', type: '5 BHK' }] },
 ];
 
 function Words({ text }: { text: string }) {
@@ -222,7 +256,7 @@ export function AchyuthaExperience() {
   const tallestFoldRef = useRef<FoldTextHandle>(null);
   const highlightFoldRefs = useRef<(FoldTextHandle | null)[]>([]);
   const amenityFoldRefs = useRef<(FoldTextHandle | null)[]>([]);
-  const cardsFoldRef = useRef<FoldTextHandle>(null);
+  const cardsHeadingFoldRefs = useRef<(FoldTextHandle | null)[]>([]);
   const cardsStageFoldRefs = useRef<(FoldTextHandle | null)[]>([]);
   const locationFoldRef = useRef<FoldTextHandle>(null);
   const floorplansFoldRef = useRef<FoldTextHandle>(null);
@@ -237,8 +271,15 @@ export function AchyuthaExperience() {
   );
 
   // Floor plans: same plain-tab-state approach as location above.
-  const [activeFloorPlan, setActiveFloorPlan] = useState(FLOOR_PLAN_TYPES[0].id);
-  const activeFloorPlanLabel = FLOOR_PLAN_TYPES.find((p) => p.id === activeFloorPlan)?.label ?? '';
+  const [activeFloorPlan, setActiveFloorPlan] = useState(FLOOR_PLANS[0].id);
+  const [activeUnit, setActiveUnit] = useState<string>('key');
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [planZoomed, setPlanZoomed] = useState(false);
+  const lightboxCloseRef = useRef<HTMLButtonElement>(null);
+  const tower = FLOOR_PLANS.find((p) => p.id === activeFloorPlan) ?? FLOOR_PLANS[0];
+  const unit = tower.units.find((u) => u.code === activeUnit);
+  const planImg = unit ? unit.code.toLowerCase() : tower.keyPlan.img;
+  const planCaption = unit ? `${tower.block} · Unit ${unit.code} · ${unit.type}` : tower.keyPlan.title;
 
   useLayoutEffect(() => {
     const element = root.current;
@@ -311,38 +352,46 @@ export function AchyuthaExperience() {
       // instead of everything landing at once). ----
       const intro = gsap.timeline({ defaults: { ease: 'power3.out' } });
       intro
-        .from('.ac-sky--day', { scale: 1.24, opacity: 0, duration: 1.5 }, .1)
+        .from('.ac-sky--morning', { scale: 1.24, opacity: 0, duration: 1.5 }, .1)
         .from('.ac-brandmark-line', { yPercent: 110, duration: 1.1, stagger: .12 }, .6)
         // A beat later than before — the brandmark settles in first,
         // then the elevation rises into frame, instead of both landing
         // almost on top of each other.
-        .from('.ac-building--day', { y: 190, scale: 1.1, opacity: 0, duration: 1.5, ease: 'power4.out' }, 1.3)
+        .from('.ac-building--morning', { y: 190, scale: 1.1, opacity: 0, duration: 1.5, ease: 'power4.out' }, 1.3)
         .from('.ac-copy', { y: 22, opacity: 0, duration: .8 }, 1.85)
         .call(() => heroFoldRef.current?.play(), [], 1.85);
 
-      // ---- Scroll: sky and elevation dissolve into their night imagery
-      // as the pinned scene plays out. Every tween here is ease:'none' —
-      // scrub already supplies the easing (scroll position IS the
-      // timeline's playhead), so an eased tween inside a scrubbed one
-      // fights the scroll input and reads as laggy/uneven rather than
-      // smooth. A small rotateY + z push gives the crossfade a sense of
-      // depth without the cost of animating filter:blur, and each layer
-      // drifts at its own rate (sky slowest, building faster) for a
-      // genuine layered-depth parallax underneath it. ----
-      gsap.set('.ac-sky--night, .ac-building--night', { rotateY: 5, z: -70, transformPerspective: 2000, transformOrigin: '50% 50%' });
-      gsap.set('.ac-sky--day, .ac-building--day', { transformPerspective: 2000, transformOrigin: '50% 50%' });
+      // ---- Scroll: morning → evening → night. The pinned scene plays two
+      // crossfades back to back (sky first, elevation a beat behind it, so
+      // the light seems to change before the building answers). Every tween
+      // is ease:'none' — scrub already supplies the easing (scroll position
+      // IS the playhead), so an eased tween inside a scrubbed one fights the
+      // scroll input. Elevations are cutouts of one framing,
+      // so the incoming one fades in *over* the outgoing one, which stays
+      // solid until it's covered — two half-faded cutouts would let the sky
+      // show through the tower, and any tilt would misalign them. ----
 
+      // Opacity only — the scene stays still while scrolling (client
+      // request): no tilt/zoom on the skies, no parallax drift, no copy drift.
+      const fadeOutSky = { opacity: 0, duration: 1 };
+      const fadeInSky = { opacity: 1, duration: 1 };
+      const fadeInBuilding = { opacity: 1, duration: 1 };
       const transition = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: '.ac-scene', start: 'top top', end: 'bottom bottom', scrub: SCRUB } });
       transition
-        .to('.ac-sky--day', { opacity: 0, scale: 1.1, rotateY: -5, z: -70 }, 0)
-        .to('.ac-sky--night', { opacity: 1, scale: 1.02, rotateY: 0, z: 0 }, 0)
-        .to('.ac-building--day', { opacity: 0, scale: 1.04, rotateY: -4, z: -50 }, .1)
-        .to('.ac-building--night', { opacity: 1, scale: 1, rotateY: 0, z: 0 }, .1)
-        .to('.ac-copy', { yPercent: -18, opacity: .5 }, .3);
+        // morning → evening
+        .to('.ac-sky--morning', fadeOutSky, 0)
+        .to('.ac-sky--evening', fadeInSky, 0)
+        .to('.ac-building--evening', fadeInBuilding, .15)
+        .set('.ac-building--morning', { opacity: 0 }, 1.15)
+        // short hold on evening, then evening → night
+        .to('.ac-sky--evening', fadeOutSky, 1.45)
+        .to('.ac-sky--night', fadeInSky, 1.45)
+        .to('.ac-building--night', fadeInBuilding, 1.6)
+        .set('.ac-building--evening', { opacity: 0 }, 2.6)
+        // taglines hand over in sequence so the two lines never overlap
+        .to('.ac-brandmark-tagline--day', { opacity: 0, duration: .35 }, 1.45)
+        .to('.ac-brandmark-tagline--night', { opacity: 1, duration: .35 }, 1.8);
 
-      const parallax = { scrollTrigger: { trigger: '.ac-scene', start: 'top top', end: 'bottom bottom', scrub: SCRUB } };
-      gsap.to('.ac-sky--day, .ac-sky--night', { yPercent: -4, ease: 'none', ...parallax });
-      gsap.to('.ac-building--day, .ac-building--night', { yPercent: -9, ease: 'none', ...parallax });
 
       // ---- Velumuri section (company intro, right after the hero): a
       // single centred column that reveals in sequence (eyebrow, FoldText
@@ -368,6 +417,37 @@ export function AchyuthaExperience() {
       // the paragraph fades up — all on the same trigger so both sides
       // resolve together, then both drift at slightly different rates for
       // parallax. ----
+      // Keeps the photo/copy row on screen for .ac-tallest's whole
+      // (deliberately-taller-than-one-viewport) scroll distance — CSS
+      // position:sticky on .ac-tallest-sticky reproducibly failed to
+      // engage here (froze at a stale offset instead of tracking
+      // scroll — verified directly, not a hunch), for reasons that
+      // didn't reproduce in isolation and didn't match any config
+      // difference from the other -sticky sections on this page that
+      // DO work. GSAP's own pin sidesteps whatever that was.
+      // pinSpacing:false since .ac-tallest's own height is already the
+      // scroll-pacing space a spacer would otherwise add on top of —
+      // but end:'bottom bottom' (the usual shorthand) released the pin
+      // after only a fraction of that space when combined with
+      // pinSpacing:false and a pin target ≠ the trigger itself; an
+      // explicit pixel distance (trigger height − pinned height) is
+      // what actually holds for the full gap. Skipped under 701px:
+      // that breakpoint drops the tall/pinned treatment for a plain
+      // stacked column (see brand.css).
+      if (window.matchMedia('(min-width: 701px)').matches) {
+        const tallestEl = element.querySelector<HTMLElement>('.ac-tallest');
+        const tallestPinEl = element.querySelector<HTMLElement>('.ac-tallest-sticky');
+        if (tallestEl && tallestPinEl) {
+          ScrollTrigger.create({
+            trigger: tallestEl,
+            start: 'top top',
+            end: () => '+=' + (tallestEl.offsetHeight - tallestPinEl.offsetHeight),
+            pin: tallestPinEl,
+            pinSpacing: false,
+          });
+        }
+      }
+
       gsap.fromTo('.ac-tallest-outline', { clipPath: 'inset(100% 0 0 0)' }, {
         clipPath: 'inset(0% 0 0 0)',
         duration: 1.4,
@@ -792,13 +872,14 @@ export function AchyuthaExperience() {
       // The very first category has no previous stage to wipe in from, so
       // it's exempted from the 0–0.35 phase and starts already "arrived"
       // (matching the reference's own opening frame). ----
-      gsap.from('.ac-cards-eyebrow-block', {
-        y: 16, opacity: 0, duration: .8, ease: 'power3.out',
-        scrollTrigger: { trigger: '.ac-cards', start: 'top 70%', once: true },
-        onComplete: () => cardsFoldRef.current?.play(),
-      });
-
+      // The top "Luxury That Grounds You"-style heading used to be one
+      // shared block with its own entrance tween — now each stage has
+      // its own (set via `heading` in CARDS_STAGES, so it can read
+      // differently per category), so it rides the same per-stage
+      // opacity/y crossfade as .ac-cards-stage-title below instead of a
+      // separate one-shot animation.
       const cardsStages = gsap.utils.toArray<HTMLElement>('.ac-cards-stage');
+      const cardsHeadings = gsap.utils.toArray<HTMLElement>('.ac-cards-stage-heading');
       const cardsTitles = gsap.utils.toArray<HTMLElement>('.ac-cards-stage-title');
       const cardsPanels = gsap.utils.toArray<HTMLElement>('.ac-cards-stage-panel');
       const cardsStageCount = cardsStages.length;
@@ -816,9 +897,17 @@ export function AchyuthaExperience() {
       gsap.set(cardsStages[0], { clipPath: 'inset(0% 0 0 0)' });
       gsap.set('.ac-cards-stage-bg img', { scale: ZOOM_FROM });
       gsap.set(cardsStages[0].querySelector('.ac-cards-stage-bg img'), { scale: 1 });
+      gsap.set(cardsHeadings, { opacity: 0, y: 24 });
       gsap.set(cardsTitles, { opacity: 0, y: 24 });
       gsap.set(cardsPanels, { clipPath: 'inset(0 0 0 100%)' });
       gsap.set('.ac-cards-stage-list li', { clipPath: 'inset(100% 0 0 0)', opacity: 0 });
+
+      // Declared before applyCardsProgress: ScrollTrigger.create() below can
+      // call it synchronously (page loaded already scrolled into this
+      // section), so a later `const` would still be in its TDZ.
+      const cardsSticky = element.querySelector<HTMLElement>('.ac-cards-sticky');
+      const preview = element.querySelector<HTMLElement>('.ac-cards-preview');
+      const previewImg = preview?.querySelector('img');
 
       const applyCardsProgress = (self: ScrollTrigger) => {
         const p = self.progress * cardsStageCount;
@@ -856,8 +945,15 @@ export function AchyuthaExperience() {
         // it while the panel is open (an earlier version multiplied this
         // by `1 - panelOpen`) meant there was no label on screen telling
         // you which category's amenity list you were looking at.
+        gsap.set(cardsHeadings[idx], { opacity: crossfadeFrac, y: (1 - crossfadeFrac) * 24 });
         gsap.set(cardsTitles[idx], { opacity: crossfadeFrac, y: (1 - crossfadeFrac) * 24 });
         gsap.set(cardsPanels[idx], { clipPath: `inset(0 0 0 ${(1 - panelOpen) * 100}%)` });
+        // Hover-preview card stays hidden until the panel itself has
+        // started wiping open — showing it from the first frame (as a
+        // fixed opacity:1 in the setup below used to) made it appear
+        // the instant this section was entered, before there was even
+        // a panel/list for it to be a reading aid for.
+        if (preview) gsap.set(preview, { opacity: panelOpen > 0 ? Math.min(1, panelOpen * 5) : 0 });
         const items = cardsPanels[idx].querySelectorAll<HTMLElement>('.ac-cards-stage-list li');
         items.forEach((li, liIndex) => {
           const start = liIndex / items.length;
@@ -869,6 +965,7 @@ export function AchyuthaExperience() {
         if (idx !== cardsActive) {
           cardsActive = idx;
           cardsStages.forEach((el, i) => el.classList.toggle('is-active', i === cardsActive));
+          cardsHeadingFoldRefs.current[cardsActive]?.play();
           cardsStageFoldRefs.current[cardsActive]?.play();
           // Only the active stage's items ever have pointer-events (the
           // rest are pointer-events:none while clipped shut above), so
@@ -910,7 +1007,9 @@ export function AchyuthaExperience() {
         once: true,
         onEnter: (self) => {
           cardsStages.forEach((el, i) => el.classList.toggle('is-active', i === 0));
+          gsap.set(cardsHeadings[0], { opacity: 1, y: 0 });
           gsap.set(cardsTitles[0], { opacity: 1, y: 0 });
+          cardsHeadingFoldRefs.current[0]?.play();
           cardsStageFoldRefs.current[0]?.play();
           applyCardsProgress(self);
         },
@@ -936,15 +1035,13 @@ export function AchyuthaExperience() {
       // (not just over a list item) so it reads as "alive"/followable
       // the moment someone moves their mouse in this section, and on
       // leaving an item it settles back to the active stage's photo
-      // instead of disappearing. ----
-      const cardsSticky = element.querySelector<HTMLElement>('.ac-cards-sticky');
-      const preview = element.querySelector<HTMLElement>('.ac-cards-preview');
-      const previewImg = preview?.querySelector('img');
+      // instead of disappearing. (cardsSticky/preview/previewImg are
+      // declared above applyCardsProgress.) ----
       if (cardsSticky && preview && previewImg && window.matchMedia('(hover: hover) and (min-width: 901px)').matches) {
         const items = gsap.utils.toArray<HTMLElement>('.ac-cards-stage-list li', element);
         new Set(items.map((li) => li.dataset.img).filter(Boolean) as string[]).forEach((src) => { const warm = new Image(); warm.src = src; });
         const stickyRect = cardsSticky.getBoundingClientRect();
-        gsap.set(preview, { opacity: 1, scale: 1, xPercent: -50, yPercent: -50, x: stickyRect.width * 0.27, y: stickyRect.height * 0.5 });
+        gsap.set(preview, { opacity: 0, scale: 1, xPercent: -50, yPercent: -50, x: stickyRect.width * 0.27, y: stickyRect.height * 0.5 });
         const xTo = gsap.quickTo(preview, 'x', { duration: .5, ease: 'power3.out' });
         const yTo = gsap.quickTo(preview, 'y', { duration: .5, ease: 'power3.out' });
         const onMove = (e: MouseEvent) => {
@@ -1021,8 +1118,18 @@ export function AchyuthaExperience() {
 
       // ---- Floor plans: same plain one-shot reveal as .ac-location
       // above — a tab switch is a live interaction, not a scroll
-      // choreography, so no driver needed here either. ----
-      gsap.from('.ac-floorplans-inner > .ac-eyebrow, .ac-floorplans-heading', {
+      // choreography, so no driver needed here either. The scroll badge
+      // hides while the section is on screen (it sat over the plan sheet),
+      // same body-class toggle as .ac-location's. ----
+      ScrollTrigger.create({
+        trigger: '.ac-floorplans',
+        start: 'top bottom',
+        end: 'bottom top',
+        onUpdate: (self) => {
+          document.body.classList.toggle('ac-floorplans-active', self.isActive);
+        },
+      });
+      gsap.from('.ac-floorplans-aside > .ac-eyebrow, .ac-floorplans-heading', {
         y: 16, opacity: 0, duration: .8, stagger: .1, ease: 'power3.out',
         scrollTrigger: { trigger: '.ac-floorplans', start: 'top 80%', once: true },
         onComplete: () => floorplansFoldRef.current?.play(),
@@ -1123,15 +1230,46 @@ export function AchyuthaExperience() {
       document.body.classList.remove('ac-cards-active');
       document.body.classList.remove('ac-points-active');
       document.body.classList.remove('ac-location-active');
+      document.body.classList.remove('ac-floorplans-active');
     };
   }, []);
 
+  // Floor plan lightbox: Esc closes, ←/→ step through the active tower's
+  // plans; page scroll (Lenis + native) is locked while it's open.
+  const planSequence = useMemo(() => ['key', ...tower.units.map((u) => u.code)], [tower]);
+  const stepPlan = (dir: 1 | -1) => {
+    const i = planSequence.indexOf(activeUnit);
+    setActiveUnit(planSequence[(i + dir + planSequence.length) % planSequence.length]);
+    setPlanZoomed(false);
+  };
+  useLayoutEffect(() => {
+    if (!lightboxOpen) return;
+    const lenis = getLenisInstance();
+    lenis?.stop();
+    document.body.style.overflow = 'hidden';
+    document.body.classList.add('ac-lightbox-open');
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightboxOpen(false);
+      else if (e.key === 'ArrowRight') stepPlan(1);
+      else if (e.key === 'ArrowLeft') stepPlan(-1);
+    };
+    document.addEventListener('keydown', onKey);
+    lightboxCloseRef.current?.focus();
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+      document.body.classList.remove('ac-lightbox-open');
+      lenis?.start();
+    };
+  });
+
   return (
     <div ref={root} className="ac-experience">
-      <section className="ac-scene" aria-label="Achyutha day to night architectural experience">
+      <section className="ac-scene" aria-label="Achyutha from morning to night">
         <div className="ac-sticky">
-          <img className="ac-layer ac-sky--day" src={`${hero}dayview.jpg`} alt="" fetchPriority="high" />
-          <img className="ac-layer ac-sky--night" src={`${hero}nightview.jpg`} alt="" />
+          <img className="ac-layer ac-sky--morning" src={`${hero}scene/morning-sky.webp`} alt="" fetchPriority="high" />
+          <img className="ac-layer ac-sky--evening" src={`${hero}scene/evening-sky.webp`} alt="" />
+          <img className="ac-layer ac-sky--night" src={`${hero}scene/night-sky.webp`} alt="" />
           {/* Sits behind the elevation cutout (which is transparent
               everywhere but the building silhouette) and in front of the
               sky — so the tower naturally occludes the text wherever its
@@ -1141,11 +1279,16 @@ export function AchyuthaExperience() {
           <div className="ac-brandmark" aria-hidden="true">
             <span className="ac-brandmark-mask"><span className="ac-brandmark-line ac-brandmark-small">Velumuri</span></span>
             <span className="ac-brandmark-mask"><span className="ac-brandmark-line ac-brandmark-big">ACHYUTHA</span></span>
+            <span className="ac-brandmark-tagline-wrap">
+              <span className="ac-brandmark-tagline ac-brandmark-tagline--day">Rajahmundry&rsquo;s First Address</span>
+              <span className="ac-brandmark-tagline ac-brandmark-tagline--night">For Sky-High Living</span>
+            </span>
           </div>
-          <img className="ac-layer ac-building ac-building--day" src={`${hero}day_elevation.png`} alt="Achyutha residences in daylight" fetchPriority="high" />
-          <img className="ac-layer ac-building ac-building--night" src={`${hero}night_elevation.png`} alt="Achyutha residences illuminated at night" />
+          <img className="ac-layer ac-building ac-building--morning" src={`${hero}scene/morning-view.webp`} alt="Achyutha residences in morning light" fetchPriority="high" />
+          <img className="ac-layer ac-building ac-building--evening" src={`${hero}scene/evening-view.webp`} alt="Achyutha residences at sunset" />
+          <img className="ac-layer ac-building ac-building--night" src={`${hero}scene/night-view.webp`} alt="Achyutha residences illuminated at night" />
           {/* <img className="ac-layer ac-cloud ac-cloud--day" src={`${hero}day-right-cloud.png`} alt="" /> */}
-          <div className="ac-copy"><p className="ac-eyebrow">Rajamahendravaram · Andhra Pradesh</p><h1><FoldText ref={heroFoldRef} text="Life, elevated." trigger="manual" splitBy="char" hinge="top" duration={.65} stagger={.045} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h1><p>An address shaped by light, landscape and a more considered way to come home.</p></div>
+          <div className="ac-copy"><p className="ac-eyebrow">Rajamahendravaram · Andhra Pradesh</p><h1><FoldText ref={heroFoldRef} text="Life, elevated" trigger="manual" splitBy="char" hinge="top" duration={.65} stagger={.045} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h1><p>An address shaped by light, landscape and a more considered way to come home.</p></div>
         </div>
       </section>
 
@@ -1158,8 +1301,8 @@ export function AchyuthaExperience() {
       <section className="ac-velumuri" aria-labelledby="ac-velumuri-h">
         <div className="ac-velumuri-copy">
           <p className="ac-eyebrow">About Velumuri Infra</p>
-          <h2 id="ac-velumuri-h"><FoldText ref={velumuriFoldRef} text={'We are not just builders,\nwe are family.'} trigger="manual" splitBy="line" hinge="top" duration={1.1} stagger={.12} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h2>
-          <p className="ac-velumuri-body">Velumuri Infra has been building homes in Rajahmundry since 2008 &mdash; sixteen residential projects delivered on schedule, hundreds of families settled, and a name that has come to mean reliability. Achyutha is the next chapter of that promise.</p>
+          <h2 id="ac-velumuri-h"><FoldText ref={velumuriFoldRef} text={'Your Property\nIs Our Priority'} trigger="manual" splitBy="line" hinge="top" duration={1.1} stagger={.12} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h2>
+          <p className="ac-velumuri-body">Founded by Mr. Bhima Shankar Rao Velumuri in 2008, we create thoughtfully designed spaces where advanced engineering, contemporary architecture, sustainability and innovation come together. Going beyond conventional real estate development, our projects are shaped around evolving urban needs, with a focus on quality, functionality and responsible development.</p>
           <ul className="ac-velumuri-facts">
             <li className="ac-velumuri-fact"><span className="ac-velumuri-fact-value">16</span><span className="ac-velumuri-fact-label">Projects completed</span></li>
             <li className="ac-velumuri-fact"><span className="ac-velumuri-fact-value">18+</span><span className="ac-velumuri-fact-label">Years of experience</span></li>
@@ -1170,34 +1313,46 @@ export function AchyuthaExperience() {
       </section>
 
       <section className="ac-tallest" aria-label="Rajahmundry's tallest building">
-        <div className="ac-tallest-silk" aria-hidden="true">
-          <Silk speed={4} scale={1} color="#242016" noiseIntensity={1.5} rotation={0} />
-        </div>
-        <div className="ac-tallest-outline" aria-hidden="true">
-          {/* <img className="ac-tallest-sky" src={`${hero}dayview.jpg`} alt="" /> */}
-          <img className="ac-tallest-building" src={`${hero}tallest-building.jpeg`} alt="" />
-          {/* <img className="ac-tallest-cloud" src={`${hero}day-right-cloud.png`} alt="" /> */}
-        </div>
-        <div className="ac-tallest-copy">
-          <p className="ac-eyebrow">A New Skyline</p>
-          <h2><FoldText ref={tallestFoldRef} text={'Rajahmundry’s\nTallest Building.'} trigger="manual" splitBy="line" hinge="top" duration={1.1} stagger={.12} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h2>
-          <p className="ac-tallest-body"><Words text="Rising above the city, Achyutha redefines the skyline of Rajahmundry — a landmark address built to be seen from every corner of the city it calls home." /></p>
-          <div className="ac-tallest-stats">
-            <div className="ac-tallest-stat">
-              <span className="ac-tallest-stat-value" data-count-to="5.5" data-count-decimals="1">0</span>
-              <span className="ac-tallest-stat-label">Acres</span>
+        <div className="ac-tallest-sticky">
+          <div className="ac-tallest-silk" aria-hidden="true">
+            <Silk speed={4} scale={1} color="#242016" noiseIntensity={1.5} rotation={0} />
+          </div>
+          <div className="ac-tallest-row">
+            <div className="ac-tallest-outline" aria-hidden="true">
+              {/* <img className="ac-tallest-sky" src={`${hero}dayview.jpg`} alt="" /> */}
+              <img className="ac-tallest-building" src={`${hero}velumuri_achyutha_night.webp`} alt="" />
+              {/* <img className="ac-tallest-cloud" src={`${hero}day-right-cloud.png`} alt="" /> */}
             </div>
-            <div className="ac-tallest-stat">
-              <span className="ac-tallest-stat-value">Rajahmundry</span>
-              <span className="ac-tallest-stat-label">Location</span>
-            </div>
-            <div className="ac-tallest-stat">
-              <span className="ac-tallest-stat-value" data-count-to="3500">0</span>
-              <span className="ac-tallest-stat-label">Sq.ft Project Area</span>
-            </div>
-            <div className="ac-tallest-stat">
-              <span className="ac-tallest-stat-value">2 &amp; 3</span>
-              <span className="ac-tallest-stat-label">BHK Residences</span>
+            <div className="ac-tallest-copy">
+              <p className="ac-eyebrow">Sky-High Living</p>
+              <h2><FoldText ref={tallestFoldRef} text={'For Imperishable\nLegacies'} trigger="manual" splitBy="line" hinge="top" duration={1.1} stagger={.12} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h2>
+              <p className="ac-tallest-body"><Words text="Achyutha is rooted in Rajahmundry’s beliefs and is shaped by the luxuries of the modern world. We bring familiar values, timeless warmth and a deep sense of belonging through contemporary spaces and modern comforts." /></p>
+              <div className="ac-tallest-stats">
+                <div className="ac-tallest-stat">
+                  <span className="ac-tallest-stat-value" data-count-to="3">0</span>
+                  <span className="ac-tallest-stat-label">Acres</span>
+                </div>
+                <div className="ac-tallest-stat">
+                  <span className="ac-tallest-stat-value" data-count-to="3">0</span>
+                  <span className="ac-tallest-stat-label">Towers</span>
+                </div>
+                <div className="ac-tallest-stat">
+                  <span className="ac-tallest-stat-value" data-count-to="165">0</span>
+                  <span className="ac-tallest-stat-label">Units</span>
+                </div>
+                <div className="ac-tallest-stat">
+                  <span className="ac-tallest-stat-value">3 &amp; 4</span>
+                  <span className="ac-tallest-stat-label">BHKs</span>
+                </div>
+                <div className="ac-tallest-stat">
+                  <span className="ac-tallest-stat-value">2,700-4,000</span>
+                  <span className="ac-tallest-stat-label">Sq.ft. Residences</span>
+                </div>
+                <div className="ac-tallest-stat">
+                  <span className="ac-tallest-stat-value">IGBC</span>
+                  <span className="ac-tallest-stat-label">Gold-Rated</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1211,14 +1366,14 @@ export function AchyuthaExperience() {
             <li className="ac-highlight-item is-active">
               <div className="ac-highlight-head">
                 {/* <span className="ac-highlight-index">01</span> */}
-                <h3 className="ac-highlight-label"><FoldText ref={(el) => { highlightFoldRefs.current[0] = el; }} text={'Most Luxurious\nProject'} trigger="manual" splitBy="line" hinge="top" duration={.7} stagger={.1} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h3></div>
-              <p className="ac-highlight-copy">Interiors, amenities and finishes curated to a standard the city hasn&rsquo;t seen before.</p>
+                <h3 className="ac-highlight-label"><FoldText ref={(el) => { highlightFoldRefs.current[0] = el; }} text={'Setting A Benchmark\nIn Rajahmundry'} trigger="manual" splitBy="line" hinge="top" duration={.7} stagger={.1} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h3></div>
+              <p className="ac-highlight-copy">From the basement to the Sky Zone, every aspect of Achyutha is designed to elevate lifestyles through leisure.</p>
             </li>
             <li className="ac-highlight-item">
               <div className="ac-highlight-head">
                 {/* <span className="ac-highlight-index">02</span> */}
                 <h3 className="ac-highlight-label"><FoldText ref={(el) => { highlightFoldRefs.current[1] = el; }} text={'Godavari\nView Point'} trigger="manual" splitBy="line" hinge="top" duration={.7} stagger={.1} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h3></div>
-              <p className="ac-highlight-copy">Uninterrupted views of the river that has always defined this address.</p>
+              <p className="ac-highlight-copy">Endless views of the river that define the character of this address.</p>
             </li>
           </ul>
         </div>
@@ -1226,7 +1381,7 @@ export function AchyuthaExperience() {
 
       <section className="ac-podium-intro" aria-label="Open space at Achyutha">
         <div className="ac-podium-intro-copy">
-          <p><Words text="Step out and the city softens beneath you. Golden light over the river, easy conversation drifting past sunset — every open space at Achyutha is shaped for the moments that don’t need an occasion, just room to breathe." /></p>
+          <p><Words text="Step outside, and the city seems to soften beneath you. Golden light over the river, easy conversations carrying into the evening. Every open space at Achyutha is designed for moments that need no occasion, only the freedom to pause, breathe and simply be." /></p>
         </div>
       </section>
 
@@ -1353,22 +1508,20 @@ export function AchyuthaExperience() {
           to slot back in elsewhere. */}
       <section className="ac-cards" aria-label="Amenities at Achyutha">
         <div className="ac-cards-sticky">
-          <div className="ac-cards-eyebrow-block">
-            <p className="ac-eyebrow">Amenities</p>
-            <h2><FoldText ref={cardsFoldRef} text="Every space, considered." trigger="manual" splitBy="word" hinge="top" duration={.7} stagger={.06} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h2>
-          </div>
-
           {CARDS_STAGES.map((stage, i) => (
             <div className={`ac-cards-stage${i === 0 ? ' is-active' : ''}`} key={stage.key}>
               <div className="ac-cards-stage-bg" aria-hidden="true"><img src={stage.img} alt="" /></div>
               <div className="ac-cards-stage-scrim" aria-hidden="true" />
+              <div className="ac-cards-stage-heading">
+                <h2><FoldText ref={(el) => { cardsHeadingFoldRefs.current[i] = el; }} text={stage.heading} trigger="manual" splitBy="word" hinge="top" duration={.7} stagger={.06} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h2>
+              </div>
               <div className="ac-cards-stage-title">
                 <h3 className="ac-cards-stage-label"><FoldText ref={(el) => { cardsStageFoldRefs.current[i] = el; }} text={stage.label} trigger="manual" splitBy="char" hinge="top" duration={.6} stagger={.04} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h3>
                 <p className="ac-cards-stage-tagline">{stage.tagline}</p>
               </div>
               <div className="ac-cards-stage-panel">
                 <p className="ac-cards-stage-copy">{stage.copy}</p>
-                <ul className="ac-cards-stage-list">
+                <ul className={`ac-cards-stage-list${stage.items.length > 30 ? ' is-long' : ''}`}>
                   {stage.items.map((item, itemIndex) => (
                     <li key={`${item}-${itemIndex}`} data-img={amenityImage(stage.img, item)}>{item}</li>
                   ))}
@@ -1399,7 +1552,7 @@ export function AchyuthaExperience() {
         <div className="ac-location-inner">
           <div className="ac-location-heading-block">
             <p className="ac-eyebrow">Location</p>
-            <h2 className="ac-location-heading"><FoldText ref={locationFoldRef} text="Everything nearby." trigger="manual" splitBy="word" hinge="top" duration={.7} stagger={.06} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h2>
+            <h2 className="ac-location-heading"><FoldText ref={locationFoldRef} text="Everything nearby" trigger="manual" splitBy="word" hinge="top" duration={.7} stagger={.06} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h2>
           </div>
 
           <div className="ac-location-pills" role="tablist" aria-label="Nearby categories">
@@ -1430,43 +1583,68 @@ export function AchyuthaExperience() {
         </div>
       </section>
 
-      {/* Floor plans — placeholder-level per instruction: real,
-          labelled per-block plans exist for the sibling Velumuri Vistas
-          project (see FLOOR_PLAN_TYPES' own comment above) but aren't
-          used here even blurred, since they're another client's actual
-          floor plans, not Achyutha's. .ac-floorplans-mask is a purely
-          abstract CSS blueprint-style grid instead, with a plain "ask
-          us" card over it per plan type — no invented specs (BHK, sqft)
-          attached to any one type. */}
+      {/* Floor plans — tower tabs, then key plan + unit chips for the
+          active tower (see FLOOR_PLANS above). The plan opens full size
+          in a new tab for reading room dimensions. */}
       <section className="ac-floorplans" aria-label="Floor plans">
         <div className="ac-floorplans-inner">
+          <div className="ac-floorplans-aside">
           <p className="ac-eyebrow">Floor Plans</p>
-          <h2 className="ac-floorplans-heading"><FoldText ref={floorplansFoldRef} text="Spaces, still taking shape." trigger="manual" splitBy="word" hinge="top" duration={.7} stagger={.06} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h2>
+          <h2 className="ac-floorplans-heading"><FoldText ref={floorplansFoldRef} text="Landmark In The Making" trigger="manual" splitBy="word" hinge="top" duration={.7} stagger={.06} ease="power3.out" fontSize="inherit" fontWeight="inherit" color="inherit" /></h2>
 
           <div className="ac-floorplans-tabs" role="tablist" aria-label="Towers">
-            {FLOOR_PLAN_TYPES.map((plan) => (
+            {FLOOR_PLANS.map((plan) => (
               <button
                 type="button"
                 key={plan.id}
                 role="tab"
                 aria-selected={activeFloorPlan === plan.id}
                 className={`ac-floorplans-tab${activeFloorPlan === plan.id ? ' is-active' : ''}`}
-                onClick={() => setActiveFloorPlan(plan.id)}
+                onClick={() => { setActiveFloorPlan(plan.id); setActiveUnit('key'); }}
               >
                 {plan.label}
               </button>
             ))}
           </div>
 
-          <div className="ac-floorplans-card">
-            <div className="ac-floorplans-mask" aria-hidden="true" />
-            <div className="ac-floorplans-overlay">
-              <p className="ac-floorplans-tag">Coming soon</p>
-              <p className="ac-floorplans-plan-label">{activeFloorPlanLabel}</p>
-              <p className="ac-floorplans-text">Detailed layouts for this tower are being finalised — reach out and our team will share the latest floor plans.</p>
-              <Link href="/contact" className="ac-floorplans-cta">Enquire Now</Link>
-            </div>
+          <div className="ac-floorplans-units" role="group" aria-label={`${tower.label} plans`}>
+            <button type="button" aria-pressed={activeUnit === 'key'} className={`ac-floorplans-unit${activeUnit === 'key' ? ' is-active' : ''}`} onClick={() => setActiveUnit('key')}>Key Plan</button>
+            {tower.units.map((u) => (
+              <button type="button" key={u.code} aria-pressed={activeUnit === u.code} className={`ac-floorplans-unit${activeUnit === u.code ? ' is-active' : ''}`} onClick={() => setActiveUnit(u.code)}>
+                {u.code} <span>{u.type}</span>
+              </button>
+            ))}
           </div>
+          <p className="ac-floorplans-note">Plans are indicative and not to scale. For the latest approved layouts, <Link href="/contact">speak to our team</Link>.</p>
+          </div>
+
+          <figure className="ac-floorplans-card">
+            <button type="button" className="ac-floorplans-frame" onClick={() => { setPlanZoomed(false); setLightboxOpen(true); }} aria-label={`Enlarge ${planCaption}`}>
+              <img key={planImg} src={`${FLOOR_PLAN_IMG}${planImg}.webp`} alt={`${planCaption} — ${tower.floor}`} loading="lazy" />
+            </button>
+            <figcaption className="ac-floorplans-caption">
+              <span><strong>{planCaption}</strong> · {tower.floor}</span>
+              <button type="button" onClick={() => { setPlanZoomed(false); setLightboxOpen(true); }}>View full size ⤢</button>
+            </figcaption>
+          </figure>
+
+          {lightboxOpen && createPortal(
+            <div className="ac-plan-lightbox" role="dialog" aria-modal="true" aria-label={`${planCaption} — ${tower.floor}`} onClick={(e) => { if (e.target === e.currentTarget) setLightboxOpen(false); }}>
+              <div className="ac-plan-lightbox-bar">
+                <span><strong>{planCaption}</strong> · {tower.floor}</span>
+                <span className="ac-plan-lightbox-actions">
+                  <button type="button" onClick={() => setPlanZoomed((z) => !z)} aria-pressed={planZoomed}>{planZoomed ? 'Fit to screen' : 'Zoom in'}</button>
+                  <button type="button" ref={lightboxCloseRef} onClick={() => setLightboxOpen(false)} aria-label="Close">✕</button>
+                </span>
+              </div>
+              <div className={`ac-plan-lightbox-stage${planZoomed ? ' is-zoomed' : ''}`} data-lenis-prevent onClick={(e) => { if (e.target === e.currentTarget) setLightboxOpen(false); }}>
+                <img key={planImg} src={`${FLOOR_PLAN_IMG}${planImg}-full.jpg`} alt={`${planCaption} — ${tower.floor}`} onClick={() => setPlanZoomed((z) => !z)} />
+              </div>
+              <button type="button" className="ac-plan-lightbox-nav is-prev" onClick={() => stepPlan(-1)} aria-label="Previous plan">‹</button>
+              <button type="button" className="ac-plan-lightbox-nav is-next" onClick={() => stepPlan(1)} aria-label="Next plan">›</button>
+            </div>,
+            document.body,
+          )}
         </div>
       </section>
 

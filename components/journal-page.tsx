@@ -8,6 +8,7 @@
 // client component because that reveal is GSAP-driven; the article
 // rows below are JournalList's own.
 import { useLayoutEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PageBanner } from '@/components/page-banner';
@@ -87,14 +88,32 @@ export function JournalPage({ entries }: { entries: JournalEntry[] }) {
         gsap.set(bannerImg, { scale: 1.12 });
         gsap.to(bannerImg, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '.page-banner', start: 'top bottom', end: 'bottom top', scrub: true } });
       }
+      gsap.from('.journal-intro .about-intro-eyebrow', { y: 16, opacity: 0, duration: .9, scrollTrigger: { trigger: '.journal-intro', start: 'top 78%', once: true } });
+      gsap.to('.journal-intro h2 .hero-line-inner', { y: 0, duration: 1, stagger: .14, scrollTrigger: { trigger: '.journal-intro', start: 'top 78%', once: true } });
+      gsap.from('.journal-intro .about-intro-copy p', { y: 20, opacity: 0, duration: .9, stagger: .15, scrollTrigger: { trigger: '.journal-intro', start: 'top 68%', once: true } });
+      gsap.to('.journal-cta h2 .hero-line-inner', { y: 0, duration: 1, scrollTrigger: { trigger: '.journal-cta', start: 'top 85%', once: true } });
+      gsap.from('.journal-cta p, .journal-cta .btn-explore', { y: 18, opacity: 0, duration: .9, stagger: .1, scrollTrigger: { trigger: '.journal-cta', start: 'top 85%', once: true } });
       gsap.from('.journal-head', { y: 16, opacity: 0, duration: .8, scrollTrigger: { trigger: '.journal-section', start: 'top 85%', once: true } });
     }, root);
     return () => context.revert();
   }, []);
 
   return (
-    <div ref={root}>
-      <PageBanner eyebrow="Journal" lines={['Stories, guides &', 'project updates.']} image="hero/hero.png" alt="The Godavari arch bridge at Rajamahendravaram" />
+    <div ref={root} className="journal-page">
+      <PageBanner eyebrow="The Journal" lines={['Perspectives on Property,', 'Places & Possibilities']} image="banners/blog_desktop.jpg" tablet="banners/blog_tablet.jpg" mobile="banners/blog_mobile.jpg" align="left" raised alt="The Godavari arch bridge at Rajamahendravaram" />
+      <section className="about-intro about-page-intro journal-intro" aria-labelledby="journal-intro-h">
+        <div className="container about-intro-grid">
+          <p className="eyebrow about-intro-eyebrow">Insights &amp; Updates</p>
+          <div className="about-intro-copy">
+            <h2 id="journal-intro-h">
+              <span className="hero-line"><span className="hero-line-inner">Ideas Worth Exploring</span></span>
+              <span className="hero-line"><span className="hero-line-inner">Stories Worth Sharing</span></span>
+            </h2>
+            <p>Stay informed with insights from the world of real estate, practical homebuying guides, evolving lifestyle trends, and the latest developments from Velumuri Infra.</p>
+            <p>A space for knowledge, inspiration, and informed decisions.</p>
+          </div>
+        </div>
+      </section>
       <section className="legacy-section journal-section">
         <div className="journal-head">
           <p className="legacy-kicker">All articles</p>
@@ -102,6 +121,16 @@ export function JournalPage({ entries }: { entries: JournalEntry[] }) {
         </div>
         <JournalList entries={pageEntries} key={page} />
         <JournalPagination page={page} totalPages={totalPages} onChange={goToPage} />
+      </section>
+
+      <section className="about-cta journal-cta" aria-labelledby="journal-cta-h">
+        <div className="container about-cta-inner">
+          <h2 id="journal-cta-h">
+            <span className="hero-line"><span className="hero-line-inner">Looking Beyond the Headlines?</span></span>
+          </h2>
+          <p>Explore the developments and experience behind Velumuri Infra.</p>
+          <Link className="btn-explore" href="/projects">Explore Our Projects <span className="arrow">→</span></Link>
+        </div>
       </section>
     </div>
   );

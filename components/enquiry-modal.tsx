@@ -48,7 +48,7 @@ export function EnquiryModalProvider({ children }: { children: ReactNode }) {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
           </button>
           <p className="legacy-kicker">Schedule A Visit</p>
-          <h3 id="enquiry-modal-h">Let&apos;s find the right home for you.</h3>
+          <h3 id="enquiry-modal-h">Let&apos;s find the right home for you</h3>
           <form autoComplete="off" onSubmit={(e) => { e.preventDefault(); setStatus('Thanks for reaching out — our team will get back to you shortly.'); e.currentTarget.reset(); }}>
             {/* Chrome's "Addresses and more" autofill (the dropdown showing
                 saved phone numbers/emails under a person's name) keys

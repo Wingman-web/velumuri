@@ -5,6 +5,7 @@
 // existing, already-vetted community/amenity photography (no new or
 // unverified imagery).
 import { useLayoutEffect, useRef } from 'react';
+import Link from 'next/link';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PageBanner } from '@/components/page-banner';
@@ -46,14 +47,31 @@ export function GalleryPage() {
         gsap.set(bannerImg, { scale: 1.12 });
         gsap.to(bannerImg, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '.page-banner', start: 'top bottom', end: 'bottom top', scrub: true } });
       }
+      gsap.from('.gallery-intro .about-intro-eyebrow', { y: 16, opacity: 0, duration: .9, scrollTrigger: { trigger: '.gallery-intro', start: 'top 78%', once: true } });
+      gsap.to('.gallery-intro h2 .hero-line-inner', { y: 0, duration: 1, scrollTrigger: { trigger: '.gallery-intro', start: 'top 78%', once: true } });
+      gsap.from('.gallery-intro .about-intro-copy p', { y: 20, opacity: 0, duration: .9, stagger: .15, scrollTrigger: { trigger: '.gallery-intro', start: 'top 68%', once: true } });
+      gsap.to('.gallery-cta h2 .hero-line-inner', { y: 0, duration: 1, scrollTrigger: { trigger: '.gallery-cta', start: 'top 85%', once: true } });
+      gsap.from('.gallery-cta p, .gallery-cta .btn-explore', { y: 18, opacity: 0, duration: .9, stagger: .1, scrollTrigger: { trigger: '.gallery-cta', start: 'top 85%', once: true } });
       gsap.from('.gallery-grid figure', { y: 24, opacity: 0, duration: .7, stagger: .05, scrollTrigger: { trigger: '.gallery-grid', start: 'top 88%', once: true } });
     }, root);
     return () => context.revert();
   }, []);
 
   return (
-    <div ref={root}>
-      <PageBanner eyebrow="Gallery" lines={['A closer look at', 'life at Achyutha.']} image="hero/hero-playground.jpg" alt="Children's play area at a Velumuri community" />
+    <div ref={root} className="gallery-page">
+      <PageBanner eyebrow="Our Gallery" lines={['A Glimpse Into the', 'World of Velumuri']} image="banners/gallery_desktop.jpg" tablet="banners/gallery_tablet.jpg" mobile="banners/gallery_mobile.jpg" alt="Children's play area at a Velumuri community" />
+      <section className="about-intro about-page-intro gallery-intro" aria-labelledby="gallery-intro-h">
+        <div className="container about-intro-grid">
+          <p className="eyebrow about-intro-eyebrow">Our World, In Pictures</p>
+          <div className="about-intro-copy">
+            <h2 id="gallery-intro-h">
+              <span className="hero-line"><span className="hero-line-inner">Every Detail Tells a Story</span></span>
+            </h2>
+            <p>Explore the architecture, spaces, and developments that reflect Velumuri Infra&rsquo;s journey.</p>
+            <p>From completed landmarks to the spaces that bring communities together, our gallery offers a closer look at the quality and thought behind our work.</p>
+          </div>
+        </div>
+      </section>
       <section className="legacy-section gallery-section">
         <p className="legacy-kicker">Community & construction</p>
         <div className="gallery-grid">
@@ -62,6 +80,16 @@ export function GalleryPage() {
               <img src={image(file)} alt={caption} loading="lazy" />
             </figure>
           ))}
+        </div>
+      </section>
+
+      <section className="about-cta gallery-cta" aria-labelledby="gallery-cta-h">
+        <div className="container about-cta-inner">
+          <h2 id="gallery-cta-h">
+            <span className="hero-line"><span className="hero-line-inner">Inspired by What You See?</span></span>
+          </h2>
+          <p>Discover the experience and commitment behind every Velumuri development.</p>
+          <Link className="btn-explore" href="/projects">View Our Projects <span className="arrow">→</span></Link>
         </div>
       </section>
     </div>

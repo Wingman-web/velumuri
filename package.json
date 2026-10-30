@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "export": "node scripts/export.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
@@ -25,5 +26,8 @@
     "@types/react": "^19.2.11",
     "@types/react-dom": "^19.2.3",
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20.9.0"
   }
 }

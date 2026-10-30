@@ -120,8 +120,7 @@ export function SiteHeader() {
           </div>
           <div className="nav-actions">
             <ScheduleVisit />
-            <button type="button" className="nav-toggle" aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen(true)}>
-              <span className="nav-toggle-label">Menu</span>
+            <button type="button" className="nav-toggle" aria-label="Menu" aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen(true)}>
               <span className="nav-toggle-icon" aria-hidden="true"><span className="bar" /></span>
             </button>
           </div>

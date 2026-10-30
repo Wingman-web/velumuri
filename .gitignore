@@ -4,3 +4,11 @@ out
 .env*
 !.env.example
 .DS_Store
+achyutha-hostinger.zip
+achyutha-hostinger-node.zip
+achyutha-hostinger-node.tar.gz
+*.zip
+*.tsbuildinfo
+# hero source renders — only the .webp copies in public/images/hero/scene/ are used
+public/images/hero/scene/*.png
+public/images/hero/scene/mrng_sky.webp

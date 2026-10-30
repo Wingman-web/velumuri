@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -10,32 +9,25 @@ const img = (path: string) => `/velumuri-assets/images/${path}`;
 
 const services: [React.ReactNode, string, string][] = [
   [
-    <svg key="loan" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 18 24 8l18 10" /><path d="M9 18v18M18 18v18M30 18v18M39 18v18" /><path d="M5 38h38M4 42h40" /></svg>,
-    'Home Loan Assistance',
-    'We work with leading banks and NBFCs offering NRI home loans — helping with eligibility, documentation, sanction and disbursement, coordinated to your construction-linked payment plan.',
+    <svg key="explore" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 22 20 10l14 12" /><path d="M10 19v19h12" /><circle cx="33" cy="33" r="7" /><path d="m38 38 5 5" /></svg>,
+    'Explore Properties',
+    'Discover available developments and find options that suit your requirements.',
   ],
   [
-    <svg key="docs" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 4h16l8 8v32H12Z" /><path d="M28 4v8h8" /><path d="M18 24h12M18 30h12M18 36h8" /></svg>,
-    'Documentation & Registration',
-    'Sale agreement, registration and mutation handled — through a registered Power of Attorney where required. Every document verified, RERA-compliant, and shared with you digitally.',
+    <svg key="assist" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 26v-3a14 14 0 0 1 28 0v3" /><rect x="6" y="24" width="8" height="12" rx="3" /><rect x="34" y="24" width="8" height="12" rx="3" /><path d="M38 36v3a6 6 0 0 1-6 6h-6" /></svg>,
+    'Personalised Assistance',
+    'Connect with our team to discuss project details, preferences, and enquiries.',
   ],
   [
-    <svg key="payment" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M24 4 8 10v12c0 11 7 18 16 22 9-4 16-11 16-22V10Z" /><path d="M18 24l4 4 9-10" /></svg>,
-    'Secure Payment Process',
-    'Payments routed from your NRE / NRO account to our RERA-designated project account, against a milestone-linked schedule with receipts at every stage — fully compliant with FEMA and RBI norms.',
+    <svg key="info" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 4h16l8 8v32H12Z" /><path d="M28 4v8h8" /><path d="M18 24h12M18 30h12M18 36h8" /></svg>,
+    'Property Information',
+    'Understand the available configurations, specifications, and documentation requirements.',
   ],
   [
-    <svg key="support" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 26v-3a14 14 0 0 1 28 0v3" /><rect x="6" y="24" width="8" height="12" rx="3" /><rect x="34" y="24" width="8" height="12" rx="3" /><path d="M38 36v3a6 6 0 0 1-6 6h-6" /></svg>,
-    'Dedicated NRI Support',
-    'One point of contact across time zones — construction updates, video site walkthroughs on request, and help with TDS, tax and repatriation questions long after handover.',
+    <svg key="comms" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 10h26v16H16l-6 5v-5H6Z" /><path d="M32 18h10v16h-4v5l-6-5H20v-8" /></svg>,
+    'Ongoing Communication',
+    'Stay connected with our team throughout your enquiry and purchase process.',
   ],
-];
-
-const investFacts = [
-  'RERA-registered projects only — title and approvals verified',
-  'Construction-linked, fully transparent pricing',
-  'Steady rental and resale demand near Morampudi Junction',
-  'Sale proceeds repatriable under RBI’s general permission',
 ];
 
 function NriContactForm() {
@@ -62,7 +54,7 @@ function NriContactForm() {
         <div className="nri-field nri-field--full">
           <label htmlFor="nri-interest">I&rsquo;m Interested In</label>
           <select id="nri-interest" name="interest">
-            <option value="vistas">Velumuri Vistas (Ongoing)</option>
+            <option value="achyutha">Velumuri Achyutha (Ongoing)</option>
             <option value="upcoming">Upcoming projects</option>
             <option value="loan">Home loan assistance</option>
             <option value="general">General NRI enquiry</option>
@@ -75,7 +67,7 @@ function NriContactForm() {
       </div>
 
       <div className="nri-contact-actions">
-        <button type="submit" className="nri-submit">Request A Callback <span className="arrow" aria-hidden="true">→</span></button>
+        <button type="submit" className="nri-submit">Connect With Our Team <span className="arrow" aria-hidden="true">→</span></button>
         <p className="form-status" role="status" aria-live="polite">{status}</p>
       </div>
     </form>
@@ -104,12 +96,11 @@ export function NriPage() {
 
       gsap.from('.nri-services .section-head-eyebrow', { y: 16, opacity: 0, duration: .8, scrollTrigger: { trigger: '.nri-services', start: 'top 85%', once: true } });
       gsap.to('.nri-services .section-head-copy h2 .hero-line-inner', { y: 0, duration: 1, stagger: .12, scrollTrigger: { trigger: '.nri-services', start: 'top 85%', once: true } });
-      gsap.from('.nri-services .section-head-copy p', { y: 16, opacity: 0, duration: .9, scrollTrigger: { trigger: '.nri-services', start: 'top 82%', once: true } });
       gsap.from('.nri-card', { y: 24, opacity: 0, duration: .9, stagger: .1, scrollTrigger: { trigger: '.nri-grid', start: 'top 82%', once: true } });
 
       gsap.from('.nri-invest-copy .eyebrow', { y: 16, opacity: 0, duration: .8, scrollTrigger: { trigger: '.nri-invest', start: 'top 84%', once: true } });
       gsap.to('.nri-invest-copy h2 .hero-line-inner', { y: 0, duration: 1, stagger: .12, scrollTrigger: { trigger: '.nri-invest', start: 'top 84%', once: true } });
-      gsap.from('.nri-invest-copy > p, .nri-invest-facts li, .nri-invest-copy .btn-explore', { y: 16, opacity: 0, duration: .9, stagger: .06, scrollTrigger: { trigger: '.nri-invest', start: 'top 80%', once: true } });
+      gsap.from('.nri-invest-copy > p:not(.eyebrow)', { y: 16, opacity: 0, duration: .9, stagger: .06, scrollTrigger: { trigger: '.nri-invest', start: 'top 80%', once: true } });
       const investMedia = document.querySelector<HTMLElement>('.nri-invest-media');
       if (investMedia) {
         const investImg = investMedia.querySelector('img');
@@ -117,7 +108,6 @@ export function NriPage() {
         if (investImg) gsap.fromTo(investImg, { scale: 1.14 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: '.nri-invest', start: 'top 88%', end: 'top 45%', scrub: .6 } });
       }
 
-      gsap.from('.nri-contact-head .eyebrow', { y: 16, opacity: 0, duration: .8, scrollTrigger: { trigger: '.nri-contact', start: 'top 85%', once: true } });
       gsap.to('.nri-contact-head h2 .hero-line-inner', { y: 0, duration: 1, stagger: .12, scrollTrigger: { trigger: '.nri-contact', start: 'top 85%', once: true } });
       gsap.from('.nri-contact-head > p', { y: 16, opacity: 0, duration: .9, scrollTrigger: { trigger: '.nri-contact', start: 'top 82%', once: true } });
       gsap.from('.nri-contact-card', { y: 28, opacity: 0, duration: .9, scrollTrigger: { trigger: '.nri-contact', start: 'top 78%', once: true } });
@@ -127,19 +117,38 @@ export function NriPage() {
 
   return (
     <div ref={root}>
-      <PageBanner eyebrow="NRI Services" lines={['Own A Home Back Home,', 'Without The Distance.']} image="hero/banner-dusk.png" alt="Velumuri Vistas at dusk" />
+      <PageBanner eyebrow="NRI Services" lines={['Own a Home Back Home,', 'With the Same Lifestyle']} image="banners/nri_desktop.png" tablet="banners/nri_tablet.jpg" mobile="banners/nri_mobile.jpg" alt="Velumuri Vistas at dusk" />
 
       <section className="nri-intro" aria-labelledby="ni-h">
         <div className="container">
           <div className="section-head">
-            <p className="eyebrow section-head-eyebrow">For NRIs &amp; OCIs</p>
+            <p className="eyebrow section-head-eyebrow">Connected To Your Roots</p>
             <div className="section-head-copy">
               <h2 id="ni-h">
-                <span className="hero-line"><span className="hero-line-inner">Investing From Abroad,</span></span>
-                <span className="hero-line"><span className="hero-line-inner">Handled End To End.</span></span>
+                <span className="hero-line"><span className="hero-line-inner">Wherever Life Takes You,</span></span>
+                <span className="hero-line"><span className="hero-line-inner">Home Stays Close</span></span>
               </h2>
-              <p>From your first enquiry to registration and handover, our NRI desk manages the paperwork, payments and on-ground coordination &mdash; so you can buy a Velumuri home with the same confidence whether you&rsquo;re in Rajahmundry or halfway across the world.</p>
+              <p>For those living beyond India&rsquo;s borders, owning a home back home is more than a property decision. It is a connection to family, memories, and the future.</p>
+              <p>At Velumuri Infra, we understand that choosing a property from abroad requires clarity, confidence, and dependable communication.</p>
+              <p>Our team is here to help you explore your options in Rajahmundry.</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="nri-invest" aria-labelledby="nv-h">
+        <div className="container nri-invest-grid">
+          <div className="nri-invest-media">
+            <img src={img('nri-city.webp')} alt="Rajahmundry and the Godavari at sunset" width={1600} height={1195} loading="lazy" />
+          </div>
+          <div className="nri-invest-copy">
+            <p className="eyebrow">A Name You Can Trust</p>
+            <h2 id="nv-h">
+              <span className="hero-line"><span className="hero-line-inner">Local Expertise</span></span>
+              <span className="hero-line"><span className="hero-line-inner">Lasting Confidence</span></span>
+            </h2>
+            <p>With over two decades of experience in real estate development, Velumuri Infra brings a strong understanding of Rajahmundry&rsquo;s residential landscape.</p>
+            <p>Our portfolio of completed developments and commitment to customer relationships offer a foundation of confidence for buyers, wherever they are in the world.</p>
           </div>
         </div>
       </section>
@@ -147,13 +156,12 @@ export function NriPage() {
       <section className="nri-services" aria-labelledby="ns-h">
         <div className="container">
           <div className="section-head">
-            <p className="eyebrow section-head-eyebrow">What We Handle</p>
+            <p className="eyebrow section-head-eyebrow">Your Property Journey</p>
             <div className="section-head-copy">
               <h2 id="ns-h">
-                <span className="hero-line"><span className="hero-line-inner">Four Things Off</span></span>
-                <span className="hero-line"><span className="hero-line-inner">Your Plate.</span></span>
+                <span className="hero-line"><span className="hero-line-inner">Simple Conversations</span></span>
+                <span className="hero-line"><span className="hero-line-inner">Clearer Decisions</span></span>
               </h2>
-              <p>The parts of buying from overseas that usually take weeks of back-and-forth &mdash; managed by one team, on your behalf.</p>
             </div>
           </div>
 
@@ -169,34 +177,14 @@ export function NriPage() {
         </div>
       </section>
 
-      <section className="nri-invest" aria-labelledby="nv-h">
-        <div className="container nri-invest-grid">
-          <div className="nri-invest-media">
-            <img src={img('hero/hero-aerial.jpg')} alt="Aerial view of Velumuri Vistas, Rajahmundry" width={1920} height={1030} loading="lazy" />
-          </div>
-          <div className="nri-invest-copy">
-            <p className="eyebrow">Why Rajahmundry</p>
-            <h2 id="nv-h">
-              <span className="hero-line"><span className="hero-line-inner">A Growing City,</span></span>
-              <span className="hero-line"><span className="hero-line-inner">A Grounded Investment.</span></span>
-            </h2>
-            <p>Rajahmundry is one of coastal Andhra&rsquo;s fastest-growing residential markets &mdash; and the corridor around Morampudi Junction, where Velumuri Vistas sits, is at the centre of it. For an NRI buyer, that means real end-use demand, not speculation.</p>
-            <ul className="nri-invest-facts">
-              {investFacts.map((fact) => <li key={fact}>{fact}</li>)}
-            </ul>
-            <Link className="btn-explore" href="/ongoing-projects">Explore Velumuri Vistas <span className="arrow">→</span></Link>
-          </div>
-        </div>
-      </section>
-
       <section className="nri-contact" id="enquire" aria-labelledby="nf-h">
         <div className="container">
           <div className="nri-contact-head">
-            <p className="eyebrow">Get Started</p>
             <h2 id="nf-h">
-              <span className="hero-line"><span className="hero-line-inner">Talk To Our NRI Desk.</span></span>
+              <span className="hero-line"><span className="hero-line-inner">Your Connection to</span></span>
+              <span className="hero-line"><span className="hero-line-inner">Home Starts Here</span></span>
             </h2>
-            <p>Tell us where you&rsquo;re based and what you&rsquo;re looking for &mdash; a dedicated relationship manager will call you back at a time that works in your zone.</p>
+            <p>Let us help you explore your property options in Rajahmundry.</p>
           </div>
 
           <div className="nri-contact-card">

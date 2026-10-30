@@ -119,16 +119,19 @@ export function ContactPage() {
     <div ref={root}>
       <PageBanner
         eyebrow="Contact Us"
-        lines={['Let’s Help You Find', 'The Right Home.']}
+        lines={['Let’s Help You Find', 'The Right Home']}
         description="Whether you’re looking to buy, explore our ongoing projects, or just have a question — our team is ready to guide every step with clarity."
-        image="hero/hero-aerial.jpg"
-        alt="Aerial view of a Velumuri Infra gated community"
+        image="banners/contact_desktop.webp"
+        imagePosition="80% center"
+        uncropped
+        onDark
+        alt="A vintage gold telephone on black marble"
       />
       <section className="contact-intro" aria-label="Get in touch">
         <div className="container">
           <div className="contact-card">
             <div className="contact-commitment">
-              <img src={img('gallery/podium-tree-court.jpg')} alt="Landscaped courtyard at a Velumuri Infra gated community" loading="lazy" width={1280} height={720} />
+              <img src={img('our-commitment.webp')} alt="A gold-etched handshake" loading="lazy" width={1200} height={1200} />
               <div className="contact-commitment-scrim" aria-hidden="true" />
               <div className="contact-commitment-bottom">
                 <span className="contact-commitment-icon" aria-hidden="true">
@@ -159,7 +162,7 @@ export function ContactPage() {
             <p className="eyebrow">FAQ</p>
             <h2 id="faq-h">
               <span className="hero-line"><span className="hero-line-inner">Things You Should</span></span>
-              <span className="hero-line"><span className="hero-line-inner">Know.</span></span>
+              <span className="hero-line"><span className="hero-line-inner">Know</span></span>
             </h2>
             <p>We&rsquo;ve answered the most common questions to help you get started with clarity.</p>
           </div>

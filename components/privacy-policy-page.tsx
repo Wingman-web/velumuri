@@ -41,7 +41,7 @@ export function PrivacyPolicyPage() {
 
   return (
     <div ref={root}>
-      <PageBanner eyebrow="Legal" lines={['Privacy &', 'Our Policies.']} image="hero/banner-dusk.png" alt="Velumuri Vistas at dusk" />
+      <PageBanner eyebrow="Legal" lines={['Privacy &', 'Our Policies']} image="banners/privacy-policy.png" alt="Velumuri Vistas at dusk" />
 
       <section className="legal-section" aria-label="Policy documents">
         <div className="container legal-layout">

@@ -1,0 +1,40 @@
+# Apache config for the static export (npm run export → out/), e.g. Hostinger
+# public_html. Copied into out/ from public/ on every export.
+
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+# Each page is a folder with its own index.html (trailingSlash: true in
+# next.config.ts); send /about → /about/ so relative assets resolve.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_URI} !/$
+  RewriteRule ^(.*)$ /$1/ [R=301,L]
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+  AddType font/ttf .ttf
+  AddType font/otf .otf
+  AddType text/plain .txt
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain application/javascript text/javascript application/json image/svg+xml font/ttf font/otf
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Hashed build assets never change — cache for a year.
+  <If "%{REQUEST_URI} =~ m#^/_next/static/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+  # Images, video and fonts: a week (file names can be reused when swapped).
+  <FilesMatch "\.(jpe?g|png|webp|svg|mp4|ttf|otf|woff2?)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+  # HTML and route payloads: always revalidate so updates show immediately.
+  <FilesMatch "\.(html|txt)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

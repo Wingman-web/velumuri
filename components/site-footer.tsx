@@ -87,8 +87,8 @@ export function SiteFooter() {
       <div className="container footer-inner">
         <div className="footer-cta" id="visit" aria-labelledby="cta-h">
           <h2 id="cta-h">
-            <span className="hero-line"><span className="hero-line-inner">Ready To See Your</span></span>
-            <span className="hero-line"><span className="hero-line-inner">Next Home?</span></span>
+            <span className="hero-line"><span className="hero-line-inner">Rajahmundry’s Benchmark</span></span>
+            <span className="hero-line"><span className="hero-line-inner">In Luxury Living</span></span>
           </h2>
           <button type="button" className="btn-schedule" onClick={() => openEnquiryModal()}>Schedule A Visit <span className="arrow">→</span></button>
         </div>
